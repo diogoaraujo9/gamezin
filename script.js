@@ -1,4 +1,4 @@
-var currentScene = 'prado';
+var currentScene = 'cabana'; // 'prado', 'montanha', 'cabana', 
 var edgeOpacity = 0;
 var redOpacity = 3;
 var colorOpacity = 6;
@@ -12,10 +12,12 @@ var writeTextInterval;
 var audio;
 var currentAudioFile = '';
 
+// Inicio
 var keys = {
   'INIT': true,
-  'FIRST_TALK_TO_HEROIN': false,
-  'CHOSE_TO_GET_CLOSE_TO_HEROIN': false,
+
+  'HEROIN_IS_FIRST_TIME_TALKING_TO': false,
+  'HEROIN_CHOSE_TO_GET_CLOSE_TO': false,
   'HEROIN_MAIN_QUESTIONS': false,
   'HEROIN_ASKED_REASON_TO_COME_TO_THIS_WORLD': false,
   'HEROIN_ASKED_WHAT_WAS_HAPPENING_TO_THIS_WORLD': false,
@@ -23,8 +25,80 @@ var keys = {
   'HEROIN_ASKED_HOW_TO_SAVE_THE_WORLD': false,
   'HEROIN_FIRST_TALK_CONCLUDED': false,
   'HEROIN_HESITATED_TO_SEARCH_THE_SOULS': false,
+
   'STARTED_QUEST': false,
+
+  'MOUNTAIN_DWARF_DEMONSTRATED_CONCERN': false,
+  'MOUNTAIN_TALKED_TO_DWARF': false,
+  'MOUNTAIN_SAW_DWARF_DISAPPEAR': false,
+  'MOUNTAIN_GOT_PENDANT': false,
+
+  'CABIN_ALREADY_ENTERED': false,
+  'CABIN_ENTERED_WITHOUT_BEING_INVITED': false,
+  'CABIN_IS_FIRST_TIME_TALKING_TO': false,
+  'CABIN_AGREED_WITH_RODRICK': false,
+  'CABIN_STOOD_UP_FOR_THE_HEROIN': false,
+  'CABIN_TOLD_RODRICK_ABOUT_THE_PLAN': false,
+  'CABIN_RODRICK_IS_ANXIOUS': false,
+  'CABIN_GAVE_WATER_TO_RODRICK': false,
+  'CABIN_HOLD_RODRICK_HANDS': false,
+  'CABIN_SAID_WORDS_OF_CONFORT_TO_RODRICK': false,
+  'CABIN_RODRICK_ACCEPTED_TO_HELP': false,
+  'CABIN_TRIED_TO_GIVE_PENDANT_TO_RODRICK': false,
+  'CABIN_ASKED_THE_HEROIN_NAME': false,
 }
+
+// Fim da primeira conversa
+// var keys = {
+//   'INIT': false,
+
+//   'HEROIN_IS_FIRST_TIME_TALKING_TO': false,
+//   'HEROIN_CHOSE_TO_GET_CLOSE_TO': true,
+//   'HEROIN_IS_ASKING_MAIN_QUESTIONS': false,
+//   'HEROIN_ASKED_REASON_TO_COME_TO_THIS_WORLD': true,
+//   'HEROIN_ASKED_WHAT_WAS_HAPPENING_TO_THIS_WORLD': true,
+//   'HEROIN_ASKED_ABOUT_THE_DOOR_LOCK': true,
+//   'HEROIN_ASKED_HOW_TO_SAVE_THE_WORLD': true,
+//   'HEROIN_FIRST_TALK_CONCLUDED': true,
+//   'HEROIN_HESITATED_TO_SEARCH_THE_SOULS': false,
+
+//   'STARTED_QUEST': true,
+
+//   'MOUNTAIN_DWARF_DEMONSTRATED_CONCERN': false,
+//   'MOUNTAIN_TALKED_TO_DWARF': false,
+//   'MOUNTAIN_SAW_DWARF_DISAPPEAR': false,
+//   'MOUNTAIN_GOT_PENDANT': false,
+
+//   'CABIN_ALREADY_ENTERED': false,
+//   'CABIN_ENTERED_WITHOUT_BEING_INVITED': false,
+//   'CABIN_IS_FIRST_TIME_TALKING_TO': false,
+// }
+
+// Cabana
+// var keys = {
+//   'INIT': false,
+
+//   'HEROIN_IS_FIRST_TIME_TALKING_TO': false,
+//   'HEROIN_CHOSE_TO_GET_CLOSE_TO': true,
+//   'HEROIN_IS_ASKING_MAIN_QUESTIONS': false,
+//   'HEROIN_ASKED_REASON_TO_COME_TO_THIS_WORLD': true,
+//   'HEROIN_ASKED_WHAT_WAS_HAPPENING_TO_THIS_WORLD': true,
+//   'HEROIN_ASKED_ABOUT_THE_DOOR_LOCK': true,
+//   'HEROIN_ASKED_HOW_TO_SAVE_THE_WORLD': true,
+//   'HEROIN_FIRST_TALK_CONCLUDED': true,
+//   'HEROIN_HESITATED_TO_SEARCH_THE_SOULS': false,
+
+//   'STARTED_QUEST': true,
+
+//   'MOUNTAIN_DWARF_DEMONSTRATED_CONCERN': true,
+//   'MOUNTAIN_TALKED_TO_DWARF': true,
+//   'MOUNTAIN_SAW_DWARF_DISAPPEAR': true,
+//   'MOUNTAIN_GOT_PENDANT': true,
+
+//   'CABIN_ALREADY_ENTERED': false,
+//   'CABIN_ENTERED_WITHOUT_BEING_INVITED': false,
+//   'CABIN_IS_FIRST_TIME_TALKING_TO': false,
+// }
 
 var story = {
   'prado': [
@@ -101,7 +175,7 @@ var story = {
           audio: 'self-contained-universe.mp3'
         },
         {
-          text: 'Você abaixa os braços e vê uma mulher deitada, com as costas apoiada em uma rocha. Ela possui uma aparência fraca e está toda machucada.'
+          text: 'Você abaixa os braços e vê uma mulher deitada, com as costas apoiadas em uma rocha. Ela possui uma aparência fraca e está toda machucada.'
         },
         {
           text: 'Sua forma também é volátil, igual a rocha e a grama que estão abaixos dela.'
@@ -128,8 +202,8 @@ var story = {
                   text: 'Relutante, você se aproxima da mulher.',
                   action: () => {
                     keys['INIT'] = false;
-                    keys['FIRST_TALK_TO_HEROIN'] = true;
-                    keys['CHOSE_TO_GET_CLOSE_TO_HEROIN'] = true;
+                    keys['HEROIN_IS_FIRST_TIME_TALKING_TO'] = true;
+                    keys['HEROIN_CHOSE_TO_GET_CLOSE_TO'] = true;
                   },
                   goBack: true,
                 }
@@ -159,8 +233,8 @@ var story = {
                           text: 'Relutante, você se aproxima da mulher.',
                           action: () => {
                             keys['INIT'] = false;
-                            keys['FIRST_TALK_TO_HEROIN'] = true;
-                            keys['CHOSE_TO_GET_CLOSE_TO_HEROIN'] = true;
+                            keys['HEROIN_IS_FIRST_TIME_TALKING_TO'] = true;
+                            keys['HEROIN_CHOSE_TO_GET_CLOSE_TO'] = true;
                           },
                           goBack: true,
                         }
@@ -173,8 +247,8 @@ var story = {
                           text: 'Apesar de não ter medo daquela mulher, você prefere manter distância.',
                           action: () => {
                             keys['INIT'] = false;
-                            keys['FIRST_TALK_TO_HEROIN'] = true;
-                            keys['CHOSE_TO_GET_CLOSE_TO_HEROIN'] = false;
+                            keys['HEROIN_IS_FIRST_TIME_TALKING_TO'] = true;
+                            keys['HEROIN_CHOSE_TO_GET_CLOSE_TO'] = false;
                           },
                           goBack: true,
                         }
@@ -190,7 +264,7 @@ var story = {
     },
     {
       requirements: () => {
-        return keys['FIRST_TALK_TO_HEROIN']
+        return keys['HEROIN_IS_FIRST_TIME_TALKING_TO']
       },
       auto: true,
       chat: [
@@ -235,8 +309,8 @@ var story = {
         {
           text: 'Ver essa cena está partindo o seu coração.',
           action: () => {
-            keys['HEROIN_MAIN_QUESTIONS'] = true;
-            keys['FIRST_TALK_TO_HEROIN'] = false;
+            keys['HEROIN_IS_ASKING_MAIN_QUESTIONS'] = true;
+            keys['HEROIN_IS_FIRST_TIME_TALKING_TO'] = false;
           },
           goBackImmediately: true,
         }
@@ -244,7 +318,7 @@ var story = {
     },
     {
       requirements: () => {
-        return keys['HEROIN_MAIN_QUESTIONS']
+        return keys['HEROIN_IS_ASKING_MAIN_QUESTIONS']
       },
       auto: true,
       chat: [
@@ -270,7 +344,7 @@ var story = {
                 },
                 {
                   speaker: 'Heroína',
-                  text: 'Se você está aqui... então talvez signifique que este mundo ainda não desistiu... talvez exista uma chance de salvá-lo.'
+                  text: 'Se você está aqui... então talvez signifique que este mundo ainda não tenha desistido... talvez exista uma chance de salvá-lo.'
                 },
                 {
                   speaker: 'Heroína',
@@ -466,7 +540,7 @@ var story = {
                   action: () => {
                     if (!keys['HEROIN_ASKED_HOW_TO_SAVE_THE_WORLD']) {
                       keys['HEROIN_FIRST_TALK_CONCLUDED'] = true;
-                      keys['HEROIN_MAIN_QUESTIONS'] = false;
+                      keys['HEROIN_IS_ASKING_MAIN_QUESTIONS'] = false;
                     }
 
                     keys['HEROIN_ASKED_HOW_TO_SAVE_THE_WORLD'] = true;
@@ -485,7 +559,7 @@ var story = {
                   speaker: 'Heroína',
                   text: 'Que a sorte esteja do seu lado, minha criança.',
                   action: () => {
-                    keys['HEROIN_MAIN_QUESTIONS'] = false;
+                    keys['HEROIN_IS_ASKING_MAIN_QUESTIONS'] = false;
                   }
                 }
               ]
@@ -592,7 +666,7 @@ var story = {
                   speaker: 'Heroína',
                   text: 'Olá, minha criança. Precisa de algo?',
                   action: () => {
-                    keys['HEROIN_MAIN_QUESTIONS'] = true;
+                    keys['HEROIN_IS_ASKING_MAIN_QUESTIONS'] = true;
                   },
                   goBackImmediately: true,
                 },
@@ -615,12 +689,9 @@ var story = {
               text: 'Ir para o oeste',
               chat: [
                 {
-                  speaker: 'Heroína',
-                  text: 'Onde você está indo, criança? Você ainda precisa das três Almas Primordiais antes de partir para o templo.'
-                },
-                {
-                  text: 'Lembrando do que precisa ser feito, você volta para o meio do campo.',
+                  text: 'Você se dirige para o oeste, em direção à montanha.',
                   goBack: true,
+                  moveToScene: 'montanha'
                 },
               ]
             },
@@ -654,7 +725,1268 @@ var story = {
         }
       ]
     }
-  ]
+  ],
+  'montanha': [
+    {
+      requirements: () => {
+        return !keys['MOUNTAIN_SAW_DWARF_DISAPPEAR'] && !keys['MOUNTAIN_TALKED_TO_DWARF'];
+      },
+      auto: true,
+      chat: [
+        {
+          text: 'Depois de uma breve caminhada você chega em uma trilha que leva para uma montanha.',
+          audio: 'silverpoint.mp3',
+        },
+        {
+          text: 'Assim como no campo, tudo ao seu redor está volátil.',
+        },
+        {
+          text: 'Durante o caminho, você tenta refletir a situação atual.',
+        },
+        {
+          text: 'Será que notaram o seu desaparecimento no seu mundo? Será que estão procurando por você?',
+        },
+        {
+          text: 'Desde que chegou nesse mundo, sua mente tem estado confusa. Você precisa fazer um leve esforço para tentar lembrar qualquer coisa.',
+        },
+        {
+          text: 'Você anseia pela sua vida normal. Sua cama, sua rotina, as pessoas que você gosta.',
+        },
+        {
+          text: 'Por que você foi a escolhida? O que você fez de errado para merecer esse pesadelo?',
+        },
+        {
+          text: 'Com um aperto no coração, você segue andando na trilha.',
+        },
+        {
+          text: '10 minutos já se passaram? Talvez 15.',
+        },
+        {
+          text: 'Você acredita ter notado uma cabana a frente. Talvez mais alguns minutos e você chegará lá.',
+        },
+        {
+          text: 'Mas seu coração para de bater ao escutar um voz desconhecida.',
+        },
+        {
+          speaker: 'Voz',
+          text: 'Ro.. dri.. ck...',
+        },
+        {
+          text: 'Você olha em direção a voz. Existe uma anã caída no chão logo a frente.',
+        },
+        {
+          text: 'Você se aproxima da anã com pressa. Talvez ela seja a única que possa te ajudar.',
+        },
+        {
+          text: 'Ela possui uma estatura baixa. Seus cabelos loiros estão todos bagunçados. Lágrimas escorrem pelo seu rosto.',
+        },
+        {
+          text: 'Ao se aproximar, você se ajoelha para verificar o estado da anã.',
+        },
+        {
+          text: 'Você ainda não se acostumou com a visão de objetos e seres vivos lutando para manter suas composições físicas.',
+        },
+        {
+          text: 'Essa anã parece estar mais volátil que a Heroína.',
+        },
+        {
+          speaker: 'Anã',
+          text: 'Humana? Nunca te... vi... por aqui...',
+        },
+        {
+          options: [
+            {
+              text: 'Você está bem? Me diga o que fazer para te ajudar.',
+              chat: [
+                {
+                  text: 'Você segura a mão dela. É uma sensação estranha. É como se você estivesse segurando algo que ao mesmo tempo está e não está alí.',
+                  action: () => {
+                    keys['MOUNTAIN_DWARF_DEMONSTRATED_CONCERN'] = true;
+                    keys['MOUNTAIN_TALKED_TO_DWARF'] = true;
+                  },
+                  goBack: true,
+                },
+              ],
+            },
+            {
+              text: 'Você é uma anã, certo? Preciso de ajuda para encontrar as Almas Primordiais. Você sabe onde posso encontrá-las?',
+              chat: [
+                {
+                  text: 'O tempo pode ser curto. Você imediatamente pergunta sobre informações relacionadas ao seu objetivo.',
+                  action: () => {
+                    keys['MOUNTAIN_TALKED_TO_DWARF'] = true;
+                  },
+                  goBack: true
+                }
+              ]
+            },
+          ]
+        }
+      ]
+    },
+    {
+      requirements: () => {
+        return !keys['MOUNTAIN_SAW_DWARF_DISAPPEAR'] && keys['MOUNTAIN_TALKED_TO_DWARF'];
+      },
+      auto: true,
+      chat: [
+        {
+          text: 'Mas suas palavras foram em vão.',
+        },
+        {
+          speaker: 'Anã',
+          text: 'Salve.. Ro.. drick...',
+        },
+        {
+          text: 'O corpo da anã começa a ficar cada vez mais volátil.',
+        },
+        {
+          text: 'A mão que você estava segurando simplesmente para de ocupar volume no espaço.',
+          requirements: () => {
+            return keys['MOUNTAIN_DWARF_DEMONSTRATED_CONCERN'];
+          }
+        },
+        {
+          text: 'Logo depois, seus braços, tronco e pernas desaparecem. A última coisa que você presencia são os olhos da anã fechando, enquanto o resto do seu corpo e lágrimas desaparecem no ar.',
+          requirements: () => {
+            return keys['MOUNTAIN_DWARF_DEMONSTRATED_CONCERN'];
+          }
+        },
+        {
+          text: 'Uma tristeza invade o seu corpo. Você não foi capaz de ajudar a pobre anã.',
+          requirements: () => {
+            return keys['MOUNTAIN_DWARF_DEMONSTRATED_CONCERN'];
+          }
+        },
+        {
+          text: 'Como poderia?',
+          requirements: () => {
+            return keys['MOUNTAIN_DWARF_DEMONSTRATED_CONCERN'];
+          }
+        },
+        {
+          text: 'Isso te desespera ainda mais. Você precisa saber como conseguir a Alma Primordial. Você precisa voltar para casa.',
+          requirements: () => {
+            return !keys['MOUNTAIN_DWARF_DEMONSTRATED_CONCERN'];
+          }
+        },
+        {
+          text: 'O corpo da anã vai desaparecendo aos poucos. Você grita, pedindo para que ela não vá. Mas o destino dela já está selado.',
+          requirements: () => {
+            return !keys['MOUNTAIN_DWARF_DEMONSTRATED_CONCERN'];
+          }
+        },
+        {
+          text: 'Você imediatamente se lembra que está sozinha. A solidão mais uma vez toma conta no meio dessa trilha.',
+        },
+        {
+          text: 'Se ela era a última anã, então suas esperanças estavam mortas.',
+        },
+        {
+          text: '...',
+        },
+        {
+          text: '"Ela citou um nome, certo?", você se pergunta.',
+        },
+        {
+          text: '"Rodrick". Se ele for um anão igual a ela, talvez ainda exista um jeito de conseguir a Alma Primordial dos anões.',
+        },
+        {
+          text: 'Você se levanta. Por mais que a situação atual não esteja boa, ficar parada não irá ajudar em nada.',
+          action: () => {
+            keys['MOUNTAIN_SAW_DWARF_DISAPPEAR'] = true;
+          },
+          goBackImmediately: true,
+        },
+      ]
+    },
+    {
+      requirements: () => {
+        return keys['MOUNTAIN_SAW_DWARF_DISAPPEAR'];
+      },
+      auto: true,
+      chat: [
+        {
+          audio: 'silverpoint.mp3',
+          options: [
+            {
+              text: 'Investigar a trilha',
+              chat: [
+                {
+                  requirements: () => {
+                    return keys['MOUNTAIN_GOT_PENDANT'];
+                  },
+                  text: 'Você investiga a trilha, mas não encontra nada.',
+                  goBackImmediately: true,
+                },
+                {
+                  text: 'Você investiga o local onde a anã estava.'
+                },
+                {
+                  text: 'Você acha um pingente.'
+                },
+                {
+                  text: 'Ele possui um fecho. Você o abre.'
+                },
+                {
+                  text: 'Dentro dele existe a foto de dois anões. Um de cada lado.'
+                },
+                {
+                  text: 'Você reconhece a anã que está na parte da direita. É a anã que você acabou de ver desaparecer.'
+                },
+                {
+                  text: 'Na foto ela está feliz. Com um belo sorriso no rosto. Totalmente diferente da versão que você conheceu... triste, aos prantos, desesperada.'
+                },
+                {
+                  text: 'Do outro lado está a foto de um anão que você não reconhece. Ele possui uma espessa barba preta e uma feição séria.'
+                },
+                {
+                  text: 'Você guarda o pingente no bolso.',
+                  action: () => {
+                    keys['MOUNTAIN_GOT_PENDANT'] = true;
+                  },
+                  goBackImmediately: true,
+                },
+              ]
+            },
+            {
+              text: 'Ir para a cabana',
+              chat: [
+                {
+                  text: 'Você se dirige para a cabana.',
+                  goBack: true,
+                  moveToScene: 'cabana'
+                },
+              ]
+            },
+            {
+              text: 'Voltar para o campo',
+              chat: [
+                {
+                  text: 'Você se dirige para o campo.',
+                  goBack: true,
+                  moveToScene: 'prado'
+                },
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  'cabana': [
+    {
+      requirements: () => {
+        return !keys['CABIN_ALREADY_ENTERED'];
+      },
+      auto: true,
+      chat: [
+        {
+          text: 'Você se aproxima da cabana. O local parece velho e rústico. A porta está aberta',
+          // TODO: Mover o audio geothermal para cá
+        },
+        {
+          audio: 'geothermal.mp3',
+          options: [
+            {
+              text: 'Bater na porta mesmo assim',
+              chat: [
+                {
+                  text: 'Você bate na porta com a esperança que alguém responda.'
+                },
+                {
+                  text: 'É possível ouvir uma voz vindo de dentro da cabana.'
+                },
+                {
+                  speaker: 'Voz',
+                  text: 'VÁ EMBORA!'
+                },
+                {
+                  text: 'Você se assusta com o grito e dá um pulo para trás. Quem está dentro da cabana provavelmente não quer visitas.' 
+                },
+                {
+                  options: [
+                    {
+                      text: 'Pedir licença para entrar na cabana',
+                      chat: [
+                        {
+                          text: 'Você se aproxima da cabana.'
+                        },
+                        {
+                          text: '"Com licença, eu preciso de ajuda. É urgente! Por favor, me deixe entrar."'
+                        },
+                        {
+                          speaker: 'Voz',
+                          text: 'Me deixe em paz. Não tenho como te ajudar. O mundo já está acabando, aproveite o resto do seu tempo enquanto pode.'
+                        },
+                        {
+                          options: [
+                            {
+                              text: 'Explicar o motivo da sua visita.',
+                              chat: [
+                                {
+                                  text: '"Senhor, acho que existe uma forma de salvar esse mundo, mas para isso eu preciso da sua ajuda. Por favor, permita-me entrar."'
+                                },
+                                {
+                                  speaker: 'Voz',
+                                  text: 'Não há mais nada a fazer. Nem aquela Heroína conseguiu resolver algo, quem dirá eu.'
+                                },
+                                {
+                                  options: [
+                                    {
+                                      text: 'Falar brevemente sobre a Alma Primordial e sua importância',
+                                      chat: [
+                                        {
+                                          text: '"Não, ainda há esperança. A Heroína me explicou como as Almas Primordiais podem salvar esse mundo."'
+                                        },
+                                        {
+                                          speaker: 'Voz',
+                                          text: 'Almas Primordias? Quem liga para isso...'
+                                        },
+                                        {
+                                          options: [
+                                            {
+                                              text: 'Terminar a conversa e entrar na cabana',
+                                              chat: [
+                                                {
+                                                  text: '"Chega, não temos tempo a perder! Com licença, estou entrando na cabana!"',
+                                                },
+                                                {
+                                                  text: 'Você entra na cabana mesmo sem ser convidada. O retorno para o seu mundo está em jogo.',
+                                                  action: () => {
+                                                    keys['CABIN_ENTERED_WITHOUT_BEING_INVITED'] = true;
+                                                    keys['CABIN_ALREADY_ENTERED'] = true;
+                                                  },
+                                                  goBack: true,
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              text: 'Suplicar para ser recebida na cabana',
+                                              chat: [
+                                                {
+                                                  text: '"Por favor, me deixe entrar na cabana. Irei te explicar tudo."'
+                                                },
+                                                {
+                                                  text: 'Você não ouve nada após falar isso. Por alguns segundos você só consegue ouvir o completo silêncio.'
+                                                },
+                                                {
+                                                  text: 'Depois de um tempo, você ouve novamente a voz de dentro da cabana.'
+                                                },
+                                                {
+                                                  speaker: 'Voz',
+                                                  text: 'Entre logo e acabe com isso.'
+                                                },
+                                                {
+                                                  text: 'Você suspira aliviada e entra na cabana. O destino deste mundo está em jogo.',
+                                                  action: () => {
+                                                    keys['CABIN_ALREADY_ENTERED'] = true;
+                                                  },
+                                                  goBack: true,
+                                                },
+                                              ]
+                                            },
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      text: 'Entrar na cabana mesmo assim. Você não tem tempo a perder',
+                                      chat: [
+                                        {
+                                          text: '"Estou entrando mesmo assim! Com licença."'
+                                        },
+                                        {
+                                          text: 'Você entra na cabana mesmo sem ser convidada. O retorno para o seu mundo está em jogo.',
+                                          action: () => {
+                                            keys['CABIN_ENTERED_WITHOUT_BEING_INVITED'] = true;
+                                            keys['CABIN_ALREADY_ENTERED'] = true;
+                                          },
+                                          goBack: true,
+                                        }
+                                      ]
+                                    },
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              text: 'Entrar na cabana mesmo assim. Você não tem tempo a perder',
+                              chat: [
+                                {
+                                  text: '"Estou entrando mesmo assim! Com licença."'
+                                },
+                                {
+                                  text: 'Você entra na cabana mesmo sem ser convidada. O retorno para o seu mundo está em jogo.',
+                                  action: () => {
+                                    keys['CABIN_ENTERED_WITHOUT_BEING_INVITED'] = true;
+                                    keys['CABIN_ALREADY_ENTERED'] = true;
+                                  },
+                                  goBack: true,
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                      ]
+                    },
+                    {
+                      text: 'Gritar avisando que não vai embora até conseguir o que precisa',
+                      chat: [
+                        {
+                          text: 'Você se aproxima da cabana.'
+                        },
+                        {
+                          text: '"Não irei até falar com o senhor! É algo urgente! Estou entrando."'
+                        },
+                        {
+                          text: 'Você entra na cabana mesmo sem ser convidada. O retorno para o seu mundo está em jogo.',
+                          action: () => {
+                            keys['CABIN_ENTERED_WITHOUT_BEING_INVITED'] = true;
+                            keys['CABIN_ALREADY_ENTERED'] = true;
+                          },
+                          goBack: true,
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              text: 'Entrar na cabana',
+              chat: [
+                {
+                  text: 'Você entra direto na cabana. O seu retorno para casa depende disso.',
+                  action: () => {
+                    keys['CABIN_ENTERED_WITHOUT_BEING_INVITED'] = true;
+                    keys['CABIN_ALREADY_ENTERED'] = true;
+                  },
+                  goBack: true,
+                }
+              ]
+            }
+          ],
+        }
+      ]
+    },
+    {
+      requirements: () => {
+        return keys['CABIN_ALREADY_ENTERED'] && !keys['CABIN_IS_FIRST_TIME_TALKING_TO'];
+      },
+      auto: true,
+      chat: [
+        {
+          text: 'Você caminha para dentro da cabana.'
+        },
+        {
+          text: 'Ao entrar, você percebe que tudo está prestes a se dissipar, igual do lado de fora.'
+        },
+        {
+          text: 'Existe apenas um cômodo, e todo o alicerce foi construído a base de madeira.'
+        },
+        {
+          text: 'Apesar de ter uma aparência velha, o local parece ser bastante aconchegante. Talvez por conta da lareira que se encontra em uma das paredes.'
+        },
+        {
+          text: 'Já no canto oposto, você repara em um anão barbudo sentado em uma grande cadeira.'
+        },
+        {
+          text: 'Seus olhos estão pesados. Ele provavelmente esteve chorando recentemente.'
+        },
+        {
+          text: 'Além disso, seu corpo está se dissipando igual a todas as outras coisas desse mundo, mas existe algo de diferente nele.'
+        },
+        {
+          text: 'A dissipação está mais forte em suas pernas. Tanto que estão quase transparentes. Em contrapartida, o resto do corpo está quase intacto. Talvez a maldição esteja afetando ele de forma diferente.'
+        },
+        {
+          requirements: () => {
+            return keys['MOUNTAIN_GOT_PENDANT'];
+          },
+          text: 'Você percebe que ele é igual a foto do anão que está dentro do pingente que você encontrou mais cedo. Provavelmente ele tem uma relação com a anã que desapareceu.'
+        },
+        {
+          requirements: () => {
+            return keys['MOUNTAIN_GOT_PENDANT'];
+          },
+          text: 'A ideia de trazer as más notícias embrulha o seu estômago.'
+        },
+        {
+          text: 'O anão está encarando você.'
+        },
+        {
+          requirements: () => {
+            return keys['CABIN_ENTERED_WITHOUT_BEING_INVITED'];
+          },
+          speaker: 'Anão',
+          text: 'Menina má educada! Não te dei o direito de entrar aqui!'
+        },
+        {
+          requirements: () => {
+            return keys['CABIN_ENTERED_WITHOUT_BEING_INVITED'];
+          },
+          text: '"Desculpe, senhor, mas são assuntos urgentes! Eu preciso lhe fazer algumas perguntas"'
+        },
+        {
+          requirements: () => {
+            return keys['CABIN_ENTERED_WITHOUT_BEING_INVITED'];
+          },
+          speaker: 'Anão',
+          text: 'Bem, então começou errado ao ter invadido a minha propriedade. Se eu pudesse, estaria te jogando para fora daqui agora mesmo.'
+        },
+        {
+          requirements: () => {
+            return keys['CABIN_ENTERED_WITHOUT_BEING_INVITED'];
+          },
+          text: '"Sinto muito mesmo, senhor. Prometo que o que eu tenho a dizer vai valer a pena."'
+        },
+        {
+          requirements: () => {
+            return keys['CABIN_ENTERED_WITHOUT_BEING_INVITED'];
+          },
+          speaker: 'Anão',
+          text: 'E espero que seja rápido também!'
+        },
+        {
+          speaker: 'Anão',
+          text: 'E então? Quem é você? O que você quer?',
+          action: () => {
+            keys['CABIN_IS_FIRST_TIME_TALKING_TO'] = true;
+          },
+          goBackImmediately: true,
+        }
+      ]
+    },
+    {
+      requirements: () => {
+        return keys['CABIN_IS_FIRST_TIME_TALKING_TO'] && !keys['CABIN_TOLD_RODRICK_ABOUT_THE_PLAN']
+      },
+      auto: true,
+      chat: [
+        {
+          requirements: () => {
+            return !keys['CABIN_AGREED_WITH_RODRICK'] && !keys['CABIN_STOOD_UP_FOR_THE_HEROIN'];
+          },
+          options: [
+            {
+              text: 'Meu nome é Isabelle. Sou uma humana e me falaram que fui invocada nesse mundo para conseguir salvá-lo.',
+              chat: [
+                {
+                  speaker: 'Anão',
+                  text: 'E quem foi o lunático que te disse isso?'
+                },
+                {
+                  text: '"A Heroína. Encontrei ela logo depois de aparecer nesse mundo.", você disse.'
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'Pobre coitada. Ela está há anos procurando uma solução. Sacrificou tudo o que tinha... para no fim se afundar em arrependimentos.'
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'Todo esse esforço para nada...'
+                },
+                {
+                  options: [
+                    {
+                      text: 'Defender a Heroína',
+                      chat: [
+                        {
+                          text: '"Por favor, não diga isso.", você disse prontamente. "Foi graças ao esforço contínuo que ela conseguiu achar uma pista de como impedir o fim desse mundo."'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'Uma pista? Já perdi a conta de quantas pistas achamos ao longo desses últimos 10 anos.'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'Todas inutéis.',
+                          action: () => {
+                            keys['CABIN_STOOD_UP_FOR_THE_HEROIN'] = true;
+                          },
+                          goBack: true
+                        }
+                      ]
+                    },
+                    {
+                      text: 'Concordar com o Anão',
+                      chat: [
+                        {
+                          text: '"Sim, ela estava em uma situação deplorável.", você concordou. "O peso em suas costas foi grande demais para carregar"'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'Pelo jeito você ainda tem um pouco de sanidade. Raro hoje em dia.',
+                          action: () => {
+                            keys['CABIN_AGREED_WITH_RODRICK'] = true;
+                          },
+                          goBack: true,
+                        }
+                      ]
+                    }
+                  ],
+                }
+              ]
+            }
+          ]
+        },
+        {
+          text: 'O anão é teimoso igual a Heroína disse. Mas você percebe que é apenas uma máscara.'
+        },
+        {
+          text: 'Ele tenta demonstrar ser forte, mas no fundo parece estar acabado. Desprovido de qualquer esperança.'
+        },
+        {
+          speaker: 'Anão',
+          text: 'Já estou acostumado com pessoas da sua laia. Você não vai embora até me contar o que tem de tão importante, não é?'
+        },
+        {
+          speaker: 'Anão',
+          text: 'Pois então, me diga... O que aquela pobre alma semeou em sua cabeça?'
+        },
+        {
+          options: [
+            {
+              text: 'Contar sobre o altar e as Almas Primordiais',
+              chat: [
+                {
+                  text: '"A Heroína conseguiu achar um altar localizado ao norte do campo. Porém, a porta para esse altar possui uma fechadura complicada de destrancar", você disse para o anão desinteressado.',
+                },
+                {
+                  text: '"A única forma de destrancá-la é com a presença de três Almas Primordiais, uma de cada raça desse mundo."',
+                },
+                {
+                  text: '"Por conta disso, estou visitando os lugares nos arredores para ver se acho três representantes para me ajudar a destrancar o altar, na esperança que a solução para esse mundo esteja lá dentro."',
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'Três Almais Primordiais... nunca ouvi falar em uma fechadura como essa...',
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'Bem, Isabelle, temo em dizer que tenho boas e más notícias.',
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'A boa notícia é que ainda existe sim um representante dos anões que possui uma Alma Primordial. E ele está bem na sua frente.',
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'A má notícia é que não posso me mover. Como pode ver, minhas pernas já não são mais as mesmas. Não tenho como te acompanhar até o altar.',
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'Agora que entende a situação, saia da minha casa.',
+                },
+                {
+                  options: [
+                    {
+                      text: 'Explicar sobre a herança de almas',
+                      chat: [
+                        {
+                          text: '"Espere. Mesmo que não possa andar, eu sou uma humana. A Heroína me explicou que posso herdar Almas Primordiais de outras raças, dessa forma você não precisaria me acompanhar até o altar."'
+                        },
+                        {
+                          text: 'O anão estava bravo desde a hora que você entrou na cabana. Mas, ao ouvir o que você acabou de dizer, ele faz uma cara mais brava ainda.'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'Como... ousa?!'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'Você faz ideia do que acaba propor? Menina insolente!'
+                        },
+                        {
+                          text: 'Você fica assustada. Não entende o motivo do anão ter ficado tão irado.'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'Parece que você não sabe, então irei traduzir o absurdo que acaba de me dizer!'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'Almas Primordiais se manifestam em apenas alguns indivíduos de cada raça. Com elas somos possíveis de acessar áreas desse mundo que, de outra forma, permaneceriam bloqueadas.'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'Áreas, essas, que são sagradas para cada raça. Portanto, devemos tomar cuidado para que pessoas más intecionadas não entrem!'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'Perceba que isso já seria suficiente para eu recusar te entregar algo tão importante.'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'Mas... além disso... existe outro motivo que aquela Heroína deve ter ocultado de você...'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'Quando uma Alma Primordial se manifesta, ela se sincroniza com o hospedeiro de forma imediata. É como se fossem duas partes formando um inteiro.'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'Te entregar a minha Alma Primordial significaria o fim da minha vida. Dane-se a maldição, eu sumiria agora mesmo se o fizesse!'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'Se eu não tivesse motivos para permanecer nesse mundo, mesmo que ele esteja prestes a desaparecer, poderia até refletir na sua proposta.'
+                        },
+                        {
+                          speaker: 'Anão',
+                          text: 'E para o seu azar, eu tenho. Então esqueça! Procure outro jeito de se salvar. Minha ajuda você não terá!'
+                        },
+                        {
+                          text: 'Uma facada teria doído menos. Você não imaginava que herdar Almas Primordiais resultaria na morte de seus hospedeiros originais.'
+                        },
+                        {
+                          text: 'Você abaixa a cabeça envergonhada. Você se sente culpada de ter feito essa proposta sem ao menos entender suas consequências.'
+                        },
+                        {
+                          text: 'Mas tudo nesse mundo é novo para você. Como poderia saber de todas essas coisas?'
+                        },
+                        {
+                          text: 'Você reflete no que acabou de ouvir.'
+                        },
+                        {
+                          text: 'O anão disse que era o último anão sobrevivente com uma Alma Primordial. Falhar aqui significaria o fim de tudo.'
+                        },
+                        {
+                          text: 'Você respira fundo e levanta a cabeça. Essa situação não pode terminar assim.',
+                          action: () => {
+                            keys['CABIN_TOLD_RODRICK_ABOUT_THE_PLAN'] = true;
+                          },
+                          goBackImmediately: true
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      requirements: () => {
+        return keys['CABIN_IS_FIRST_TIME_TALKING_TO'] && keys['CABIN_TOLD_RODRICK_ABOUT_THE_PLAN'] && !keys['CABIN_RODRICK_IS_ANXIOUS'];
+      },
+      auto: true,
+      chat: [
+        {
+          options: [
+            { 
+              text: 'Perguntar o motivo do anão de permanecer nesse mundo',
+              chat: [
+                {
+                  text: '"Você disse que existem motivos para permanecer nesse mundo. Quais são?", você pergunta ao anão.'
+                },
+                {
+                  text: 'O anão abre a boca, mas não fala nada.'
+                },
+                {
+                  text: 'Logo em seguida, ele faz uma cara que você não tinha visto ainda. Uma cara de surpresa. E não é de surpresa boa.'
+                },
+                {
+                  text: 'Ele parece confuso. Gesticula alguma coisa com a boca, mas parece não saber o que falar.'
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'Ma...?',
+                },
+                {
+                  speaker: 'Anão',
+                  text: '...',
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'Ma...',
+                },
+                {
+                  text: 'Ele parece não saber como completar a frase que deseja falar.',
+                },
+                {
+                  text: 'Você percebe que lágrimas estão escorrendo de seu rosto. Não existe mais máscara. Apenas dor.',
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'Oh, céus! O que está acontecendo?',
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'O nome... da minha esposa... Não consigo lembrá-lo! Ma... Ma...',
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'Ma... Ma... Ma... Ma... Ma... Ma... Ma... Ma... Ma... Ma... Ma... Ma...',
+                },
+                {
+                  text: 'O anão começa a demonstrar sintomas de ataque de pânico.',
+                  action: () => {
+                    keys['CABIN_RODRICK_IS_ANXIOUS'] = true;
+                  },
+                  goBackImmediately: true,
+                },
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      requirements: () => {
+        return keys['CABIN_RODRICK_IS_ANXIOUS'] && (!keys['CABIN_GAVE_WATER_TO_RODRICK'] || !keys['CABIN_HOLD_RODRICK_HANDS'] || !keys['CABIN_SAID_WORDS_OF_CONFORT_TO_RODRICK']);
+      },
+      auto: true,
+      chat: [
+        {
+          options: [
+            {
+              text: 'Pegar água para ele beber',
+              alreadySeen: () => {
+                return keys['CABIN_GAVE_WATER_TO_RODRICK'];
+              },
+              chat: [
+                {
+                  requirements: () => {
+                    return keys['CABIN_GAVE_WATER_TO_RODRICK'];
+                  },
+                  text: 'Você já ofereceu água para o anão.',
+                  goBackImmediately: true,
+                },
+                {
+                  text: 'Você olha em volta da cabana e acha uma jarra de água e um copo.'
+                },
+                {
+                  text: 'Rapidamente você enche o copo e oferece para o anão.'
+                },
+                {
+                  text: 'Ele o pega com dificuldade. Por conta das mãos tremendo, boa parte da água é derrubada enquanto ele tenta beber.'
+                },
+                {
+                  text: 'Ele parece ter se acalmado um pouco.',
+                  action: () => {
+                    keys['CABIN_GAVE_WATER_TO_RODRICK'] = true;
+                  },
+                  goBack: true
+                },
+              ]
+            },
+            {
+              text: 'Falar algo para tentar acalmá-lo',
+              alreadySeen: () => {
+                return keys['CABIN_SAID_WORDS_OF_CONFORT_TO_RODRICK'];
+              },
+              chat: [
+                {
+                  requirements: () => {
+                    return keys['CABIN_SAID_WORDS_OF_CONFORT_TO_RODRICK'];
+                  },
+                  text: 'Você já falou o que precisava.',
+                  goBackImmediately: true,
+                },
+                {
+                  text: "Você gentilmente segura o rosto do anão de forma que ele consiga ter você em sua visão."
+                },
+                {
+                  text: '"Está tudo bem. Está tudo bem. Eu irei ajudá-lo a lembrar do nome de sua esposa.", você diz para tentar reconfortá-lo.'
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'A maldição! Ela está me fazendo esquecer! O que farei?!'
+                },
+                {
+                  text: '"Irei perguntar nas redondezas. Vou descobrir o nome da sua esposa para te ajudar. Prometo!", você diz.'
+                },
+                {
+                  speaker: 'Anão',
+                  text: 'Você... você promete? Irá mesmo me... ajudar?'
+                },
+                {
+                  text: '"É claro! Claro que ajudarei. Pode confiar em mim."'
+                },
+                {
+                  text: 'O anão olha para você com receio e tristeza. Mas você pode notar que ele se sente um pouco mais a vontade com a sua presença.'
+                },
+                {
+                  text: 'Ele parece ter se acalmado um pouco.',
+                  action: () => {
+                    keys['CABIN_SAID_WORDS_OF_CONFORT_TO_RODRICK'] = true;
+                  },
+                  goBack: true
+                },
+              ]
+            },
+            {
+              text: 'Segurar as mãos do anão',
+              alreadySeen: () => {
+                return keys['CABIN_HOLD_RODRICK_HANDS'];
+              },
+              chat: [
+                {
+                  requirements: () => {
+                    return keys['CABIN_HOLD_RODRICK_HANDS'];
+                  },
+                  text: 'Você já segurou a mão dele.',
+                  goBackImmediately: true,
+                },
+                {
+                  text: 'Você pega as mãos do anão e as segura perto de si.',
+                },
+                {
+                  text: '"Respire fundo", você aconselha.',
+                },
+                {
+                  text: 'Ele hesita no começo, mas depois segue o seu conselho.'
+                },
+                {
+                  text: 'O anão fecha os olhos e começa a respirar fundo.'
+                },
+                {
+                  text: '...'
+                },
+                {
+                  text: 'Mais uma vez ele respira fundo.'
+                },
+                {
+                  text: '...'
+                },
+                {
+                  text: 'E mais uma vez.'
+                },
+                {
+                  text: '...'
+                },
+                {
+                  text: 'Ele abre os olhos.'
+                },
+                {
+                  text: 'Ele parece ter se acalmado um pouco.',
+                  action: () => {
+                    keys['CABIN_HOLD_RODRICK_HANDS'] = true;
+                  },
+                  goBack: true
+                },
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      requirements: () => {
+        return keys['CABIN_RODRICK_IS_ANXIOUS'] && !keys['CABIN_RODRICK_ACCEPTED_TO_HELP'];
+      },
+      auto: true,
+      chat: [
+        {
+          text: 'Ele parece ter recuperado a calma. Pelo menos o necessário para conversar.'
+        },
+        {
+          text: 'Você senta em uma cadeira próxima a ele.'
+        },
+        {
+          speaker: 'Anão',
+          text: '...'
+        },
+        {
+          speaker: 'Anão',
+          text: 'Me desculpe...'
+        },
+        {
+          speaker: 'Anão',
+          text: 'Perdi o controle por um momento.'
+        },
+        {
+          speaker: 'Anão',
+          text: 'Obrigado por ter me ajudado.'
+        },
+        {
+          speaker: 'Anão',
+          text: '...'
+        },
+        {
+          speaker: 'Anão',
+          text: 'Agora que percebi... ainda não lhe disse o meu nome.'
+        },
+        {
+          speaker: 'Anão',
+          text: 'Pode me chamar de Rodrick.'
+        },
+        {
+          text: 'Ouvir esse nome confirma as suas suspeitas. Ou pelo menos fazem com que as chances delas serem corretas se tornem muito altas.'
+        },
+        {
+          text: '"É um prazer em lhe conhecer, Rodrick."'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Eu te recebi com tanta hostilidade... e você retribui com afeto. Não sei onde esconder a minha cara.'
+        },
+        {
+          text: 'O anão abaixa a cabeça envergonhado.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'A verdade... é que eu, mais do que ninguém, quero dar um fim nessa maldição.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Minha vida não era perfeita, mas eu era feliz. Vivendo perto das montanhas, junto de minha esposa e filhos.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Sabe... meus filhos já se foram... levados pela maldição...'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Minha esposa e eu entramos em desespero... sou fraco... mas ela se manteve forte pelo meu bem.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Provavelmente estava destruída por dentro, mas não deixou transparecer. Depois disso, passou a ajudar a Heroína o quanto pôde para tentar achar uma solução para todo esse problema.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Já eu, nada pude fazer. Não demorou muito para as minhas pernas irem embora, entende?'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Tinha esperanças que elas encontrariam algo... mas conforme o tempo passava, menos esperança fui mantendo dentro de mim...'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'No fim eu só queria passar o resto dos meus dias com a minha esposa... mas ela nunca desistiu...'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Ela partiu para encontrar a Heroína pouco tempo antes de você chegar.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Aliás, por acaso, você chegou a encontrá-la no caminho?'
+        },
+        {
+          text: 'Essa pergunta foi como um soco no estômago. Você sabe bem o que aconteceu com a pobre anã.'
+        },
+        {
+          text: 'Mas você não tem coragem de contar a verdade. Pelo menos, não agora. Rodrick acabou de se recompor de uma crise de pânico. Você não quer deixá-lo ansioso novamente.'
+        },
+        {
+          text: '"Não, Rodrick", você mente. "Infelizmente não a vi. Devo ter vindo por um caminho diferente, já que não conheço nada por aqui."'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Tudo bem... foi uma pergunta idiota...'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Só espero que ela esteja bem...'
+        },
+        {
+          text: 'Rodrick começa a olhar em volta da cabana.'
+        },
+        {
+          text: 'É como se ele estivesse tentando relembrar de todos os momentos que já passou em cada canto daquele lugar.'
+        },
+        {
+          text: 'Talvez esteja fazendo isso com medo de se esquecer de todas as memórias que criou ali.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Talvez... eu precise ser corajoso igual minha esposa...'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Ela tentou tantas vezes me dar forças e esperança... mas não fui capaz de atender as suas expectativas...'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Que belo marido eu sou...'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Ela sacrificaria tudo para me ajudar... mas olhe para mim... nem consigo lembrar mais seu nome...'
+        },
+        {
+          speaker: 'Rodrick',
+          text: '...'
+        },
+        {
+          text: 'Por um momento, você acha que ele terá outro ataque de pânico, mas desse vez ele consegue manter a compostura.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Gostaria de ajudá-la no que for possível, Isabelle. '
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Pelos meus filhos... pela minha esposa...'
+        },
+        {
+          text: 'Ele parece ter se resolvido. Ele olha para você, e, pela primeira vez nesse dia, você pensa ter visto uma fagulha de esperança em seus olhos.'
+        },
+        {
+          text: 'Infelizmente para você, essa fagulha se apaga rapidamente.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Mas se eu estiver correto... não sei se conseguirei te passar a minha Alma Primordial...'
+        },
+        {
+          text: '"Por que diz isso, Rodrick?", você pergunta.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Como disse anteriormente, Almas Primordias estão fortemente sincronizadas com seus hospedeiros. Elas são a matéria mais pura que se pode encontrar nesse mundo.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'E não só são puras, como também representam o que é mais puro para cada raça e hospedeiro...'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Para que você consiga herdar minha Alma Primordial, nós dois precisamos entrar em contanto com o que é mais intímo meu...'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Minha própria essência...'
+        },
+        {
+          speaker: 'Rodrick',
+          text: '...'
+        },
+        {
+          text: 'Rodrick fica em silência por um tempo.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Não sei se você já conseguiu juntar as peças... mas atualmente o que é mais precioso para mim é minha esposa...'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Como podemos nos conectar à minha essência, se nem seu nome lembro mais?'
+        },
+        {
+          text: 'Rodrick olha para o teto, respira fundo, e depois olha para você novamente.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Me ajude a lembrar o nome dela mais uma vez... Faça isso... e a minha Alma Primordial é sua...'
+        },
+        {
+          text: 'Chegar nessa conclusão não deve ter sido fácil para ele.'
+        },
+        {
+          text: 'Oferecer a própria vida para salvar a vida da pessoa que mais ama.'
+        },
+        {
+          requirements: () => {
+            return keys['MOUNTAIN_GOT_PENDANT'];
+          },
+          text: 'Você aperta o pingente que está no seu bolso. Ele parece estar pesando muito mais do que antes.'
+        },
+        {
+          text: 'Você se lembra novamente do que aconteceu na trilha, com a anã... Mas você ainda não tem coragem de contar a verdade.'
+        },
+        {
+          text: 'Você afasta esse pensamento. Você prefere honrar a decisão de Rodrick.'
+        },
+        {
+          text: '"Obrigada, Rodrick", você diz. "Eu vou ir atrás da sua esposa, ela não deve estar tão longe. Irei perguntar ao redor também."'
+        },
+        {
+          text: '"Obrigada por ter me ouvido. Obrigada por não desistir. Tenho certeza que iremos conseguir quebrar essa maldição."'
+        },
+        {
+          text: 'Rodrick assente com a cabeça.'
+        },
+        {
+          text: 'Seus olhos parecem mais pesados do que a vez quando você o viu pela primeira vez. Entretanto, desta vez, existe determinação dentro deles.'
+        },
+        {
+          speaker: 'Rodrick',
+          text: 'Vá, Isabelle. Volte aqui caso precise de qualquer coisa.'
+        },
+        {
+          text: 'Você levanta da cadeira.',
+        },
+        {
+          text: '"Ok, eu irei!"',
+          action: () => {
+            keys['CABIN_RODRICK_ACCEPTED_TO_HELP'] = true;
+          },
+          goBack: true,
+        }
+      ]
+    },
+    {
+      auto: true,
+      chat: [
+        {
+          audio: '',
+          cleanText: true,
+          options: [
+            {
+              text: 'Entregar o pingente para Rodrick',
+              alreadySeen: () => {
+                return keys['CABIN_TRIED_TO_GIVE_PENDANT_TO_RODRICK'];
+              },
+              chat: [
+                {
+                  text: 'Você aperta o pingente que se encontra no seu bolso, mas você não tem coragem de entregá-lo.',
+                },
+                {
+                  text: 'Entregá-lo levantaria perguntas. Perguntas que você não está pronta para responder.',
+                  action: () => {
+                    keys['CABIN_TRIED_TO_GIVE_PENDANT_TO_RODRICK'] = true;
+                  },
+                  goBack: true,
+                }
+              ]
+            },
+            {
+              text: 'Perguntar o nome da Heroína',
+              alreadySeen: () => {
+                return keys['CABIN_ASKED_THE_HEROIN_NAME'];
+              },
+              chat: [
+                {
+                  text: '"Você por acaso se lembra do nome da Heroína? Ela não se lembra mais dele."',
+                },    
+                {
+                  speaker: 'Rodrick',
+                  text: 'Nem o nome da minha esposa eu lembro, como eu vou lembrar do nome daquela heroína?'
+                },
+                {
+                  text: 'Você se arrepende de ter perguntado.',
+                  action: () => {
+                    keys['CABIN_ASKED_THE_HEROIN_NAME'] = true;
+                  },
+                  goBack: true,
+                }
+              ]
+            },
+            {
+              text: 'Sair da cabana',
+              chat: [
+                {
+                  text: 'Você se despede de Rodrick e vai embora.',
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Não demore muito.',
+                  moveToScene: 'montanha'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
 }
 
 
@@ -726,11 +2058,8 @@ function getOptions() {
   let currentOptions = [];
 
   current.map((option) => {
-    if (option.requirements) {
-      let valid = option.requirements();
-      if (valid) {
-        currentOptions.push(option);
-      }
+    if (!option.requirements || option.requirements()) {
+      currentOptions.push(option);
     }
   });
 
@@ -747,6 +2076,11 @@ function showMainOptionOnChat(chat) {
 }
 
 function showOptionOnChat(chat) {
+  if (chat.requirements && !chat.requirements()) {
+    moveToNextText();
+    return;
+  }
+
   handleChatEvents(chat);
   
   if (chat.text) {
@@ -800,7 +2134,7 @@ function hideNextButton() {
   button.hidden = true;
 }
 
-function handleNextButton() {
+async function handleNextButton() {
   clearInterval(writeTextInterval);
 
   if (currentChat) {
@@ -808,36 +2142,75 @@ function handleNextButton() {
       currentChat.chat[currentChatIndex].action();
     }
 
+    if (currentChat.chat[currentChatIndex].moveToScene) {
+      await moveToScene(currentChat.chat[currentChatIndex].moveToScene);
+    }
+
     if (currentChat.chat[currentChatIndex].goBack || currentChat.chat[currentChatIndex].goBackImmediately) {
       getOptions();
       return;
     }
 
-    if (currentChat.chat.length > currentChatIndex + 1) {
-      currentChatIndex++;
-      showOptionOnChat(currentChat.chat[currentChatIndex]);
-    } else {
-      getOptions();
-    }
+    moveToNextText();
+  }
+}
+
+function moveToNextText() {
+  if (currentChat.chat.length > currentChatIndex + 1) {
+    currentChatIndex++;
+    showOptionOnChat(currentChat.chat[currentChatIndex]);
+  } else {
+    getOptions();
   }
 }
 
 function handleChatEvents(chat) {
   if (chat.audio && chat.audio !== currentAudioFile) {
     if (audio) {
-      audio.pause();
+      fadeOutAudio(audio);
     }
     
     currentAudioFile = chat.audio;
     audio = new Audio(chat.audio);
     audio.loop = true;
-    audio.play();
+    fadeInAudio(audio);
   }
 
   if (chat.cleanText) {
     const chatMessage = document.getElementById('chat-message');
     chatMessage.textContent = '';
   }
+}
+
+function fadeOutAudio(audio) {
+  let volume = 1;
+  let volumeInterval = setInterval(() => {
+    volume -= 0.01;
+
+    if (volume <= 0) {
+      audio.volume = 0;
+      clearInterval(volumeInterval);
+      audio.pause();
+    } else {
+      audio.volume = volume;
+    }
+  }, 10);
+}
+
+function fadeInAudio(audio) {
+  let volume = 0;
+  audio.volume = 0;
+  audio.play();
+  let volumeInterval = setInterval(() => {
+    volume += 0.01;
+
+    if (volume >= 1) {
+      audio.volume = 1;
+      clearInterval(volumeInterval);
+    } else {
+      audio.volume = volume;
+    }
+  }, 10);
 }
 
 function showOptionsToChoose(chat) {
@@ -890,4 +2263,17 @@ function handleAfterChat(chat) {
   if (chat.goBack) {
     getOptions();
   }
+}
+
+async function moveToScene(scene) {
+  const sceneCover = document.getElementById('scene-cover');
+
+  sceneCover.style.opacity = 1;
+
+  await new Promise((resolve) => setTimeout(() => resolve(), 500));
+  currentScene = scene;
+  updateImage();
+  await new Promise((resolve) => setTimeout(() => resolve(), 500));
+
+  sceneCover.style.opacity = 0;
 }

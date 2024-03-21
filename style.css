@@ -2,6 +2,7 @@ body, html {
   background-color: black;
   height: 100%;
   margin: 0;
+  overflow: hidden;
 }
 
 /* .main {
@@ -33,6 +34,8 @@ body, html {
   flex-direction: column;
   padding: 20px;
   height: calc(100% - 40px);
+  position: relative;
+  z-index: 3;
 }
 
 .scene {
@@ -91,6 +94,10 @@ body, html {
   border: 1px solid #8d3636;
   margin: auto;
   display: block;
+}
+
+.scene-cover {
+  background: black !important;
 }
 
 .chat-option {
