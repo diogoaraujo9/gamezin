@@ -1,4 +1,4 @@
-var currentScene = 'cabana'; // 'prado', 'montanha', 'cabana', 
+var currentScene = 'prado'; // 'prado', 'montanha', 'cabana', 
 var edgeOpacity = 0;
 var redOpacity = 3;
 var colorOpacity = 6;
@@ -134,7 +134,7 @@ var story = {
           text: 'Mas, infelizmente, a sorte não parece estar ao seu lado.'
         },
         {
-          text: 'A grama aos seus pés. As árvores que se encontram na linha do horizonte. Até mesmo as estrelas no céu...'
+          text: 'A grama aos seus pés. As árvores que se encontram na linha do horizonte. Até mesmo as nuvens no céu...'
         },
         {
           text: 'É difícil focar em qualquer elemento na sua frente. É como se eles estivessem lutando para manter suas composições físicas, decompondo-se em partículas e logo depois voltando as suas formas originais.'
@@ -175,10 +175,13 @@ var story = {
           audio: 'self-contained-universe.mp3'
         },
         {
-          text: 'Você abaixa os braços e vê uma mulher deitada, com as costas apoiadas em uma rocha. Ela possui uma aparência fraca e está toda machucada.'
+          text: 'Você abaixa os braços e vê uma mulher deitada, com as costas apoiadas em uma rocha. Seus cabelos vermelhos são tão grandes que alcançam o chão.'
         },
         {
-          text: 'Sua forma também é volátil, igual a rocha e a grama que estão abaixos dela.'
+          text: 'Apesar de parecer jovem, sua condição e aparência estão fracas.'
+        },
+        {
+          text: 'A forma física da mulher também é volátil, igual a rocha e a grama que estão abaixos dela. É como se ela fosse desaparecer, mas logo depois voltasse ao normal.'
         },
         {
           text: 'Mais uma vez você não entende o que está acontecendo. Você tinha acabado de passar por aquele caminho. Como pôde não ter notado aquela mulher?'
@@ -286,7 +289,7 @@ var story = {
         },
         {
           speaker: 'Desconhecida',
-          text: 'Infelizmente já não o lembro mais... só lembro que eu costumava ser a heroína desse mundo.'
+          text: 'Infelizmente já não o lembro mais... só lembro que eu costumava ser... a heroína desse mundo.'
         },
         {
           text: 'Você percebe que ela está usando toda a energia que tem para conseguir conversar e manter sua existência intacta.'
@@ -340,7 +343,7 @@ var story = {
                 },
                 {
                   speaker: 'Heroína',
-                  text: 'Me dói pensar nisto... em pensar que por causa da minha incapacidade, eu acabei te colocando nessa situação.'
+                  text: 'Me dói pensar nisto... em pensar que por causa da minha incapacidade... eu acabei te colocando nessa situação.'
                 },
                 {
                   speaker: 'Heroína',
@@ -348,7 +351,7 @@ var story = {
                 },
                 {
                   speaker: 'Heroína',
-                  text: 'O que significaria... que você é a nossa última esperança...',
+                  text: 'Então, em outras palavras... você talvez seja a nossa última esperança...',
                   action: () => {
                     keys['HEROIN_ASKED_REASON_TO_COME_TO_THIS_WORLD'] = true;
                   },
@@ -368,7 +371,11 @@ var story = {
                 },
                 {
                   speaker: 'Heroína',
-                  text: 'Esse mundo foi amaldiaçoado há muito tempo... Tentamos de tudo para libertá-lo... mas nada deu certo.'
+                  text: 'Esse mundo foi amaldiaçoado há muito tempo... Há 10 anos para ser exato.'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Tentamos de tudo para libertá-lo... mas nada deu certo.'
                 },
                 {
                   speaker: 'Heroína',
@@ -480,7 +487,7 @@ var story = {
                 },
                 {
                   speaker: 'Heroína',
-                  text: 'Procure as três Almas Primordiais e abra a porta do Altar ao norte.'
+                  text: 'Procure as três Almas Primordiais e abra a porta do altar ao norte.'
                 },
                 {
                   speaker: 'Heroína',
@@ -488,15 +495,15 @@ var story = {
                 },
                 {
                   speaker: 'Heroína',
-                  text: 'Os anões podem ser encontradas ao oeste, perto das montanhas. Eles são teimosos, então seja insistente.'
+                  text: 'Os anões podem ser encontradas ao oeste, perto das montanhas... Eles são teimosos, então seja insistente.'
                 },
                 {
                   speaker: 'Heroína',
-                  text: 'A comunidade elfíca mais próxima se encontra na floresta ao sul. Eles não confiam facilmente em estranhos, então não fique chateada caso não receba uma recepção calorosa.'
+                  text: 'A comunidade elfíca mais próxima se encontra na floresta ao sul... Eles não confiam facilmente em estranhos, então não fique chateada caso não receba uma recepção calorosa.'
                 },
                 {
                   speaker: 'Heroína',
-                  text: 'A última vez que ouvi um canto de uma sereia foi vindo do lago localizado ao leste. Elas são inofensivas, diferentemente das sereias mencionadas nas mitologias do nosso mundo de origem. Elas irão te ajudar.'
+                  text: 'A última vez que ouvi um canto de uma sereia foi vindo do lago localizado ao leste. Elas são inofensivas, diferentemente das sereias mencionadas nas mitologias do nosso mundo de origem... Elas irão te ajudar.'
                 },
                 {
                   speaker: 'Heroína',
@@ -512,6 +519,10 @@ var story = {
                 },
                 {
                   speaker: 'Heroína',
+                  text: 'Escute bem o que tenho a te dizer, minha criança...'
+                },
+                {
+                  speaker: 'Heroína',
                   text: 'Como somos humanas, nossas almas podem não ter muito valor nesse mundo... mas isso permite que consigamos herdar Almas Primordias das outras raças.'
                 },
                 {
@@ -520,7 +531,14 @@ var story = {
                 },
                 {
                   speaker: 'Heroína',
-                  text: 'Além disso, mesmo se você conseguir a confiança desses representantes, herdar uma Alma Primordial vai requerer que você entre em sintonia com o que é mais puro para cada raça. Não será algo fácil.'
+                  text: 'Além disso, mesmo se você conseguir a confiança desses representantes, herdar uma Alma Primordial vai requerer que você... entre em sintonia com o que é mais puro para cada raça. Não será algo fácil.'
+                },
+                {
+                  text: 'A mulher começa a tossir... mas logo recupera o fôlego.'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Desculpe... herdar uma Alma Primordial vai requerer que você entre em sintonia com o que é mais puro para cada raça... Não será algo fácil.'
                 },
                 {
                   speaker: 'Heroína',
@@ -699,12 +717,9 @@ var story = {
               text: 'Ir para o sul',
               chat: [
                 {
-                  speaker: 'Heroína',
-                  text: 'Onde você está indo, criança? Você ainda precisa das três Almas Primordiais antes de partir para o templo.'
-                },
-                {
-                  text: 'Lembrando do que precisa ser feito, você volta para o meio do campo.',
+                  text: 'Você se dirige para o sul, em direção à floresta.',
                   goBack: true,
+                  moveToScene: 'montanha'
                 },
               ]
             },
@@ -787,7 +802,7 @@ var story = {
           text: 'Você ainda não se acostumou com a visão de objetos e seres vivos lutando para manter suas composições físicas.',
         },
         {
-          text: 'Essa anã parece estar mais volátil que a Heroína.',
+          text: 'Essa anã parece estar muito mais volátil que a Heroína.',
         },
         {
           speaker: 'Anã',
@@ -892,7 +907,7 @@ var story = {
           text: '"Rodrick". Se ele for um anão igual a ela, talvez ainda exista um jeito de conseguir a Alma Primordial dos anões.',
         },
         {
-          text: 'Você se levanta. Por mais que a situação atual não esteja boa, ficar parada não irá ajudar em nada.',
+          text: 'Você se esforça para levantar. Por mais que a situação atual não esteja boa, ficar parada não irá ajudar em nada.',
           action: () => {
             keys['MOUNTAIN_SAW_DWARF_DISAPPEAR'] = true;
           },
@@ -1411,11 +1426,11 @@ var story = {
                         },
                         {
                           speaker: 'Anão',
-                          text: 'Áreas, essas, que são sagradas para cada raça. Portanto, devemos tomar cuidado para que pessoas más intecionadas não entrem!'
+                          text: 'Áreas, essas, que são sagradas para cada raça. Portanto, devemos tomar cuidado para que pessoas más intecionadas não as obtenham!'
                         },
                         {
                           speaker: 'Anão',
-                          text: 'Perceba que isso já seria suficiente para eu recusar te entregar algo tão importante.'
+                          text: 'Perceba que isso já seria razão suficiente para eu recusar te entregar algo tão importante.'
                         },
                         {
                           speaker: 'Anão',
@@ -1478,7 +1493,7 @@ var story = {
         {
           options: [
             { 
-              text: 'Perguntar o motivo do anão de permanecer nesse mundo',
+              text: 'Perguntar o motivo do anão de querer permanecer nesse mundo',
               chat: [
                 {
                   text: '"Você disse que existem motivos para permanecer nesse mundo. Quais são?", você pergunta ao anão.'
@@ -1524,6 +1539,9 @@ var story = {
                 },
                 {
                   text: 'O anão começa a demonstrar sintomas de ataque de pânico.',
+                },
+                {
+                  text: 'Você sente a necessidade de ajudá-lo.',
                   action: () => {
                     keys['CABIN_RODRICK_IS_ANXIOUS'] = true;
                   },
@@ -1648,7 +1666,7 @@ var story = {
                   text: '...'
                 },
                 {
-                  text: 'Mais uma vez ele respira fundo.'
+                  text: 'Ele respira fundo mais uma vez.'
                 },
                 {
                   text: '...'
@@ -1792,7 +1810,7 @@ var story = {
           text: 'É como se ele estivesse tentando relembrar de todos os momentos que já passou em cada canto daquele lugar.'
         },
         {
-          text: 'Talvez esteja fazendo isso com medo de se esquecer de todas as memórias que criou ali.'
+          text: 'Talvez esteja fazendo isso com medo de se esquecer do resto das memórias que criou ali.'
         },
         {
           speaker: 'Rodrick',
@@ -1898,7 +1916,7 @@ var story = {
           text: '"Obrigada, Rodrick", você diz. "Eu vou ir atrás da sua esposa, ela não deve estar tão longe. Irei perguntar ao redor também."'
         },
         {
-          text: '"Obrigada por ter me ouvido. Obrigada por não desistir. Tenho certeza que iremos conseguir quebrar essa maldição."'
+          text: '"Mais uma vez, obrigada por ter me ouvido. Obrigada por não desistir. Tenho certeza que iremos conseguir quebrar essa maldição."'
         },
         {
           text: 'Rodrick assente com a cabeça.'
