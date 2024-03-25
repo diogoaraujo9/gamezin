@@ -70,6 +70,7 @@ body, html {
   height: 25%;
   color: red;
   padding: 10px;
+  background-color: black;
   box-sizing: border-box;
   font-family: "Solway", serif;
   position: relative;
@@ -98,6 +99,39 @@ body, html {
 
 .scene-cover {
   background: black !important;
+}
+
+.scene-wave {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  bottom: 0;
+  z-index: -1;
+  background: black !important;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: block;
+  border: 10px solid rgb(175, 22, 22);
+
+  animation-name: waveAnimation;
+  animation-duration: 1500ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+@keyframes waveAnimation {
+  from {
+    width: 50px;
+    height: 50px;
+    opacity: 1;
+  }
+  to {
+    width: 2000px;
+    height: 2000px;
+    opacity: 0;
+  }
 }
 
 .chat-option {

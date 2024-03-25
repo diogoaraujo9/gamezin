@@ -12,6 +12,9 @@ var writeTextInterval;
 var audio;
 var currentAudioFile = '';
 
+var forestSequence = [];
+var currentForestSequence = [];
+
 // Inicio
 var keys = {
   'INIT': true,
@@ -46,6 +49,12 @@ var keys = {
   'CABIN_RODRICK_ACCEPTED_TO_HELP': false,
   'CABIN_TRIED_TO_GIVE_PENDANT_TO_RODRICK': false,
   'CABIN_ASKED_THE_HEROIN_NAME': false,
+
+  'FOREST_INTRO_CONCLUDED': false,
+  'FOREST_LEFT_ONCE': false,
+
+  'LAKE_RECEIVED_SMALL_TIP_ABOUT_FOREST': false,
+  'LAKE_RECEIVED_TIP_ABOUT_FOREST': false,
 }
 
 // Fim da primeira conversa
@@ -99,6 +108,42 @@ var keys = {
 //   'CABIN_ENTERED_WITHOUT_BEING_INVITED': false,
 //   'CABIN_IS_FIRST_TIME_TALKING_TO': false,
 // }
+
+// Inicio
+var keys = {
+  'INIT': false,
+
+  'HEROIN_IS_FIRST_TIME_TALKING_TO': false,
+  'HEROIN_CHOSE_TO_GET_CLOSE_TO': true,
+  'HEROIN_IS_ASKING_MAIN_QUESTIONS': false,
+  'HEROIN_ASKED_REASON_TO_COME_TO_THIS_WORLD': true,
+  'HEROIN_ASKED_WHAT_WAS_HAPPENING_TO_THIS_WORLD': true,
+  'HEROIN_ASKED_ABOUT_THE_DOOR_LOCK': true,
+  'HEROIN_ASKED_HOW_TO_SAVE_THE_WORLD': true,
+  'HEROIN_FIRST_TALK_CONCLUDED': true,
+  'HEROIN_HESITATED_TO_SEARCH_THE_SOULS': false,
+
+  'STARTED_QUEST': true,
+
+  'MOUNTAIN_DWARF_DEMONSTRATED_CONCERN': true,
+  'MOUNTAIN_TALKED_TO_DWARF': true,
+  'MOUNTAIN_SAW_DWARF_DISAPPEAR': true,
+  'MOUNTAIN_GOT_PENDANT': true,
+
+  'CABIN_ALREADY_ENTERED': false,
+  'CABIN_ENTERED_WITHOUT_BEING_INVITED': false,
+  'CABIN_IS_FIRST_TIME_TALKING_TO': false,
+  'CABIN_AGREED_WITH_RODRICK': false,
+  'CABIN_STOOD_UP_FOR_THE_HEROIN': false,
+  'CABIN_TOLD_RODRICK_ABOUT_THE_PLAN': false,
+  'CABIN_RODRICK_IS_ANXIOUS': false,
+  'CABIN_GAVE_WATER_TO_RODRICK': false,
+  'CABIN_HOLD_RODRICK_HANDS': false,
+  'CABIN_SAID_WORDS_OF_CONFORT_TO_RODRICK': false,
+  'CABIN_RODRICK_ACCEPTED_TO_HELP': false,
+  'CABIN_TRIED_TO_GIVE_PENDANT_TO_RODRICK': false,
+  'CABIN_ASKED_THE_HEROIN_NAME': false,
+}
 
 var story = {
   'prado': [
@@ -719,7 +764,7 @@ var story = {
                 {
                   text: 'Você se dirige para o sul, em direção à floresta.',
                   goBack: true,
-                  moveToScene: 'montanha'
+                  moveToScene: 'floresta'
                 },
               ]
             },
@@ -2005,9 +2050,221 @@ var story = {
       ]
     }
   ],
+  'floresta': [
+    {
+      requirements: () => {
+        return !keys['FOREST_INTRO_CONCLUDED'];
+      },
+      auto: true,
+      chat: [
+        {
+          text: 'Depois de um tempo, você chega na floresta.',
+          audio: 'to-dream.mp3'
+        },
+        {
+          text: 'Por estar de noite, você mal consegue se orientar entre as árvores.'
+        },
+        {
+          text: 'Você já perdeu as contas de quantas vezes bateu a cabeça em galhos de árvores ou tropeçou em suas raízes.',
+        },
+        {
+          text: 'Como tudo ao seu redor está sumindo, você fica surpresa quando encontra alguns animais ao longo do caminho.'
+        },
+        {
+          text: 'São animais que você nunca viu em sua vida, mas eles não se parecem tão diferentes dos animais que você consegue encontrar em seu mundo.'
+        },
+        {
+          text: 'Seu coração se entristece quando você avista dois animais que parecem com esquilos. Um deles parece agitado enquanto o outro infelizmente cede à maldição e desaparece para sempre.'
+        },
+        {
+          text: 'Você tenta se aproximar do esquilo restante, mas ele foge e some na floresta.'
+        },
+        {
+          text: 'Realmente, nada parece estar a salvo da maldição...'
+        },
+        {
+          text: 'Você leva as suas mãos ao peito, para tentar se acalmar, mas o toque lhe parece estranho.'
+        },
+        {
+          text: 'Ao olhar para suas mãos, você percebe que elas começaram a oscilar. Em um nível bem menor que o resto, mas ainda assim oscilando.'
+        },
+        {
+          text: 'Sua ansiedade aumenta em uma velocidade alarmante. Você dá uns passos para trás e mais uma vez tropeça nas raízes das árvores e cai ao chão.'
+        },
+        {
+          text: 'Você quer que tudo isso acabe. Que a maldição suma. Um café bem feito seria perfeito agora.'
+        },
+        {
+          text: 'Você para um tempo para refletir no que acabou de pensar e então começa a dar risada sozinha. Pensar em café nessa situação?'
+        },
+        {
+          text: 'Ainda caída no chão, você admira as copas das árvores acima de você. Ver tudo sumindo é triste, mas não deixa de ser impressionante.'
+        },
+        {
+          text: 'Como isso é possível? É um fenômeno físico? Mágico? Seria bom ter uma explicação.'
+        },
+        {
+          text: 'Mas não há tempo para isso.'
+        },
+        {
+          text: 'Você levanta, bate as mãos nas suas roupas para tirar a terra e respira fundo.'
+        },
+        {
+          text: 'O objetivo agora é encontrar algum elfo para te ajudar na missão.'
+        },
+        {
+          text: 'Você começa a adentrar novamente na floresta.'
+        },
+        {
+          text: 'Você anda... anda... e anda...'
+        },
+        {
+          text: 'Tudo parece a mesma coisa. Na verdade, você imagina já ter visto a mesma árvore 3 vezes.'
+        },
+        {
+          text: 'Você está perdida.'
+        },
+        {
+          text: 'Como último recurso, você grita:'
+        },
+        {
+          text: '"Alôôôôô! Tem alguém aí? Algum elfo? Eu preciso de ajuda!"'
+        },
+        {
+          text: 'Nenhuma resposta.'
+        },
+        {
+          text: '"Alôôôôôôôôôôôô?"'
+        },
+        {
+          text: 'Nenhuma resposta.'
+        },
+        {
+          text: 'A situação não parece boa.'
+        },
+        {
+          text: '!?',
+          audio: 'crow.mp3',
+          audioAsync: true,
+          wave: true,
+        },
+        {
+          text: 'Você escuta o som parecido de um corvo, porém não consegue avistar nenhum por perto.'
+        },
+        {
+          text: '...',
+          audio: 'crow.mp3',
+          audioAsync: true,
+          wave: true,
+        },
+        {
+          text: 'Você vai em direção ao som, mas não encontra nada. É como se os sons estivessem se materializando do nada.'
+        },
+        {
+          requirements: () => {
+            return keys['LAKE_RECEIVED_SMALL_TIP_ABOUT_FOREST'];
+          },
+          text: 'Talvez isso tenha relação com a pista que Nerida te deu. Seria uma boa ideia voltar para falar com ela.'
+        },
+        {
+          requirements: () => {
+            return !keys['LAKE_RECEIVED_SMALL_TIP_ABOUT_FOREST'];
+          },
+          text: 'Sem entender o que está acontecendo, você analisa a situação.'
+        },
+        {
+          text: 'Nesse momento existem três direções para seguir: esquerda, frente e direita. E, é claro, o caminho para voltar o campo.'
+        },
+        {
+          text: '"Eu preciso encontrar o caminho certo até os elfos", você pensa.',
+          action: () => {
+            keys['FOREST_INTRO_CONCLUDED'] = true;
+          },
+          goBackImmediately: true
+        },
+      ]
+    },
+    {
+      auto: true,
+      audio: 'to-dream.mp3',
+      chat: [
+        {
+          requirements: () => {
+            return keys['FOREST_LEFT_ONCE'];
+          },
+          text: 'Você chega na floresta.'
+        },
+        {
+          requirements: () => {
+            return keys['FOREST_LEFT_ONCE'] || currentForestSequence.length;
+          },
+          text: 'Você presta atenção aos sons à sua volta.',
+          action: () => {
+            if (!forestSequence.length) {
+              let animals = ['crow', 'wolf', 'owl']
+              for (let index = 0; index < 8; index++) {
+                const index = Math.floor(Math.random() * (3) + 1) - 1;
+                forestSequence.push(animals[index]);
+              }
+            }
+
+            if (forestSequence.length === currentForestSequence.length) {
+              // Validar se está correto
+
+              return;
+            }
+
+            handleChatEvents({
+              audio: forestSequence[currentForestSequence.length] + '.mp3',
+              audioAsync: true,
+              wave: true
+            })
+          }
+        },
+        {
+          options: [
+            {
+              text: 'Virar à esquerda',
+              action: () => {
+                currentForestSequence.push('left');
+              },
+              chat: [
+                {
+                  text: 'Você vira à esquerda.',
+                  moveToScene: 'floresta',
+                }
+              ]
+            },
+            {
+              text: 'Seguir em frente',
+              action: () => {
+                currentForestSequence.push('straight');
+              },
+              chat: [
+                {
+                  text: 'Você segue em frente.',
+                  moveToScene: 'floresta',
+                }
+              ]
+            },
+            {
+              text: 'Virar à direita',
+              action: () => {
+                currentForestSequence.push('right');
+              },
+              chat: [
+                {
+                  text: 'Você vira à direita.',
+                  moveToScene: 'floresta',
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
-
-
 
 setTimeout(() => {
   calculateSceneWidth();
@@ -2184,19 +2441,44 @@ function moveToNextText() {
 
 function handleChatEvents(chat) {
   if (chat.audio && chat.audio !== currentAudioFile) {
-    if (audio) {
-      fadeOutAudio(audio);
+    if (chat.audioAsync) {
+      var asyncAudio = new Audio(chat.audio);
+      asyncAudio.volume = 1;
+      asyncAudio.play();
+    } else {
+      if (audio) {
+        fadeOutAudio(audio);
+      }
+      
+      currentAudioFile = chat.audio;
+      audio = new Audio(chat.audio);
+      audio.loop = true;
+      fadeInAudio(audio);
     }
-    
-    currentAudioFile = chat.audio;
-    audio = new Audio(chat.audio);
-    audio.loop = true;
-    fadeInAudio(audio);
   }
 
   if (chat.cleanText) {
     const chatMessage = document.getElementById('chat-message');
     chatMessage.textContent = '';
+  }
+
+  if (chat.wave) {
+    const scene = document.getElementById('scene');
+    
+    const wave = document.createElement('div');
+    wave.classList.add('scene-wave');
+    scene.appendChild(wave);
+
+    setTimeout(() => {
+      let waveB = document.createElement('div');
+      waveB.classList.add('scene-wave');
+      scene.appendChild(waveB);
+
+      setTimeout(() => {
+        scene.removeChild(wave);
+        scene.removeChild(waveB);
+      }, 1000);
+    }, 1000);
   }
 }
 
@@ -2260,6 +2542,10 @@ function showOptionsToChoose(chat) {
 
     chatOption.addEventListener('click', () => {
       if (chat.action) {
+        chat.action();
+      }
+
+      if (opt.action) {
         opt.action();
       }
     
