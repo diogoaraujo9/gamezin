@@ -1,4 +1,4 @@
-var currentScene = 'prado'; // 'prado', 'montanha', 'cabana', 
+var currentScene = 'arvore'; // 'prado', 'montanha', 'cabana', 'lago', 'arvore'
 var edgeOpacity = 0;
 var redOpacity = 3;
 var colorOpacity = 6;
@@ -13,6 +13,7 @@ var audio;
 var currentAudioFile = '';
 
 var forestSequence = [];
+var colorsSequence = [];
 var currentForestSequence = [];
 
 // Inicio
@@ -52,9 +53,18 @@ var keys = {
 
   'FOREST_INTRO_CONCLUDED': false,
   'FOREST_LEFT_ONCE': false,
+  'FOREST_SOLVED_MAZE': false,
+  'FOREST_DID_NOT_SOLVE_MAZE': false,
 
   'LAKE_RECEIVED_SMALL_TIP_ABOUT_FOREST': false,
   'LAKE_RECEIVED_TIP_ABOUT_FOREST': false,
+  'LAKE_NERIDA_ACCEPTED_TO_HELP': false,
+  'LAKE_NERIDA_ASKED_THE_HEROIN_NAME': false,
+  'LAKE_NERIDA_ASKED_ABOUT_DWARVES': false,
+  'LAKE_NERIDA_ASKED_ABOUT_FEMALE_DWARF': false,
+
+  'TREE_FIRST_TALK_CONCLUDED': false,
+  'TREE_IS_LOOKING_FOR_SHARIA': false,
 }
 
 // Fim da primeira conversa
@@ -144,6 +154,9 @@ var keys = {
   'CABIN_TRIED_TO_GIVE_PENDANT_TO_RODRICK': false,
   'CABIN_ASKED_THE_HEROIN_NAME': false,
 }
+
+keys['FOREST_INTRO_CONCLUDED'] = true;
+keys['FOREST_LEFT_ONCE'] = true;
 
 var story = {
   'prado': [
@@ -759,6 +772,9 @@ var story = {
               ]
             },
             {
+              requirements: () => {
+                return !keys['FOREST_SOLVED_MAZE'];
+              },
               text: 'Ir para o sul',
               chat: [
                 {
@@ -769,15 +785,25 @@ var story = {
               ]
             },
             {
+              requirements: () => {
+                return keys['FOREST_SOLVED_MAZE'];
+              },
+              text: 'Ir para o sul',
+              chat: [
+                {
+                  text: 'Você se dirige para o sul, em direção à floresta.',
+                  goBack: true,
+                  moveToScene: 'arvore'
+                },
+              ]
+            },
+            {
               text: 'Ir para o leste',
               chat: [
                 {
-                  speaker: 'Heroína',
-                  text: 'Onde você está indo, criança? Você ainda precisa das três Almas Primordiais antes de partir para o templo.'
-                },
-                {
-                  text: 'Lembrando do que precisa ser feito, você volta para o meio do campo.',
+                  text: 'Você se dirige para o leste, em direção ao lago.',
                   goBack: true,
+                  moveToScene: 'lago'
                 },
               ]
             }
@@ -2190,43 +2216,69 @@ var story = {
       chat: [
         {
           requirements: () => {
-            return keys['FOREST_LEFT_ONCE'];
+            return keys['FOREST_LEFT_ONCE'] && !currentForestSequence.length;
           },
           text: 'Você chega na floresta.'
         },
         {
           requirements: () => {
-            return keys['FOREST_LEFT_ONCE'] || currentForestSequence.length;
+            return keys['FOREST_DID_NOT_SOLVE_MAZE'];
+          },
+          text: 'Você repara que voltou para o início da floresta.'
+        },
+        {
+          requirements: () => {
+            return keys['FOREST_DID_NOT_SOLVE_MAZE'];
+          },
+          text: 'Você deve pegado algum caminho errado...'
+        },
+        {
+          requirements: () => {
+            return !keys['FOREST_SOLVED_MAZE'] && (keys['FOREST_LEFT_ONCE'] || currentForestSequence.length);
           },
           text: 'Você presta atenção aos sons à sua volta.',
           action: () => {
-            if (!forestSequence.length) {
-              let animals = ['crow', 'wolf', 'owl']
-              for (let index = 0; index < 8; index++) {
-                const index = Math.floor(Math.random() * (3) + 1) - 1;
-                forestSequence.push(animals[index]);
+            if (!forestSequence.length || forestSequence.length === currentForestSequence.length) {
+              keys['FOREST_DID_NOT_SOLVE_MAZE'] = false;
+              forestSequence = [];
+              colorsSequence = [];
+              currentForestSequence = [];
+
+              let animals = ['crow', 'wolf', 'owl'];
+              let colors = ['yellow', 'red', 'green'];
+              
+              for (let index = 0; index < 10; index++) {
+                let animalIndex = Math.floor(Math.random() * (3) + 1) - 1;
+                const colorIndex = Math.floor(Math.random() * (3) + 1) - 1;
+
+                // Só para garantir um pouco mais de variedade
+                if (forestSequence.length > 2 && forestSequence[forestSequence.length - 2] === animals[animalIndex] && forestSequence[forestSequence.length - 1] === animals[animalIndex]) {
+                  animalIndex = Math.floor(Math.random() * (3) + 1) - 1;
+                }
+
+                forestSequence.push(animals[animalIndex]);
+                colorsSequence.push(colors[colorIndex]);
               }
-            }
-
-            if (forestSequence.length === currentForestSequence.length) {
-              // Validar se está correto
-
-              return;
             }
 
             handleChatEvents({
               audio: forestSequence[currentForestSequence.length] + '.mp3',
               audioAsync: true,
-              wave: true
+              wave: true,
+              color: colorsSequence[currentForestSequence.length],
             })
           }
         },
         {
+          requirements: () => {
+            return !keys['FOREST_SOLVED_MAZE'];
+          },  
           options: [
             {
               text: 'Virar à esquerda',
               action: () => {
                 currentForestSequence.push('left');
+                validateForest();
               },
               chat: [
                 {
@@ -2239,6 +2291,7 @@ var story = {
               text: 'Seguir em frente',
               action: () => {
                 currentForestSequence.push('straight');
+                validateForest();
               },
               chat: [
                 {
@@ -2251,6 +2304,7 @@ var story = {
               text: 'Virar à direita',
               action: () => {
                 currentForestSequence.push('right');
+                validateForest();
               },
               chat: [
                 {
@@ -2258,6 +2312,913 @@ var story = {
                   moveToScene: 'floresta',
                 }
               ]
+            },
+            {
+              text: 'Voltar para o campo',
+              chat: [
+                {
+                  text: 'Você se dirige para o campo.',
+                  goBack: true,
+                  moveToScene: 'prado'
+                },
+              ]
+            }
+          ]
+        },
+        {
+          requirements: () => {
+            return keys['FOREST_SOLVED_MAZE'];
+          },
+          text: 'Você chegou em um lugar que não tinha visto antes.'
+        },
+        {
+          requirements: () => {
+            return keys['FOREST_SOLVED_MAZE'];
+          },
+          text: 'Os caminhos começam a convergir em apenas um só.'
+        },
+        {
+          requirements: () => {
+            return keys['FOREST_SOLVED_MAZE'];
+          },
+          text: 'Você caminha até chegar no que parece no fim da floresta...',
+          moveToScene: 'arvore'
+        }
+      ]
+    }
+  ],
+  'lago': [
+    {
+      requirements: () => {
+        return !keys['LAKE_NERIDA_ACCEPTED_TO_HELP'];
+      },
+      auto: true,
+      audio: 'countdown.mp3',
+      chat: [
+        {
+          text: 'Você chega ao lago.',
+          audio: 'countdown.mp3'
+        },
+        {
+          text: 'Parece ser um lugar calmo, mesmo de noite.',
+        },
+        {
+          text: 'As árvores em volta dão um toque especial ao cenário.',
+        },
+        {
+          text: 'Seria um bom lugar para fazer um piquenique... Se ao menos ele não estivesse prestes a desaparecer.',
+        },
+        {
+          text: 'Você chega perto da água e percebe que ela também é volátil. Você consegue juntar um pouco de água ao formar uma concha com a mão, mas ao despejar de volta no lago, parte se dissipa no caminho.',
+        },
+        {
+          text: 'O lago está morrendo. Igual tudo ao seu redor.',
+        },
+        {
+          text: 'De acordo com a heroína, ela parece ter escutado o som de alguma sereia por aqui.',
+        },
+        {
+          text: 'Você olha em volta a procura desse ser mítico, mas não encontra nada.',
+        },
+        {
+          text: 'Por estar de noite, você não consegue enxergar se existe algo dentro do lago.',
+        },
+        {
+          text: '"Alguém consegue me ouvir!?", você grita.',
+        },
+        {
+          text: '"Alôô?"',
+        },
+        {
+          text: 'A princípio nada acontece. Porém, após alguns segundos, você percebe algumas bolhas se formando na superfície do lago.',
+        },
+        {
+          text: 'As bolhas começam a se formar cada vez mais perto de você, o que te faz dar alguns passos para trás.',
+        },
+        {
+          text: 'Logo em seguida, você percebe uma cabeça de uma mulher saindo da água. Ela possui os cabelos azuis e um rosto muito bonito.',
+        },
+        {
+          text: 'A mulher encara você por alguns segundos, como se estivesse analisando a situação.',
+        },
+        {
+          text: 'E então, ela da um breve sorriso.',
+        },
+        {
+          speaker: 'Sereia',
+          text: 'Não imaginei que encontraria uma humana por aqui. Pelo menos, não uma humana além da heroína.',
+        },
+        {
+          text: 'Antes que você pudesse responder, a mulher começa a nadar para fora do lago.',
+        },
+        {
+          text: 'Ela se senta em algumas pedras que se encontram entre a terra e o lago.',
+        },
+        {
+          text: 'Assim que ela puxa o corpo para fora do lago, você percebe que ela não possui pernas, mas sim, uma encantadora cauda de peixe.',
+        },
+        {
+          text: 'Você sabia que estava prestes a se encontrar com uma sereia, mas a visão daquilo acontecendo te deixou surpresa mesmo assim.',
+        },
+        {
+          text: 'A sereia parece estar se divertindo com essa situação.',
+        },
+        {
+          text: 'Porém, olhando mais atentamente, seu semblante parece um misto de divertimento e tristeza. O sorriso, apesar de parecer sincero, não consegue esconder a dor que seus olhos transmitem.',
+        },
+        {
+          speaker: 'Sereia',
+          text: 'Meu nome é Nerida. É um prazer te conhecer, minha criança.',
+        },
+        {
+          options: [
+            {
+              text: 'O prazer é meu. Meu nome é Isabelle.',
+              chat: [
+                {
+                  speaker: 'Nerida',
+                  text: 'Que lindo nome. Assim como seus cabelos, se me permite dizer.'
+                },
+                {
+                  text: 'Você fica sem jeito com a resposta que acabou de receber.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Agora, acredito que sua presença aqui nesse mundo deva ter algum motivo... e se isso for verdade, temo que não há muito tempo sobrando para conversar.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Então, diga-me, minha criança. Por que veio para esse lago.'
+                },
+                {
+                  options: [
+                    {
+                      text: 'Explicar sobre o altar e as Almas Primordiais',
+                      chat: [
+                        {
+                          text: '"Estou na busca de três Almais Primordiais para conseguir abrir um altar ao norte que a heroína encontrou."'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Então, aquela garota conseguiu achar uma pista para salvar esse mundo...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Muitos duvidaram dela, mas eu sempre tive fé. Sempre vi algo de diferente nela.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Agora, três Almas Primordiais, certo? Não será tarefa fácil, devo lhe avisar, Isabelle.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Como pode ver, esse lago está em um completo silêncio...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Minhas amigas sereias já se foram, veja bem... Todas, infelizmente, sucumbiram a maldição...'
+                        },
+                        {
+                          text: 'Enquanto narra sua história, Nerida olha fixamente para o lago, como se ainda tivesse esperanças de que alguma sereia sairia daquela água.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Talassa foi a primeira. A mais mandona de todas. Ela tinha o costume de dar broncas em todas as outras sereias. No dia que se foi, nesse lago reinou um silêncio estranho...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Depois de um tempo, minha melhor amiga, Yara, se foi também. Como sinto saudade de conversar com ela... Ela sempre me entendeu, como ninguém mais conseguia...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Por último, Dione. A mais brincalhona e arteira. Parecia ser outra sereia em seus últimos momentos, devastada pelas perdas...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Agora... só resta a mim nesse lago melancólico...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Até mesmo a minha voz eu perdi... Não essa que você está escutando agora, mas a minha voz de sereia... Essa maldição terrível a tirou de mim...'
+                        },
+                        {
+                          text: 'Nerida respira fundo e, então, olha para você novamente.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Já perdi tudo que tinha para perder, minha criança.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Tinha até perdido a minha fé que algo poderia nos salvar... Mas vendo você aqui...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Irei lhe ajudar, Isabelle. Por sorte, sou uma representante das sereias e possuo uma Alma Primordial.'
+                        },
+                        {
+                          text: 'Você consegue relaxar um pouco ao ouvir isso. Tudo estaria acabado caso ela não fosse uma portadora de uma Alma Primordial.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'A heroína deve ter te falado o básico de como esse processo funciona.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Para que eu consiga te transferir minha Alma Primordial, você precisa estar em sintonia comigo e com o que é mais puro para as sereias.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Não sei como é no seu mundo, mas aqui nós somos um povo que gosta de ajudar o próximo, mais do que qualquer coisa.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Você vai precisar das Almas Primordiais dos anões e dos elfos também, correto? Então você provavelmente vai precisar ajudá-los de certa forma, para conseguir criar uma sintonia com eles.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Acho que isso será o bastante para começar. Volte aqui assim que estiver com posse das outras duas almas, e então começaremos o processo para você conseguir a minha também.'
+                        },
+                        {
+                          text: 'Ela parece mais determinada. Pensando em vários planos, mesmo perto do fim...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Isabelle, eu vou depositar a minha fé em você. Gostaria de te acompanhar em sua jornada, mas já não tenho forças para ficar longe desse lago.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Venha até mim caso precise de ajuda. Darei o meu melhor para te auxilar nessa missão.'
+                        },
+                        {
+                          text: 'A conversa com a sereia foi melhor do que o esperado.'
+                        },
+                        {
+                          text: 'Você fica contente de ter ajudado ela a recuperar as esperanças, mas também fica triste ao perceber que o corpo da sereia está oscilando.'
+                        },
+                        {
+                          text: 'Não há muito tempo para perder. Existem muitas coisas em jogo.'
+                        },
+                        {
+                          text: '"Muito obrigada pela ajuda, Nerida! Prometo que darei o meu melhor", disse você.'
+                        },
+                        {
+                          text: 'Nerida abre um sorriso, dessa vez um mais reconfortante.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Eu que agradeço, minha criança. Que o canto das sereias guiem você nessa jornada.'
+                        },
+                        {
+                          text: 'Nerida volta a encarar o lago.',
+                          action: () => {
+                            keys['LAKE_NERIDA_ACCEPTED_TO_HELP'] = true;
+                          },
+                          goBack: true
+                        },
+                      ]
+                    }, 
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      auto: true,
+      audio: 'countdown.mp3',
+      chat: [
+        {
+          audio: 'countdown.mp3',
+          options: [
+            {
+              alreadySeen: () => {
+                return keys['LAKE_NERIDA_ASKED_THE_HEROIN_NAME'];
+              },
+              text: 'Perguntar nome da heroína',
+              chat: [
+                {
+                  speaker: 'Nerida',
+                  text: 'O nome da heroína? Se me lembro bem era...',
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Hmm... Acho que começava com G? Ou H? Talvez M...',
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Sinto que está na ponta da língua...',
+                },
+                {
+                  speaker: 'Nerida',
+                  text: '...',
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Desculpe, criança. Não consigo mais lembrar o nome dela... Mas se eu lembrar, te avisarei.',
+                  action: () => {
+                    keys['LAKE_NERIDA_ASKED_THE_HEROIN_NAME'] = true;
+                  },
+                  goBack: true,
+                }
+              ]
+            },
+            {
+              requirements: () => {
+                return !keys['CABIN_RODRICK_ACCEPTED_TO_HELP'];
+              },
+              text: 'Perguntar sobre os anões',
+              alreadySeen: () => {
+                return keys['LAKE_NERIDA_ASKED_ABOUT_DWARVES'];
+              },
+              chat: [
+                {
+                  speaker: 'Nerida',
+                  text: 'Os anões possuem a fama de serem bem teimosos. Porém, não se deixe enganar, eles costumam valorizar aquilo que amam como mais ninguém.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Mostre sua determinação de uma forma respeitosa, e eles irão te ajudar.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Caso esteja com problemas para encontrá-los, basta voltar para o campo e siga o caminho para o oeste, perto das montanhas.',
+                  action: () => {
+                    keys['LAKE_NERIDA_ASKED_ABOUT_DWARVES'] = true;
+                  },
+                  goBack: true,
+                },
+              ]
+            },
+            {
+              requirements: () => {
+                return keys['CABIN_RODRICK_ACCEPTED_TO_HELP'];
+              },
+              alreadySeen: () => {
+                return keys['LAKE_NERIDA_ASKED_ABOUT_FEMALE_DWARF'];
+              },
+              text: 'Perguntar nome da anã que desapareceu',
+              chat: [
+                {
+                  text: 'Você explica sobre seu encontro com Rodrick e sobre a anã que sucumbiu pela maldição.'
+                },
+
+                {
+                  speaker: 'Nerida',
+                  text: 'Oh, minha criança, sinto muito que você teve que presenciar tal cena. E Rodrick... lembro-me dele...'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Cabeça-dura... teimoso... mas sempre ajudou nos ajudou com suas habilidades de forja...'
+                },
+                {
+                  text: 'A feição de Nerida se torna triste ao lembrar de Rodrick.'
+                },
+                {
+                  requirements: () => {
+                    return keys['MOUNTAIN_GOT_PENDANT'];
+                  },
+                  text: '"Ah, acabo de me lembrar!", você diz, enquanto tira o pingente do bolso. "Aqui está uma foto da esposa de Rodrick. Você por acaso se lembra do nome dela?"'
+                },
+                {
+                  requirements: () => {
+                    return !keys['MOUNTAIN_GOT_PENDANT'];
+                  },
+                  text: '"Nerida, você por acaso se lembra do nome da esposa de Rodrick?", você pergunta.'
+                },
+                {
+                  text: 'Nerida pausa por um momento, enquanto mantem os olhos fechados e a mão no queixo.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: '...'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Peço perdões, Isabelle. Infelizmente não consigo me lembrar do nome dela...'
+                },
+                {
+                  text: 'Suas esperanças começam a abaixar.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Mas me recordo de outra coisa... acho que me lembro de tê-la visto junto de alguns elfos...'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Talvez algum elfo consiga te ajudar melhor nessa busca, minha criança.',
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Pelo menos... assim espero...',
+                  action: () => {
+                    keys['LAKE_NERIDA_ASKED_ABOUT_FEMALE_DWARF'] = true;
+                  },
+                  goBack: true
+                }
+              ]
+            },
+            {
+              requirements: () => {
+                return !keys['FOREST_INTRO_CONCLUDED'];
+              },
+              text: 'Perguntar sobre os elfos',
+              alreadySeen: () => {
+                return keys['LAKE_RECEIVED_SMALL_TIP_ABOUT_FOREST'];
+              },
+              chat: [
+                {
+                  speaker: 'Nerida',
+                  text: 'Os elfos vivem muito mais que as outras espécies, chegando a ultrapassar até mil anos de vida.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Eles vivem alojados em casas construídas em cima de árvores. Acredito que exista uma comunidade ao sul do campo que você veio.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Mas mantenha em mente que eles não são tão calorosos com desconhecidos. As florestas em volta dessas comunidades geralmente possuem magias para impedir que estranhos se aproximem.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Geralmente, para atravessar essas florestas, você precisa...'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Hmm... não consigo lembrar direito... recentemente a maldição tem afetado a minha memória...'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Mas lembro que existe... um padrão... sim, um padrão...'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Droga, não consigo lembrar... Mas se você conseguir qualquer pista, traga para mim.',
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Talvez assim eu consiga lembrar do resto.',
+                  action: () => {
+                    keys['LAKE_RECEIVED_SMALL_TIP_ABOUT_FOREST'] = true;
+                  },
+                  goBack: true
+                },
+              ]
+            },
+            {
+              requirements: () => {
+                return keys['FOREST_INTRO_CONCLUDED']
+              },
+              text: 'Contar sobre o que descobriu na floresta élfica',
+              alreadySeen: () => {
+                return keys['LAKE_RECEIVED_TIP_ABOUT_FOREST'];
+              },
+              chat: [
+                {
+                  text: 'Você conta para Nerida sobre o que presenciou na floresta.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Ah, sim! Os sons dos animais e as cores que se manifestam juntos. Mas não são de verdade, não se engane. São criados através de magias élficas.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Um povo criativo, não acha?'
+                },
+                {
+                  text: 'Nerida parece se animar ao lembrar dos elfos.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Cada som de animal dá uma dica do caminho que você deve seguir. As cores também são importantes, então preste atenção neles também!'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'E cada tentativa de adentrar a floresta é diferente do anterior, então nem tente passar pela sorte.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'É quase como se a floresta estivesse viva! Incrível, não é mesmo?'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Agora vem a parte complicada... Hmm... acho que tinha uma cantiga...'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Sim! Tinha uma cantiga para encontrar o caminho. Ela é assim:'
+                },
+                {
+                  text: 'Nerida se arruma na rocha e suavemente balança os braços. Luzes saem de suas mãos, o que parece criar alguns instrumentos musicais em sua volta, que permanecem flutuando no ar.'
+                },
+                {
+                  text: 'Ela então coloca uma mão no peito e estica o outro braço para frente, como se estivesse em uma ópera e prestes a cantar.'
+                },
+                {
+                  text: 'Ver ela se divertindo aquece o seu coração.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: '🎵 Oh, pequeno elfo, perdido na floreta você está? 🎵',
+                  audio: 'butt.mp3'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: '🎵 Então escute bem, pois o Djar, Tulin e o Gutenthap irão te ajudar! 🎵'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: '🎵 Os Djars, muito coordenados, nos caminhos da floresta vão se adentrar, 🎵'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: '🎵 Esquerda, direita e depois reto, em sequência, hão de se aventurar! 🎵'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: '🎵 Os Tulins, que medrosos, fazem tudo para se esconder, 🎵'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: '🎵 Olham para onde o último animal entrou, e seguindo o relógio hão de obedecer! 🎵'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: '🎵 Os Gutenthap, que abusados, gritam sem temor, 🎵'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: '🎵 Verde, amarelo e vermelho, pintam regradamente em um transferidor 🎵'
+                },
+                {
+                  text: 'Nerida parece orgulhosa.',
+                  audio: 'countdown.mp3',
+                },
+                {
+                  text: 'É emocionante ver como Nerina canta, mesmo no meio de tanta destruição... mesmo depois de perder os entes mais queridos...'
+                },
+                {
+                  speaker: 'Nerina',
+                  text: 'E então? Gostou? Juro que dei o meu melhor!'
+                },
+                {
+                  options: [
+                    {
+                      text: 'Elogiar o canto',
+                      chat: [
+                        {
+                          text: '"Foi maravilhoso!", você diz.'
+                        },
+                        {
+                          text: '"Mas o que são Djar, Tulin e Gutenhap?", você pergunta.'
+                        },
+                        {
+                          text: 'A cara que Nerina faz é impagável.'
+                        },
+                        {
+                          speaker: 'Nerina',
+                          text: 'Ora, não faço ideia! Esses são os nomes que os elfos deram para os animais, agora não me pergunte o motivo.'
+                        },
+                        {
+                          speaker: 'Nerina',
+                          text: 'Mas lembro de mais algumas informações que podem te ajudar.'
+                        },
+                        {
+                          speaker: 'Nerina',
+                          text: 'O criador da cantiga não conseguiu colocar todas as informações necessárias dentro dela, então elas ficaram de fora.'
+                        },
+                        {
+                          speaker: 'Nerina',
+                          text: 'Os Tulin seguirão o caminho das 12 horas, caso sejam os primeiros a entrar na floresta.'
+                        },
+                        {
+                          speaker: 'Nerina',
+                          text: 'E os Djar só se importam com eles mesmo, são narcisistas.'
+                        },
+                        {
+                          text: '"Entendo. Bem, acho que tenho que dar um jeito de atravessar a floresta com as informações que temos.", você diz.'
+                        },
+                        {
+                          text: '"Muito obrigada, Nerina. Aliás, você canta muito bem!", você complementa.'
+                        },
+                        {
+                          text: 'O rosto de Nerina fica vermelho.'
+                        },
+                        {
+                          speaker: 'Nerina',
+                          text: 'Assim eu fico sem palavras, minha querida.'
+                        },
+                        {
+                          speaker: 'Nerina',
+                          text: 'Agradeço o elogio. E espero poder cantar mais vezes para você, criança, mas o tempo é curto. Vá e vença a floresta!'
+                        },
+                        {
+                          text: 'Nerina volta a atenção para o lago.',
+                          goBack: true,
+                          action: () => {
+                            keys['LAKE_RECEIVED_TIP_ABOUT_FOREST'] = true;
+                          }
+                        },
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              text: 'Voltar para o campo',
+              chat: [
+                {
+                  text: 'Você se dirige para o campo.',
+                  goBack: true,
+                  moveToScene: 'prado'
+                },
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  'arvore': [
+    {
+      requirements: () => {
+        return !keys['TREE_FIRST_TALK_CONCLUDED'];
+      },
+      auto: true,
+      audio: '',
+      chat: [
+        {
+          text: 'Você chega em um acampamento élfico.'
+        },
+        {
+          text: 'A árvore na sua frente é enorme. E, em cima dela, existe uma casa tão grande quanto.'
+        },
+        {
+          text: 'É como se fosse uma cena tirada de uma história de fantasia.'
+        },
+        {
+          text: 'Você se aproxima da árvore e encontra uma escada levando para o que parece ser a porta da casa.'
+        },
+        {
+          text: 'Ao chegar na frente da porta, você coloca o ouvido contra a porta, para ver se escuta algum barulho.'
+        },
+        {
+          text: 'Porém, você não escuta nada.'
+        },
+        {
+          text: 'Você bate na porta.'
+        },
+        {
+          text: 'Nada acontece.'
+        },
+        {
+          text: 'Você bate na porta novamente.'
+        },
+        {
+          text: 'Você consegue escutar o barulho de coisas caindo de dentro da casa. Panelas, talvez.'
+        },
+        {
+          text: 'E então um barulho bem mais alto, como se algo pesado tivesse caído.'
+        },
+        {
+          text: 'O que será que está acontecendo lá dentro?'
+        },
+        {
+          text: 'E então a porta se abre, revelando o que parece ser uma elfa.'
+        },
+        {
+          text: 'Ela possui as famosa orelhas pontudas e suas vestes são leves e bem coloridas.'
+        },
+        {
+          text: 'Você não sabe reconhecer a idade de um elfo só através da aparência, mas se ela fosse uma humana, você chutaria que ela tem uns 50 anos ou mais.'
+        },
+        {
+          text: 'Por conta disso, você tenta agir de maneira formal.'
+        },
+        {
+          text: '"Boa noite, meu nome é...", você começa a dizer.'
+        },
+        {
+          speaker: 'Elfa',
+          text: 'Oh, pelos deuses! Uma humana! E que linda você é!'
+        },
+        {
+          text: 'A elfa começa a dar pulos de alegria. Não o suficiente, ela também se joga para os seus braços, em uma espécie de abraço.'
+        },
+        {
+          speaker: 'Elfa',
+          text: 'Hahahaha! Você não faz ideia de como eu esperei alguém aparecer! Estava muito entediante ficar aqui sozinha!'
+        },
+        {
+          speaker: 'Elfa',
+          text: 'Venha! Vamos entrar! Tenho vários jogos aqui dentro!'
+        },
+        {
+          text: 'A elfa pega a sua mão e te conduz para dentro da casa.'
+        },
+        {
+          text: 'Você ainda não está entendendo o que está acontecendo, então você só aceita ser levada.'
+        },
+        {
+          text: 'O interior da casa está uma bagunça. O chão está coberto de livros, utensílios domésticos e brinquedos.'
+        },
+        {
+          text: 'Você pisa em um objeto desconhecido e torce para não ter quebrado. Mas a elfa parece não ter se importado.'
+        },
+        {
+          speaker: 'Elfa',
+          text: 'Então, iremos brincar do que primeiro? Corrida pelos galhos das árvores? Invocação de fadas? Gato mia?'
+        },
+        {
+          text: '"Ah, meu cu! Gatos nesse mundo se chamam \'gatos\', então? Por que não me surpreendo de não terem usado gatos nos enigmas da floresta?", você diz indignada.'
+        },
+        {
+          text: 'A elfa não responde. Ela parece estar muito ocupada procurando algo no meio da bagunça.'
+        },
+        {
+          text: '"E por qual motivo vocês acharam que \'Gutenthap\' seria um nome bom para um animal? Por que não apenas \'corvo\'?", você grita histérica.'
+        },
+        {
+          speaker: 'Elfa',
+          text: 'Você é engraçada! Hahahaha'
+        },
+        {
+          speaker: 'Elfa',
+          text: 'Aliás, qual é seu nome?'
+        },
+        {
+          text: '"Isabelle", você diz, cansada.'
+        },
+        {
+          speaker: 'Elfa',
+          text: 'Meu Deus, que nome horrível! Hahahaha!'
+        },
+        {
+          speaker: 'Elfa',
+          text: 'O meu nome é Sharia! Sharia Galadonethil Sylvaranthil Thaliondir Ithilnaur Quel\'dorei Elanessë.'
+        },
+        {
+          speaker: 'Sharia',
+          text: 'Espero que tenha anotado, talvez seja importante no futuro!'
+        },
+        {
+          speaker: 'Elfa',
+          text: 'Ou não! Hahahaha!'
+        },
+        {
+          options: [
+            {
+              text: 'Explicar sobre o altar e as Almas Primordiais',
+              chat: [
+                {
+                  text: 'Você da a entender que irá falar algo, mas Sharia te interrompe.',
+                  action: () => {
+                    keys['TREE_FIRST_TALK_CONCLUDED'] = true;
+                  }
+                }
+              ]
+            },
+            {
+              text: '"Escuta aqui, sua..."',
+              chat: [
+                {
+                  text: 'Você da a entender que irá falar algo, mas Sharia te interrompe.',
+                  action: () => {
+                    keys['TREE_FIRST_TALK_CONCLUDED'] = true;
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      requirements: () => {
+        return keys['TREE_FIRST_TALK_CONCLUDED'] && !keys['TREE_IS_LOOKING_FOR_SHARIA'];
+      },
+      auto: true,
+      audio: '',
+      chat: [
+        {
+          speaker: 'Sharia',
+          text: 'Já sei! Vamos brincar de esconde-esconde!'
+        },
+        {
+          text: '"Sharia, na verdade, eu preciso da sua ajuda..."'
+        },
+        {
+          speaker: 'Sharia',
+          text: 'Ajuda? Hmmm.. pensei que você tinha vindo para brincar...'
+        },
+        {
+          text: '"Não, infelizmente não tenho tempo para isso. O mundo está acabando e eu preciso da sua ajuda para salvar a todos."'
+        },
+        {
+          text: 'A elfa fica com uma cara confusa. Mesmo estando no meio de tantos objetos voláteis, ela parece não entender a real gravidade da situação.'
+        },
+        {
+          speaker: 'Sharia',
+          text: 'Salvar... o mundo?'
+        },
+        {
+          speaker: 'Sharia',
+          text: '...'
+        },
+        {
+          speaker: 'Sharia',
+          text: '......'
+        },
+        {
+          speaker: 'Sharia',
+          text: 'Chatooooo! Bem que Lywin disse que humanos são chatos! Eu prefiro brincar de esconde-esconde!'
+        },
+        {
+          speaker: 'Sharia',
+          text: 'Brinca de esconde-esconde comigo primeiro, e depois a gente brinca desse seu jogo chato!'
+        },
+        {
+          text: 'Você quer acabar com a raça dela.'
+        },
+        {
+          text: 'O que não seria difícil, já que ela parece ser a última elfa viva.'
+        },
+        {
+          text: 'Parece que você não vai conseguir usar lógica para mudar a situação.'
+        },
+        {
+          text: '"Tudo bem, então", você diz, rendida. "Mas se eu te achar, você terá que me ajudar!"'
+        },
+        {
+          speaker: 'Sharia',
+          text: 'Ebaaaaaaaa! Ok, fechado! Fecha os olhos então e conta até 30!'
+        },
+        {
+          text: 'Você respira fundo, fecha os olhos e começa a contar.'
+        },
+        {
+          text: '"1... 2... 3..."'
+        },
+        {
+          text: 'Você consegue escutar barulho de várias coisas caindo no chão.'
+        },
+        {
+          text: '"8... 9... 10..."'
+        },
+        {
+          text: 'Parece que Sharia bateu o dedinho do pé na quina de alguma coisa. O grito dela soou pela casa toda.'
+        },
+        {
+          speaker: 'Sharia',
+          text: 'Quem colocou essa PORCARIA aqui no meio?'
+        },
+        {
+          text: '"14... 15... 16..."'
+        },
+        {
+          text: 'Sharia parece indecisa. Ela vai e volta, passando por você várias vezes.'
+        },
+        {
+          text: '"23... 24... 25..."'
+        },
+        {
+          text: 'Você não escuta mais nada ao redor.'
+        },
+        {
+          text: '"29... e 30! Lá vou eu!"',
+          action: () => {
+            keys['TREE_IS_LOOKING_FOR_SHARIA'] = true;
+          }
+        },
+
+      ]
+    },
+    {
+      requirements: () => {
+        return keys['TREE_IS_LOOKING_FOR_SHARIA'];
+      },
+      auto: true,
+      audio: '',
+      chat: [
+        {
+          text: 'Você olha ao redor.'
+        },
+        {
+          options: [
+            {
+              text: 'Procurar atrás do sofá'
+            },
+            {
+              text: 'Olhar o segundo andar'
+            },
+            {
+              text: 'Vasculhar a montanha de brinquedos'
+            },
+            {
+              text: 'Procurar atrás do sofá'
             }
           ]
         }
@@ -2467,11 +3428,33 @@ function handleChatEvents(chat) {
     
     const wave = document.createElement('div');
     wave.classList.add('scene-wave');
+
+    let color = '';
+    if (chat.color) {
+      switch(chat.color) {
+        case 'yellow':
+          color = '#e8e83c';
+          break;
+        case 'green':
+          color = '#28dc28';
+          break;
+      }
+    }
+
+    if (chat.color) {
+      wave.style.borderColor = color;
+    }
+
     scene.appendChild(wave);
 
     setTimeout(() => {
       let waveB = document.createElement('div');
       waveB.classList.add('scene-wave');
+
+      if (chat.color) {
+        waveB.style.borderColor = color;
+      }
+
       scene.appendChild(waveB);
 
       setTimeout(() => {
@@ -2580,4 +3563,72 @@ async function moveToScene(scene) {
   await new Promise((resolve) => setTimeout(() => resolve(), 500));
 
   sceneCover.style.opacity = 0;
+}
+
+function validateForest() {
+  if (forestSequence.length !== currentForestSequence.length) {
+    return;
+  }
+
+  let last = '';
+  let owlCount = 0;
+  let valid = forestSequence.every((forest, i) => {
+    let current = currentForestSequence[i];
+
+    if (forest === 'crow') {
+      let color = colorsSequence[i];
+
+      switch (color) {
+        case 'yellow':
+          last = 'left';
+          return current === 'left';
+        case 'red':
+          last = 'right';
+          return current === 'right';
+        case 'green':
+          last = 'straight';
+          return current === 'straight';
+      }
+    } else if (forest === 'wolf') {
+      if (last) {
+        switch (last) {
+          case 'left':
+            last = 'straight';
+            return current === 'straight';
+          case 'straight':
+            last = 'right';
+            return current === 'right';
+          case 'right':
+            last = 'left';
+            return current === 'left';
+        }
+      } else {
+        last = 'straight';
+        return current === 'straight';
+      }
+    } else if (forest === 'owl') {
+      switch (owlCount % 3) {
+        case 0:
+          owlCount++;
+          last = 'left';
+          return current === 'left';
+        case 1:
+          owlCount++;
+          last = 'right';
+          return current === 'right';
+        case 2:
+          owlCount++;
+          last = 'straight';
+          return current === 'straight';
+      }
+    }
+  });
+
+  if (valid) {
+    alert('valido');
+    keys['FOREST_SOLVED_MAZE'] = true;
+  } else {
+    alert('invalido');
+    keys['FOREST_DID_NOT_SOLVE_MAZE'] = true;
+  }
 }
