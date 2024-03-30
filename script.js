@@ -65,6 +65,13 @@ var keys = {
 
   'TREE_FIRST_TALK_CONCLUDED': false,
   'TREE_IS_LOOKING_FOR_SHARIA': false,
+  'TREE_SEARCH_PLANT': false,
+  'TREE_SEARCH_BALCONY': false,
+  'TREE_SEARCH_TOYS': false,
+  'TREE_INTRO_CONCLUDED': false,
+  'TREE_LEFT_ONCE': false,
+  'TREE_INSISTED_ON_MATTER': false,
+  'TREE_GOT_FEMALE_DWARF_NAME': false,
 }
 
 // Fim da primeira conversa
@@ -3033,7 +3040,13 @@ var story = {
           text: 'Então, iremos brincar do que primeiro? Corrida pelos galhos das árvores? Invocação de fadas? Gato mia?'
         },
         {
-          text: '"Ah, meu cu! Gatos nesse mundo se chamam \'gatos\', então? Por que não me surpreendo de não terem usado gatos nos enigmas da floresta?", você diz indignada.'
+          text: 'Você reflete no que acabou de ouvir.'
+        },
+        {
+          text: '"Gato... mia?"'
+        },
+        {
+          text: '"Meu cu que gatos nesse mundo se chamam \'gatos\'! Por que não usaram gatos nos enigmas da floresta?", você diz indignada.'
         },
         {
           text: 'A elfa não responde. Ela parece estar muito ocupada procurando algo no meio da bagunça.'
@@ -3071,7 +3084,7 @@ var story = {
         {
           options: [
             {
-              text: 'Explicar sobre o altar e as Almas Primordiais',
+              text: 'Pedir ajuda sobre o altar e as Almas Primordiais',
               chat: [
                 {
                   text: 'Você da a entender que irá falar algo, mas Sharia te interrompe.',
@@ -3085,7 +3098,7 @@ var story = {
               text: '"Escuta aqui, sua..."',
               chat: [
                 {
-                  text: 'Você da a entender que irá falar algo, mas Sharia te interrompe.',
+                  text: 'Você dá a entender que irá falar algo, mas Sharia te interrompe.',
                   action: () => {
                     keys['TREE_FIRST_TALK_CONCLUDED'] = true;
                   }
@@ -3138,7 +3151,7 @@ var story = {
         },
         {
           speaker: 'Sharia',
-          text: 'Brinca de esconde-esconde comigo primeiro, e depois a gente brinca desse seu jogo chato!'
+          text: 'Vamor brincar de esconde-esconde primeiro, e depois a gente brinca desse seu jogo chato!'
         },
         {
           text: 'Você quer acabar com a raça dela.'
@@ -3163,7 +3176,7 @@ var story = {
           text: '"1... 2... 3..."'
         },
         {
-          text: 'Você consegue escutar barulho de várias coisas caindo no chão.'
+          text: 'Você consegue escutar o barulho de várias coisas caindo no chão.'
         },
         {
           text: '"8... 9... 10..."'
@@ -3179,7 +3192,7 @@ var story = {
           text: '"14... 15... 16..."'
         },
         {
-          text: 'Sharia parece indecisa. Ela vai e volta, passando por você várias vezes.'
+          text: 'Sharia parece indecisa. Você escuta ela indo e voltando, passando por você várias vezes.'
         },
         {
           text: '"23... 24... 25..."'
@@ -3198,7 +3211,7 @@ var story = {
     },
     {
       requirements: () => {
-        return keys['TREE_IS_LOOKING_FOR_SHARIA'];
+        return keys['TREE_IS_LOOKING_FOR_SHARIA'] && (!keys['TREE_SEARCH_PLANT'] || !keys['TREE_SEARCH_BALCONY'] || !keys['TREE_SEARCH_TOYS']);
       },
       auto: true,
       audio: '',
@@ -3209,16 +3222,450 @@ var story = {
         {
           options: [
             {
-              text: 'Procurar atrás do sofá'
+              alreadySeen: () => {
+                return keys['TREE_SEARCH_PLANT'];
+              },
+              text: 'Procurar atrás do vaso de planta',
+              chat: [
+                {
+                  text: 'Você chega perto de um vaso com uma planta enorme e com flores muito bonitas. Não parece ser uma planta que exista no seu mundo.'
+                },
+                {
+                  text: 'Ao se aproximar, você sente algo se enrolando na sua cintura.'
+                },
+                {
+                  text: 'Você olha para baixo e percebe que um dos ramos da planta está tentando te agarrar. As flores, antes belíssimas, agora possuem a forma de uma boca cheia de dentes.'
+                },
+                {
+                  text: 'Seus instintos fazem você correr o mais rápido possível, mas a planta é mais forte do que aparenta.'
+                },
+                {
+                  text: 'Você identifica um facão no chão, milagrosamente perto. Você estende o braço o máximo que consegue até conseguir pegar o facão.'
+                },
+                {
+                  text: 'Foram necessárias três facadas na plata para que ela pudesse te soltar.'
+                },
+                {
+                  text: 'Você se distancia da planta. Sharia não parece estar ali.',
+                  action: () => {
+                    keys['TREE_SEARCH_PLANT'] = true;
+                  },
+                  goBack: true,
+                },
+              ]
             },
             {
-              text: 'Olhar o segundo andar'
+              text: 'Olhar a varanda',
+              alreadySeen: () => {
+                return keys['TREE_SEARCH_BALCONY'];
+              },
+              chat: [
+                {
+                  text: 'Você se dirige para a varanda.'
+                },
+                {
+                  text: 'Sharia parece não estar aqui, mas você não consegue voltar antes de admirar a vista da floresta nessa noite.'
+                },
+                {
+                  text: 'O céu cheio de estrelas, as árvores se estendendo sem fim...'
+                },
+                {
+                  text: 'Quantos habitantes desse mundo também gostavam de admirar essa vista?'
+                },
+                {
+                  text: 'Você precisa concluir a sua missão.'
+                },
+                {
+                  text: 'Você volta para dentro da casa.',
+                  action: () => {
+                    keys['TREE_SEARCH_BALCONY'] = true;
+                  },
+                  goBack: true,
+                }
+              ]
             },
             {
-              text: 'Vasculhar a montanha de brinquedos'
+              text: 'Vasculhar a montanha de brinquedos',
+              alreadySeen: () => {
+                return keys['TREE_SEARCH_TOYS'];
+              },
+              chat: [
+                {
+                  text: 'Você se aproxima de um amontoado de brinquedos que está no canto da sala.'
+                },
+                {
+                  text: 'Você começa a tirar um brinquedo por vez, com cuidado para não quebrar nada.'
+                },
+                {
+                  text: 'Alguns deles te lembram dos brinquedos que você tinha na infância. Já outros são totalmente diferentes, parecem até mágicos.'
+                },
+                {
+                  text: 'Quantas crianças moravam nessa comunidade para que fosse possível acomular tantos brinquedos... Todas consumidas pela maldição...'
+                },
+                {
+                  text: '...'
+                },
+                {
+                  text: 'Você afasta esse pensamento da cabeça.',
+                  action: () => {
+                    keys['TREE_SEARCH_TOYS'] = true;
+                  },
+                  goBack: true,
+                }
+              ]
+            },
+          ]
+        }
+      ]
+    },
+    {
+      requirements: () => {
+        return !keys['TREE_INTRO_CONCLUDED'];
+      },
+      auto: true,
+      chat: [
+        {
+          text: 'Você não consegue achar a Sharia, e o tempo não está a seu favor.'
+        },
+        {
+          text: 'Você ainda não conseguiu nenhuma Alma Primordial... E tudo está desaparecendo...'
+        },
+        {
+          text: 'O que fazer agora? Implorar por ajuda? Forçar a elfa a te ajuda? Começar a chorar?'
+        },
+        {
+          speaker: 'Sharia',
+          text: '1, 2, 3, Sharia! Hahaha!'
+        },
+        {
+          text: 'Você se assusta e olha para trás. Sharia está no local onde você estava contando, pulando de alegria.'
+        },
+        {
+          speaker: 'Sharia',
+          text: 'Você não conseguiu me achar né? Eu sou muito boa nesse jogo!'
+        },
+        {
+          text: '"Onde você estava?", você pergunta.'
+        },
+        {
+          speaker: 'Sharia',
+          text: 'Atrás de você, o tempo todo. Usei uma magia de invisibilidade! Sou inteligente, não sou?'
+        },
+        {
+          text: 'Uma sensação de impotência cresce dentro de você.'
+        },
+        {
+          text: '"Ok, Sharia, agora eu preciso da sua ajuda", você diz.'
+        },
+        {
+          speaker: 'Sharia',
+          text: 'Aaaaahh! Só mais uma partida! Por favor, por favor, por favor...'
+        },
+        {
+          text: '"Primeiro o que você prometeu, se lembra? Você me ajudaria se eu brincasse com você."'
+        },
+        {
+          speaker: 'Sharia',
+          text: 'Tá bom... tá bom... O que você precisa'
+        },
+        {
+          options: [
+            {
+              text: 'Explicar sobre o altar e as Almas Primordiais',
+              chat: [
+                {
+                  text: 'Você conta sobre toda a situação para Sharia.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Almas Primordiais? Eu tenho uma dessa!'
+                },
+                {
+                  text: 'Um raio de esperança. Nem tudo parece estar perdido.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Mas minha mãe disse para não entregá-la para estranhos!'
+                },
+                {
+                  text: 'Maravilha...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'E todo esse papo me deu fome! A gente pode brincar mais depois!'
+                },
+                {
+                  text: 'Você vê a elfa indo para a cozinha. Normalmente você teria insistido para obter a Alma Primordial, mas você finalmente percebe o quão cansada você está.'
+                },
+                {
+                  text: 'São muitas responsabilidades...'
+                },
+                {
+                  text: 'O que fazer agora?',
+                  action: () => {
+                    keys['TREE_INTRO_CONCLUDED'] = true;
+                  },
+                  goBackImmediately: true,
+                },
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      auto: true,
+      chat: [
+        {
+          requirements: () => {
+            return keys['TREE_LEFT_ONCE'];
+          },
+          text: 'Você se vê no meio da casa da árvore.'
+        },
+        {
+          options: [
+            {
+              alreadySeen: () => {
+                return keys['TREE_INSISTED_ON_MATTER'];
+              },
+              text: 'Insistir no assunto das Almas Primordiais',
+              chat: [
+                {
+                  text: 'Você tenta voltar no assunto das Almais Primordiais com Sharia...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Lá lá lá! Não estou ouvindo! Lá lá lá!'
+                },
+                {
+                  text: 'É um caso perdido.',
+                  action: () => {
+                    keys['TREE_INSISTED_ON_MATTER'] = true;
+                  }
+                }
+              ]
             },
             {
-              text: 'Procurar atrás do sofá'
+              requirements: () => {
+                // Cenário sem o pingente
+                return keys['CABIN_RODRICK_ACCEPTED_TO_HELP'] && keys['MOUNTAIN_GOT_PENDANT'] && !keys['TREE_GOT_FEMALE_DWARF_NAME'];
+              },
+              text: 'Mostrar pingente e perguntar nome da anã',
+              chat: [
+                {
+                  text: 'Você tira o pingente do bolso e mostra para a elfa.'
+                },
+                {
+                  text: '"Sharia, você reconhece essa anã?", você pergunta.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Anã? Deixa eu ver...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: '...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Eu conheço ela! É a esposa do Rodrick, não é?'
+                },
+                {
+                  text: '"Sim! Ela mesmo. Você lembra do nome dela?"'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Claro que lembro! Ela já veio aqui. Até brincou comigo algumas vezes!'
+                },
+                {
+                  text: '"Então, qual é o nome dela?"'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Hmm...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Eu te conto, mas tenho uma condição!'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Se eu me lembro bem, Rodrick é um artesão...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Então, você pode levar a minha caixinha de música para ele consertar?'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'É o meu brinquedo favorito, mas ele parou de funcionar...'
+                },
+                {
+                  text: 'No fim das contas, é apenas uma criança. Ou deve ser... apesar de não parecer uma.'
+                },
+                {
+                  options: [
+                    {
+                      text: 'Aceitar o pedido',
+                      chat: [
+                        {
+                          text: '"Ok, eu vou pedir para ele consertar a sua caixinha de músicas", você responde.'
+                        },
+                        {
+                          speaker: 'Sharia',
+                          text: 'Sério?! Aaaahhh, muito, muito, muito obrigada!'
+                        },
+                        {
+                          speaker: 'Sharia',
+                          text: 'Eu deixei ele em algum lugar por aqui...'
+                        },
+                        {
+                          text: 'A elfa começa a revirar a casa toda em busca da caixa de música, até que ela a acha embaixo de alguns livros.'
+                        },
+                        {
+                          speaker: 'Sharia',
+                          text: 'Aqui está! Foi um presente da minha mãe, então toma cuidado!'
+                        },
+                        {
+                          text: 'Você pega a caixa de música das mãos de Sharia.'
+                        },
+                        {
+                          speaker: 'Sharia',
+                          text: 'Bem, agora o nome da anã...'
+                        },
+                        {
+                          speaker: 'Sharia',
+                          text: 'O nome dela é Magdalene. Nome estranho para uma anã, não acha?'
+                        },
+                        {
+                          text: '"Madgalene?", você repete. "Entendi, obrigada pela ajuda, Sharia. Você não faz ideia do quanto me ajudou agora."'
+                        },
+                        {
+                          text: 'O rosto da elfa fica vermelho.'
+                        },
+                        {
+                          speaker: 'Sharia',
+                          text: 'Não vai esquecer do nosso acordo, viu?'
+                        },
+                        {
+                          text: '"Não vou, prometo!", você diz.'
+                        },
+                        {
+                          text: 'Com isso, a elfa volta para a cozinha.',
+                          action: () => {
+                            keys['TREE_GOT_FEMALE_DWARF_NAME'] = true;
+                          }
+                        }
+                      ]
+                    },
+                  ]
+                }
+              ]
+            },
+            {
+              requirements: () => {
+                // Cenário sem o pingente
+                return keys['CABIN_RODRICK_ACCEPTED_TO_HELP'] && !keys['MOUNTAIN_GOT_PENDANT'] && !keys['TREE_GOT_FEMALE_DWARF_NAME'];
+              },
+              text: 'Perguntar nome da esposa de Rodrick',
+              chat: [
+                {
+                  text: '"Sharia, existe um anão a noroeste daqui, chamado Rodrick. Ele possui uma esposa. Você por acaso saberia o nome dela?", você pergunta.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Claro que lembro! Ela veio aqui algumas vezes. Até brincou comigo algumas vezes!'
+                },
+                {
+                  text: '"Então, qual é o nome dela?"'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Hmm...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Eu te conto, mas tenho uma condição!'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Se eu me lembro bem, Rodrick é um artesão... Você pode levar a minha caixinha de música para ele consertar?'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'É o meu brinquedo favorito, mas ele parou de funcionar...'
+                },
+                {
+                  text: 'No fim das contas, é apenas uma criança. Ou deve ser... apesar de não parecer uma.'
+                },
+                {
+                  options: [
+                    {
+                      text: 'Aceitar o pedido',
+                      chat: [
+                        {
+                          text: '"Ok, eu vou pedir para ele consertar a sua caixinha de músicas", você responde.'
+                        },
+                        {
+                          speaker: 'Sharia',
+                          text: 'Sério?! Aaaahhh, muito, muito, muito obrigada!'
+                        },
+                        {
+                          speaker: 'Sharia',
+                          text: 'Eu deixei ele em algum lugar por aqui...'
+                        },
+                        {
+                          text: 'A elfa começa a revirar a casa toda em busca da caixa de música, até que ela a acha embaixo de alguns livros.'
+                        },
+                        {
+                          speaker: 'Sharia',
+                          text: 'Aqui está! Foi um presente da minha mãe, então toma cuidado!'
+                        },
+                        {
+                          text: 'Você pega a caixa de música das mãos de Sharia.'
+                        },
+                        {
+                          speaker: 'Sharia',
+                          text: 'Bem, agora o nome da anã...'
+                        },
+                        {
+                          speaker: 'Sharia',
+                          text: 'O nome dela é Magdalene. Nome estranho para uma anã, não acha?'
+                        },
+                        {
+                          text: '"Madgalene?", você repete. "Entendi, obrigada pela ajuda, Sharia. Você não faz ideia do quanto me ajudou agora."'
+                        },
+                        {
+                          text: 'O rosto da elfa fica vermelho.'
+                        },
+                        {
+                          speaker: 'Sharia',
+                          text: 'Não vai esquecer do nosso acordo, viu?'
+                        },
+                        {
+                          text: '"Não vou, prometo!", você diz.'
+                        },
+                        {
+                          text: 'Com isso, a elfa volta para a cozinha.',
+                          action: () => {
+                            keys['TREE_GOT_FEMALE_DWARF_NAME'] = true;
+                          }
+                        }
+                      ]
+                    },
+                  ]
+                }
+              ]
+            },
+            {
+              text: 'Voltar para o campo',
+              chat: [
+                {
+                  text: 'Você se dirige para o campo.',
+                  goBack: true,
+                  moveToScene: 'prado'
+                },
+              ]
             }
           ]
         }
