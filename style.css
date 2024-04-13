@@ -55,6 +55,23 @@ body, html {
   background-color: #1e1e1e;
 }
 
+.scene .soul-button {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40px;
+  background: black;
+  color: white;
+  padding: 20px;
+  border: 2px solid #8d3636;
+  border-radius: 4px;
+  display: block;
+  opacity: 0;
+  transition: opacity 200ms linear;
+}
+
 .scene-background {
   position: absolute;
   left: 50%;
@@ -77,7 +94,7 @@ body, html {
   line-height: 20px;
 }
 
-.chat button {
+.chat .next-button {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -88,7 +105,38 @@ body, html {
   background: white;
   border-radius: 4px;
   font-size: 14px;
-  border: 0px solid red;
+  border: 0px solid #8d3636;
+}
+
+.chat .chat-input {
+  display: none;
+}
+
+.chat .chat-input input {
+  background: black;
+  border: 1px solid #8d3636;
+  border-radius: 4px;
+  line-height: 25px;
+  margin-top: 12px;
+  padding: 4px 8px;
+  width: calc(100% - 20px);
+  color: red;
+  text-transform: uppercase;
+  transition: margin-left 200ms ease-in-out;
+}
+
+.chat-input.chat-input--wrong input {
+  animation-name: shakeWrong;
+  animation-duration: 200ms;
+  animation-iteration-count: 3;
+}
+
+@keyframes shakeWrong {
+  0% { margin-left: 0; }
+  25% { margin-left: -5px; }
+  50% { margin-left: 0px; }
+  75% { margin-left: 5px; }
+  100% { margin-left: 0px; }
 }
 
 .scene-background, .chat {
@@ -171,4 +219,36 @@ body, html {
 @keyframes arrowAnimation {
   from {left: 0;}
   to {left: 4px;}
+}
+
+.soul-obtained-cover {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  bottom: 0;
+  z-index: 3;
+  background: white !important;
+  border-radius: 50%;
+  width: 0px;
+  height: 0px;
+  display: block;
+
+  animation-name: soulObtainedAnimation;
+  animation-duration: 500ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+@keyframes soulObtainedAnimation {
+  from {
+    width: 0px;
+    height: 0px;
+    background-color: white;
+  }
+  to {
+    width: calc(100vw + 2000px);
+    height: calc(100vw + 2000px);
+    background-color: black;
+  }
 }

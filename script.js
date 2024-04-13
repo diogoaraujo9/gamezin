@@ -1,4 +1,5 @@
-var currentScene = 'arvore'; // 'prado', 'montanha', 'cabana', 'lago', 'arvore'
+var currentScene = 'cabana'; // 'prado', 'montanha', 'cabana', 'lago', 'arvore'
+var currentCustomScene = ''; // 'rodrick'
 var edgeOpacity = 0;
 var redOpacity = 3;
 var colorOpacity = 6;
@@ -50,6 +51,8 @@ var keys = {
   'CABIN_RODRICK_ACCEPTED_TO_HELP': false,
   'CABIN_TRIED_TO_GIVE_PENDANT_TO_RODRICK': false,
   'CABIN_ASKED_THE_HEROIN_NAME': false,
+  'CABIN_IS_GOING_TO_TELL_DWARF_NAME': false,
+  'CABIN_IS_GETTING_PRIMORDIAL_SOUL': false,
 
   'FOREST_INTRO_CONCLUDED': false,
   'FOREST_LEFT_ONCE': false,
@@ -130,9 +133,9 @@ var keys = {
 var keys = {
   'INIT': false,
 
-  'HEROIN_IS_FIRST_TIME_TALKING_TO': false,
+  'HEROIN_IS_FIRST_TIME_TALKING_TO': true,
   'HEROIN_CHOSE_TO_GET_CLOSE_TO': true,
-  'HEROIN_IS_ASKING_MAIN_QUESTIONS': false,
+  'HEROIN_MAIN_QUESTIONS': true,
   'HEROIN_ASKED_REASON_TO_COME_TO_THIS_WORLD': true,
   'HEROIN_ASKED_WHAT_WAS_HAPPENING_TO_THIS_WORLD': true,
   'HEROIN_ASKED_ABOUT_THE_DOOR_LOCK': true,
@@ -147,19 +150,45 @@ var keys = {
   'MOUNTAIN_SAW_DWARF_DISAPPEAR': true,
   'MOUNTAIN_GOT_PENDANT': true,
 
-  'CABIN_ALREADY_ENTERED': false,
+  'CABIN_ALREADY_ENTERED': true,
   'CABIN_ENTERED_WITHOUT_BEING_INVITED': false,
-  'CABIN_IS_FIRST_TIME_TALKING_TO': false,
-  'CABIN_AGREED_WITH_RODRICK': false,
-  'CABIN_STOOD_UP_FOR_THE_HEROIN': false,
-  'CABIN_TOLD_RODRICK_ABOUT_THE_PLAN': false,
-  'CABIN_RODRICK_IS_ANXIOUS': false,
-  'CABIN_GAVE_WATER_TO_RODRICK': false,
-  'CABIN_HOLD_RODRICK_HANDS': false,
-  'CABIN_SAID_WORDS_OF_CONFORT_TO_RODRICK': false,
-  'CABIN_RODRICK_ACCEPTED_TO_HELP': false,
-  'CABIN_TRIED_TO_GIVE_PENDANT_TO_RODRICK': false,
-  'CABIN_ASKED_THE_HEROIN_NAME': false,
+  'CABIN_IS_FIRST_TIME_TALKING_TO': true,
+  'CABIN_AGREED_WITH_RODRICK': true,
+  'CABIN_STOOD_UP_FOR_THE_HEROIN': true,
+  'CABIN_TOLD_RODRICK_ABOUT_THE_PLAN': true,
+  'CABIN_RODRICK_IS_ANXIOUS': true,
+  'CABIN_GAVE_WATER_TO_RODRICK': true,
+  'CABIN_HOLD_RODRICK_HANDS': true,
+  'CABIN_SAID_WORDS_OF_CONFORT_TO_RODRICK': true,
+  'CABIN_RODRICK_ACCEPTED_TO_HELP': true,
+  'CABIN_TRIED_TO_GIVE_PENDANT_TO_RODRICK': true,
+  'CABIN_ASKED_THE_HEROIN_NAME': true,
+  'CABIN_IS_GOING_TO_TELL_DWARF_NAME': true,
+  'CABIN_IS_GETTING_PRIMORDIAL_SOUL': false,
+  'CABIN_ACQUIRED_PRIMORDIAL_SOUL': false,
+  'CABIN_CONCLUDED': false,
+
+  'FOREST_INTRO_CONCLUDED': true,
+  'FOREST_LEFT_ONCE': true,
+  'FOREST_SOLVED_MAZE': true,
+  'FOREST_DID_NOT_SOLVE_MAZE': false,
+
+  'LAKE_RECEIVED_SMALL_TIP_ABOUT_FOREST': true,
+  'LAKE_RECEIVED_TIP_ABOUT_FOREST': true,
+  'LAKE_NERIDA_ACCEPTED_TO_HELP': true,
+  'LAKE_NERIDA_ASKED_THE_HEROIN_NAME': true,
+  'LAKE_NERIDA_ASKED_ABOUT_DWARVES': true,
+  'LAKE_NERIDA_ASKED_ABOUT_FEMALE_DWARF': true,
+
+  'TREE_FIRST_TALK_CONCLUDED': true,
+  'TREE_IS_LOOKING_FOR_SHARIA': true,
+  'TREE_SEARCH_PLANT': true,
+  'TREE_SEARCH_BALCONY': true,
+  'TREE_SEARCH_TOYS': true,
+  'TREE_INTRO_CONCLUDED': true,
+  'TREE_LEFT_ONCE': true,
+  'TREE_INSISTED_ON_MATTER': true,
+  'TREE_GOT_FEMALE_DWARF_NAME': true,
 }
 
 keys['FOREST_INTRO_CONCLUDED'] = true;
@@ -2020,6 +2049,9 @@ var story = {
     },
     {
       auto: true,
+      requirements: () => {
+        return !keys['CABIN_IS_GOING_TO_TELL_DWARF_NAME'];
+      },
       chat: [
         {
           audio: '',
@@ -2066,6 +2098,157 @@ var story = {
               ]
             },
             {
+              requirements: () => {
+                return keys['TREE_GOT_FEMALE_DWARF_NAME'];
+              },
+              text: 'Relembrar Rodrick do nome de sua esposa',
+              chat: [
+                {
+                  text: '"Rodrick, consegui descobrir o nome da sua esposa", você diz animada.'
+                },
+                {
+                  text: 'O anão olha para você com uma cara espantado. A maldição está cada vez mais tomando posse de seu corpo. Seus braços agora estão tão voláteis quanto as pernas.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Oh céus, então nem tudo está perdido! E quem é a pobre alma que ainda se lembra desse nome?'
+                },
+                {
+                  text: 'Você conta a Rodrick sobre seu encontro com Sharia.'
+                },
+                {
+                  text: '"Ela só pediu para que você consertasse essa caixinha de música, se possível."'
+                },
+                {
+                  text: 'Você mostra o brinquedo para Rodrick.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Hmm... só está enferrujado. Tem um removedor de ferrugem naquele balcão. Você só precisa passar um pouco.'
+                },
+                {
+                  text: 'Você segue as instruções de Rodrick e faz o brinquedo funcionar novamente.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Bem... agora preste atenção.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Acho que iremos criar uma sintonia assim que você me contar o nome da minha esposa, então se prepare para herdar a minha Alma Primordial no processo.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Primeiro, feche os olhos. Depois, comece a respirar fundo. Terceiro, tente sentir e entender a Alma Primordial dos anões.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Esse terceiro passo é diferente para cada pessoa, então não tenho como te dar muitas dicas.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: '...'
+                },
+                {
+                  text: 'Rodrick começa a olhar em volta da cabana.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Bem... acho que é isso...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Confesso que estou com medo.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Sabe, sempre escondi o meu medo para os outros anões. Queria passar a imagem de alguém forte e confiável.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'E sempre consegui enganar a todos sobre o que eu realmente estava sentindo... Na verdade, não sempre...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Minha amada foi a única que conseguia ver através da máscara que eu colocava.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Pensando agora... talvez eu deveria ter sido mais verdadeiro comigo mesmo...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'O que adiantou ter tentado ser quem não sou?'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Mas o que isso importa agora?'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Eu te digo.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Nada.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Obrigado por ter sido persistente, Isabelle.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Não se sinta culpada pelo o que está prestes a acontecer.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'A minha hora iria chegar de qualquer maneira.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Se eu pudesse ter um último pedido... seria me despedir dela...'
+                },
+                {
+                  text: 'Rodrick olha para você.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Garota, caso você a veja... diga que tive medo...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Tive medo, mas consegui ser eu mesmo em meus últimos momentos...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: '...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Vou sentir saudades desse lugar...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Vou sentir saudades dela...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Mas é o certo a ser feito.'
+                },
+                {
+                  text: 'Rodrick respira fundo.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Pronto... Vá logo, garota. Diga o nome dela...',
+                  action: () => {
+                    keys['CABIN_IS_GOING_TO_TELL_DWARF_NAME'] = true;
+                  },
+                  goBackImmediately: true,
+                },
+              ]
+            },
+            {
               text: 'Sair da cabana',
               chat: [
                 {
@@ -2079,6 +2262,162 @@ var story = {
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      auto: true,
+      requirements: () => {
+        return !keys['CABIN_IS_GETTING_PRIMORDIAL_SOUL'];
+      },
+      chat: [
+        {
+          options: [
+            {
+              text: 'Falar o nome e esconder o fato de ter presenciado a morte de Magdalene',
+              chat: [
+                {
+                  text: '"O nome dela é Madgalene..."'
+                },
+                {
+                  text: 'Rodrick fecha os olhos.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Madgalene...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Como fui capaz de esquecer...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'O nome mais lindo que já escutei...'
+                },
+                {
+                  text: 'Lágrimas começam a escorrer do rosto do anão, mas dessa vez são de felicidade.'
+                },
+                {
+                  text: 'Você fecha os olhos e começa a respirar fundo, igual Rodrick lhe orientou.'
+                },
+                {
+                  text: 'Você começa a sentir uma energia vindo de onde Rodrick está localizado.'
+                },
+                {
+                  text: 'É a energia da Alma Primordial. Você tem certeza disso, mesmo estando tendo essa experiência pela primeira vez em sua vida.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Obrigado... Isabelle.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Agora... se concentre...'
+                },
+                {
+                  text: '...',
+                  action: () => {
+                    keys['CABIN_IS_GETTING_PRIMORDIAL_SOUL'] = true;
+                  }
+                }
+              ]
+            },
+            {
+              text: 'Falar o nome e revelar ter presenciado a morte de Magdalene',
+              chat: [
+                {
+                  text: '"Antes disso, tenho que te contar algo...", você começa a explicar',
+                },
+                {
+                  text: 'Você prossegue contando sobre como encontrou uma anã no caminho até a cabana e em como ela deixou de existir.'
+                },
+                {
+                  text: 'Rodrick parece estar sofrendo muito ao ouvir tudo isso.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Era... o que eu temia...'
+                },
+                {
+                  text: 'O anão tenta falar no meio dos soluços e do choro.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Só tem... um caminho até aqui...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Se você não a viu... então só significava uma coisa...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: '...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Vá em frente... diga o nome dela... não há mais nada me prendendo nesse mundo...'
+                },
+                {
+                  text: 'O seu peito dói ao ver essa cena. Mas você fez o que achou ser justo...'
+                },
+                {
+                  text: '"O nome dela era Madgalene..."'
+                },
+                {
+                  text: 'Rodrick fecha os olhos.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Madgalene... Como fui capaz de esquecer...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Como fui tolo...'
+                },
+                {
+                  text: 'Ele parece estar triste e bravo ao mesmo tempo. Se seus braços estivessem intactos, provavelmente estaria se batendo agora.'
+                },
+                {
+                  text: 'Você fecha os olhos para evitar ver essa cena. Você tenta respirar fundo, igual Rodrick lhe orientou.'
+                },
+                {
+                  text: 'Você começa a sentir uma energia vindo de onde Rodrick está localizado.'
+                },
+                {
+                  text: 'É a energia da Alma Primordial. Você tem certeza disso, mesmo estando tendo essa experiência pela primeira vez em sua vida.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Obrigado, Isabelle.'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'Agora... se concentre...'
+                },
+                {
+                  speaker: 'Rodrick',
+                  text: 'E vingue Madgalene...'
+                },
+                {
+                  text: '...',
+                  action: () => {
+                    keys['CABIN_IS_GETTING_PRIMORDIAL_SOUL'] = true;
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      auto: true,
+      requirements: () => {
+        return keys['CABIN_IS_GETTING_PRIMORDIAL_SOUL'];
+      },
+      chat: [
+        {
+          showCustomScene: 'rodrick'
         }
       ]
     }
@@ -3759,6 +4098,11 @@ function showMainOptionOnChat(chat) {
 }
 
 function showOptionOnChat(chat) {
+  if (chat.showCustomScene) {
+    showCustomScene(chat);
+    return;
+  }
+
   if (chat.requirements && !chat.requirements()) {
     moveToNextText();
     return;
@@ -3777,7 +4121,7 @@ function showOptionOnChat(chat) {
   }
 }
 
-function writeTextOnChat(chat) {
+function writeTextOnChat(chat, skipNext = false) {
   isWritting = true;
   // TODO: Área comentada para agilizar desenvolvimento 
   // hideNextButton();
@@ -3793,11 +4137,11 @@ function writeTextOnChat(chat) {
     if (index === chat.text.length) {
       clearInterval(writeTextInterval);
 
-      if (currentChat && currentChat.chat.length > currentChatIndex + 1 && currentChat.chat[currentChatIndex + 1].options?.length) {
+      if (!skipNext && currentChat && currentChat.chat.length > currentChatIndex + 1 && currentChat.chat[currentChatIndex + 1].options?.length) {
         handleNextButton();
-      } else if (currentChat.chat[currentChatIndex].goBackImmediately) {
+      } else if (!skipNext && currentChat.chat[currentChatIndex].goBackImmediately) {
         handleNextButton();
-      } else {
+      } else if (!skipNext) {
         showNextButton();
       }
       return;
@@ -3819,6 +4163,11 @@ function hideNextButton() {
 
 async function handleNextButton() {
   clearInterval(writeTextInterval);
+
+  if (currentCustomScene === 'rodrick') {
+    handleRodrickNext();
+    return;
+  }
 
   if (currentChat) {
     if (currentChat.chat[currentChatIndex].action) {
@@ -4004,10 +4353,10 @@ async function moveToScene(scene) {
 
   sceneCover.style.opacity = 1;
 
-  await new Promise((resolve) => setTimeout(() => resolve(), 500));
+  await delay(500);
   currentScene = scene;
   updateImage();
-  await new Promise((resolve) => setTimeout(() => resolve(), 500));
+  await delay(500);
 
   sceneCover.style.opacity = 0;
 }
@@ -4078,4 +4427,70 @@ function validateForest() {
     alert('invalido');
     keys['FOREST_DID_NOT_SOLVE_MAZE'] = true;
   }
+}
+
+function showCustomScene(chat) {
+  currentCustomScene = chat.showCustomScene;
+
+  if (chat.showCustomScene === 'rodrick') {
+    triggerRodrick();
+  }
+}
+
+async function triggerRodrick() {
+  const nextButton = document.getElementById('next-button');
+  hideNextButton();
+
+  const sceneCover = document.getElementById('scene-cover');
+  sceneCover.style.opacity = 0.5;
+
+  await delay(500);
+  
+  const button = document.getElementById('soul-button');
+  button.style.opacity = 1;
+  button.style.display = 'block';
+  button.href = 'Rodrick.pdf';
+
+  writeTextOnChat({ text: 'Resolva o enigma e digite abaixo a resposta:' });
+
+  await delay(1000);
+
+  const input = document.getElementById('chat-input');
+  input.style.display = 'block';
+  input.addEventListener('keydown', async e => {
+    if (e.key === 'Enter') {
+      await handleRodrickNext();
+    }
+  })
+}
+
+async function handleRodrickNext() {
+  const inputContainer = document.getElementById('chat-input');
+  const input = inputContainer.children[0];
+  let text = input.value.trim().toLowerCase() + '';
+
+  text = text.replaceAll('ç', 'c').replaceAll('ã', 'a').replace(/[^a-zA-Z ]/g, "");
+
+  if (text !== 'coroa de pedra coracao de ferro') {
+    inputContainer.classList.add('chat-input--wrong');
+    input.value = '';
+    await delay(400);
+    inputContainer.classList.remove('chat-input--wrong');
+    return;
+  }
+  
+  addSoulObtainedCover();
+
+  keys['CABIN_ACQUIRED_PRIMORDIAL_SOUL'] = true;
+  keys['CABIN_IS_GETTING_PRIMORDIAL_SOUL'] = false;
+}
+
+async function delay(time) {
+  await new Promise((resolve) => setTimeout(() => resolve(), time));
+}
+
+function addSoulObtainedCover() {
+  const soulCover = document.createElement('div');
+  soulCover.classList.add('soul-obtained-cover');
+  document.body.appendChild(soulCover);
 }
