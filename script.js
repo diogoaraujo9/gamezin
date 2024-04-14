@@ -1,4 +1,4 @@
-var currentScene = 'cabana'; // 'prado', 'montanha', 'cabana', 'lago', 'arvore'
+var currentScene = 'arvore'; // 'prado', 'montanha', 'cabana', 'lago', 'arvore'
 var currentCustomScene = ''; // 'rodrick'
 var edgeOpacity = 0;
 var redOpacity = 3;
@@ -30,6 +30,10 @@ var keys = {
   'HEROIN_ASKED_HOW_TO_SAVE_THE_WORLD': false,
   'HEROIN_FIRST_TALK_CONCLUDED': false,
   'HEROIN_HESITATED_TO_SEARCH_THE_SOULS': false,
+  'HEROIN_AFTER_CONCLUSION_OF_CABIN': false,
+  'HEROIN_TALKED_ABOUT_RODRICK_SOUL': false,
+  'HEROIN_AFTER_CONCLUSION_OF_TREE': false,
+  'HEROIN_TALKED_ABOUT_SHARIA_SOUL': false,
 
   'STARTED_QUEST': false,
 
@@ -53,6 +57,7 @@ var keys = {
   'CABIN_ASKED_THE_HEROIN_NAME': false,
   'CABIN_IS_GOING_TO_TELL_DWARF_NAME': false,
   'CABIN_IS_GETTING_PRIMORDIAL_SOUL': false,
+  'CABIN_CONCLUDED': false,
 
   'FOREST_INTRO_CONCLUDED': false,
   'FOREST_LEFT_ONCE': false,
@@ -75,6 +80,9 @@ var keys = {
   'TREE_LEFT_ONCE': false,
   'TREE_INSISTED_ON_MATTER': false,
   'TREE_GOT_FEMALE_DWARF_NAME': false,
+  'TREE_IS_GETTING_PRIMORDIAL_SOUL': false,
+  'TREE_ACQUIRED_PRIMORDIAL_SOUL': false,
+  'TREE_CONCLUDED': false,
 }
 
 // Fim da primeira conversa
@@ -133,7 +141,7 @@ var keys = {
 var keys = {
   'INIT': false,
 
-  'HEROIN_IS_FIRST_TIME_TALKING_TO': true,
+  'HEROIN_IS_FIRST_TIME_TALKING_TO': false,
   'HEROIN_CHOSE_TO_GET_CLOSE_TO': true,
   'HEROIN_MAIN_QUESTIONS': true,
   'HEROIN_ASKED_REASON_TO_COME_TO_THIS_WORLD': true,
@@ -142,6 +150,7 @@ var keys = {
   'HEROIN_ASKED_HOW_TO_SAVE_THE_WORLD': true,
   'HEROIN_FIRST_TALK_CONCLUDED': true,
   'HEROIN_HESITATED_TO_SEARCH_THE_SOULS': false,
+  'HEROIN_AFTER_CONCLUSION_OF_CABIN': true,
 
   'STARTED_QUEST': true,
 
@@ -166,7 +175,7 @@ var keys = {
   'CABIN_IS_GOING_TO_TELL_DWARF_NAME': true,
   'CABIN_IS_GETTING_PRIMORDIAL_SOUL': false,
   'CABIN_ACQUIRED_PRIMORDIAL_SOUL': false,
-  'CABIN_CONCLUDED': false,
+  'CABIN_CONCLUDED': true,
 
   'FOREST_INTRO_CONCLUDED': true,
   'FOREST_LEFT_ONCE': true,
@@ -190,9 +199,6 @@ var keys = {
   'TREE_INSISTED_ON_MATTER': true,
   'TREE_GOT_FEMALE_DWARF_NAME': true,
 }
-
-keys['FOREST_INTRO_CONCLUDED'] = true;
-keys['FOREST_LEFT_ONCE'] = true;
 
 var story = {
   'prado': [
@@ -364,10 +370,12 @@ var story = {
         return keys['HEROIN_IS_FIRST_TIME_TALKING_TO']
       },
       auto: true,
+      audio: 'self-contained-universe.mp3',
       chat: [
         {
           speaker: 'Desconhecida',
-          text: 'Primeiramente, prazer em... te conhecer. Só gostaria que tivéssemos nos conhecido em... circustâncias melhores.'
+          text: 'Primeiramente, prazer em... te conhecer. Só gostaria que tivéssemos nos conhecido em... circustâncias melhores.',
+          audio: 'self-contained-universe.mp3'
         },
         {
           speaker: 'Desconhecida',
@@ -422,7 +430,122 @@ var story = {
         {
           options: [
             {
+              text: 'Consegui a Alma Primordial dos elfos',
+              requirements: () => {
+                return keys['TREE_CONCLUDED'];
+              },
+              alreadySeen: () => {
+                return keys['HEROIN_TALKED_ABOUT_SHARIA_SOUL'];
+              },
+              chat: [
+                {
+                  text: 'A Heroína abre os olhos com grande dificuldade.'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Elfos... sim... bom...'
+                },
+                {
+                  text: 'Sua voz está rouca. Seus olhos inchados de tanto chorar. Seu corpo prestes a ceder.'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Só... falta... sereias...'
+                },
+                {
+                  text: 'Você pergunta se tem algo que você possa fazer para ajudar.'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Nome...'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Meu... nome...'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Ainda... não... lembro...'
+                },
+                {
+                  text: '"Perdão, não consegui descobrir o seu nome. Mas se conseguir, te contarei o mais rápido possível!", você diz na tentativa de animar a Heroína.'
+                },
+                {
+                  text: 'A Heroína olha para você e depois fecha os olhos mais uma vez.',
+                  action: () => {
+                    keys['HEROIN_TALKED_ABOUT_SHARIA_SOUL'] = true;
+                  },
+                  goBackImmediately: true,
+                },
+              ]
+            },
+            {
+              text: 'Consegui a Alma Primordial dos anões!',
+              requirements: () => {
+                return keys['CABIN_CONCLUDED'] && !keys['TREE_CONCLUDED'];
+              },
+              alreadySeen: () => {
+                return keys['HEROIN_TALKED_ABOUT_RODRICK_SOUL'];
+              },
+              chat: [
+                {
+                  speaker: 'Heroína',
+                  text: 'Que boa... notícia...'
+                },
+                {
+                  text: 'A Heroína consegue esboçar um sorriso.'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Fico feliz... que tenha conseguido... convencer aqueles cabeças duras...'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Mas no fundo... eles são bons...'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Espero que você não tenha... tido uma experiência ruim...'
+                },
+                {
+                  text: 'Ela fala com dificuldade.'
+                },
+                {
+                  text: '"Conheci Rodrick. Ele foi um pouco rude quando o conheci, mas ele logo se propos a me ajudar", você diz.'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Rodrick... Ah sim... acho que me lembro dele...'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Ele reparava os meus... equipamentos... um grande amigo...'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Então... ele se foi, certo? Oh Rodrick... outro que não consegui salvar...'
+                },
+                {
+                  text: 'A Heroína parece estar sofrendo com a notícia.'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Mas não há tempo, minha criança... você ainda precisa achar as outras Almas Primordiais...'
+                },
+                {
+                  text: 'Ela tem razão. Não há tempo para o luto.',
+                  action: () => {
+                    keys['HEROIN_TALKED_ABOUT_RODRICK_SOUL'] = true;
+                  },
+                  goBackImmediately: true,
+                }
+              ]
+            },
+            {
               text: 'Você sabe o motivo de eu ter vindo para este mundo? Estou tão... perdida.',
+              requirements: () => {
+                return !keys['TREE_CONCLUDED'];
+              },
               alreadySeen: () => {
                 return keys['HEROIN_ASKED_REASON_TO_COME_TO_THIS_WORLD'];
               },
@@ -455,6 +578,9 @@ var story = {
             },
             {
               text: 'O que está acontecendo com esse mundo?',
+              requirements: () => {
+                return !keys['TREE_CONCLUDED'];
+              },
               alreadySeen: () => {
                 return keys['HEROIN_ASKED_WHAT_WAS_HAPPENING_TO_THIS_WORLD'];
               },
@@ -507,7 +633,7 @@ var story = {
                 return keys['HEROIN_ASKED_ABOUT_THE_DOOR_LOCK'];
               },
               requirements: () => {
-                return keys['HEROIN_ASKED_REASON_TO_COME_TO_THIS_WORLD'] && keys['HEROIN_ASKED_WHAT_WAS_HAPPENING_TO_THIS_WORLD'];
+                return keys['HEROIN_ASKED_REASON_TO_COME_TO_THIS_WORLD'] && keys['HEROIN_ASKED_WHAT_WAS_HAPPENING_TO_THIS_WORLD'] && !keys['TREE_CONCLUDED'];;
               },
               chat: [
                 {
@@ -565,7 +691,7 @@ var story = {
                 return keys['HEROIN_ASKED_HOW_TO_SAVE_THE_WORLD'];
               },
               requirements: () => {
-                return keys['HEROIN_ASKED_ABOUT_THE_DOOR_LOCK'];
+                return keys['HEROIN_ASKED_ABOUT_THE_DOOR_LOCK'] && !keys['TREE_CONCLUDED'];;
               },
               chat: [
                 {
@@ -668,8 +794,20 @@ var story = {
               },
               chat: [
                 {
+                  requirements: () => {
+                    return !keys['TREE_CONCLUDED'];
+                  },
                   speaker: 'Heroína',
                   text: 'Que a sorte esteja do seu lado, minha criança.',
+                  action: () => {
+                    keys['HEROIN_IS_ASKING_MAIN_QUESTIONS'] = false;
+                  }
+                },
+                {
+                  requirements: () => {
+                    return keys['TREE_CONCLUDED'];
+                  },
+                  text: 'Você se afasta da Heroína.',
                   action: () => {
                     keys['HEROIN_IS_ASKING_MAIN_QUESTIONS'] = false;
                   }
@@ -685,6 +823,7 @@ var story = {
         return keys['HEROIN_FIRST_TALK_CONCLUDED'] && !keys['STARTED_QUEST']
       },
       auto: true,
+      audio: 'self-contained-universe.mp3',
       chat: [
         {
           options: [
@@ -756,10 +895,72 @@ var story = {
       ]
     },
     {
+      auto: true,
+      audio: 'on-little-cat-feet.mp3',
+      requirements: () => {
+        return keys['CABIN_CONCLUDED'] && !keys['HEROIN_AFTER_CONCLUSION_OF_CABIN'];
+      },
+      chat: [
+        {
+          text: 'Assim que você volta para o campo, você vê a estrada que leva até a montanha se desfazer.'
+        },
+        {
+          text: '...',
+          increaseRain: true,
+          soulCover: true,
+        },
+        {
+          text: 'A chuva parece ter ficado mais forte. A vista parece estar mais vazia comparada quando você chegou nesse mundo.'
+        },
+        {
+          text: 'O tempo está cada vez mais curto. Você torce para que ainda seja possível reverter tudo.'
+        },
+        {
+          text: 'Por você. Por Rodrick. Por Magdalene.'
+        },
+        {
+          text: 'E pela pobre heroína ali no meio do campo.',
+          action: () => {
+            keys['HEROIN_AFTER_CONCLUSION_OF_CABIN'] = true;
+          }
+        },
+      ]
+    },
+    {
+      auto: true,
+      audio: 'on-little-cat-feet.mp3',
+      requirements: () => {
+        return keys['TREE_CONCLUDED'] && !keys['HEROIN_AFTER_CONCLUSION_OF_TREE'];
+      },
+      chat: [
+        {
+          text: 'Assim que você volta para o campo, você vê a estrada que leva até a floresta se desfazer.'
+        },
+        {
+          text: '...',
+          increaseRain: true,
+          soulCover: true,
+        },
+        {
+          text: 'A chuva parece ter ficado mais forte. Tudo está desaparecendo. Árvores já não estão no mesmo lugar que antes'
+        },
+        {
+          text: 'É triste presenciar o fim de tudo isso.'
+        },
+        {
+          text: 'Mas não há tempo para tristeza.',
+          action: () => {
+            keys['HEROIN_AFTER_CONCLUSION_OF_TREE'] = true;
+          }
+        },
+      ]
+    },
+    {
       requirements: () => {
         return keys['STARTED_QUEST']
       },
       auto: true,
+      audio: 'on-little-cat-feet.mp3',
       chat: [
         {
           cleanText: true,
@@ -767,9 +968,18 @@ var story = {
           options: [
             {
               text: 'Falar novamente com a Heroína',
+              requirements: () => {
+                return !keys['TREE_CONCLUDED'];
+              },
               chat: [
                 {
                   text: 'Você se aproxima da Heroína. Ela ainda está deitada e agora de olhos fechados.'
+                },
+                {
+                  text: 'Ela parece estar mais volátil que antes. Essa não é uma cena que você queria ver.',
+                  requirements: () => {
+                    return keys['CABIN_CONCLUDED'];
+                  },
                 },
                 {
                   text: 'Assim que você chega perto, ela percebe a sua presença e abre os olhos.'
@@ -785,20 +995,58 @@ var story = {
               ]
             },
             {
+              text: 'Falar novamente com a Heroína',
+              requirements: () => {
+                return keys['TREE_CONCLUDED'];
+              },
+              chat: [
+                {
+                  text: 'Você se aproxima da Heroína. Ela parece estar péssima.'
+                },
+                {
+                  text: 'Seu corpo não vai durar muito tempo. A maldição está quase dominando seu corpo.'
+                },
+                {
+                  text: 'Ela não percebe a sua presença.',
+                  action: () => {
+                    keys['HEROIN_IS_ASKING_MAIN_QUESTIONS'] = true;
+                  },
+                  goBackImmediately: true,
+                },
+              ]
+            },
+            {
               text: 'Ir para o norte',
+
               chat: [
                 {
                   speaker: 'Heroína',
-                  text: 'Onde você está indo, criança? Você ainda precisa das três Almas Primordiais antes de partir para o templo.'
+                  text: 'Onde você está indo, criança? Você ainda precisa das três Almas Primordiais antes de partir para o templo.',
+                  requirements: () => {
+                    return !keys['TREE_CONCLUDED'];
+                  }
                 },
                 {
                   text: 'Lembrando-se do que precisa ser feito, você volta para o meio do campo.',
+                  requirements: () => {
+                    return !keys['TREE_CONCLUDED'];
+                  },
+                  goBack: true,
+                },
+                {
+                  text: 'Você começa a seguir o caminho para o norte, mas se lembra que ainda não possui a Alma Primordial das sereias.',
+                  requirements: () => {
+                    return keys['TREE_CONCLUDED'];
+                  },
                   goBack: true,
                 },
               ]
             },
             {
               text: 'Ir para o oeste',
+              requirements: () => {
+                return !keys['HEROIN_AFTER_CONCLUSION_OF_CABIN'];
+              },
               chat: [
                 {
                   text: 'Você se dirige para o oeste, em direção à montanha.',
@@ -809,7 +1057,7 @@ var story = {
             },
             {
               requirements: () => {
-                return !keys['FOREST_SOLVED_MAZE'];
+                return !keys['FOREST_SOLVED_MAZE'] && !keys['TREE_CONCLUDED'];
               },
               text: 'Ir para o sul',
               chat: [
@@ -822,7 +1070,7 @@ var story = {
             },
             {
               requirements: () => {
-                return keys['FOREST_SOLVED_MAZE'];
+                return keys['FOREST_SOLVED_MAZE'] && !keys['TREE_CONCLUDED'];
               },
               text: 'Ir para o sul',
               chat: [
@@ -1033,6 +1281,9 @@ var story = {
           options: [
             {
               text: 'Investigar a trilha',
+              requirements: () => {
+                return !keys['CABIN_CONCLUDED'];
+              },
               chat: [
                 {
                   requirements: () => {
@@ -1073,6 +1324,9 @@ var story = {
             },
             {
               text: 'Ir para a cabana',
+              requirements: () => {
+                return !keys['CABIN_CONCLUDED'];
+              },
               chat: [
                 {
                   text: 'Você se dirige para a cabana.',
@@ -2268,7 +2522,7 @@ var story = {
     {
       auto: true,
       requirements: () => {
-        return !keys['CABIN_IS_GETTING_PRIMORDIAL_SOUL'];
+        return !keys['CABIN_IS_GETTING_PRIMORDIAL_SOUL'] && !keys['CABIN_ACQUIRED_PRIMORDIAL_SOUL'];
       },
       chat: [
         {
@@ -2277,7 +2531,8 @@ var story = {
               text: 'Falar o nome e esconder o fato de ter presenciado a morte de Magdalene',
               chat: [
                 {
-                  text: '"O nome dela é Madgalene..."'
+                  text: '"O nome dela é Madgalene..."',
+                  audio: 'geothermal.mp3',
                 },
                 {
                   text: 'Rodrick fecha os olhos.'
@@ -2298,7 +2553,8 @@ var story = {
                   text: 'Lágrimas começam a escorrer do rosto do anão, mas dessa vez são de felicidade.'
                 },
                 {
-                  text: 'Você fecha os olhos e começa a respirar fundo, igual Rodrick lhe orientou.'
+                  text: 'Você fecha os olhos e começa a respirar fundo, igual Rodrick lhe orientou.',
+                  showSceneCover: true,
                 },
                 {
                   text: 'Você começa a sentir uma energia vindo de onde Rodrick está localizado.'
@@ -2378,7 +2634,8 @@ var story = {
                   text: 'Ele parece estar triste e bravo ao mesmo tempo. Se seus braços estivessem intactos, provavelmente estaria se batendo agora.'
                 },
                 {
-                  text: 'Você fecha os olhos para evitar ver essa cena. Você tenta respirar fundo, igual Rodrick lhe orientou.'
+                  text: 'Você fecha os olhos para evitar ver essa cena. Você tenta respirar fundo, igual Rodrick lhe orientou.',
+                  showSceneCover: true,
                 },
                 {
                   text: 'Você começa a sentir uma energia vindo de onde Rodrick está localizado.'
@@ -2413,11 +2670,70 @@ var story = {
     {
       auto: true,
       requirements: () => {
-        return keys['CABIN_IS_GETTING_PRIMORDIAL_SOUL'];
+        return keys['CABIN_IS_GETTING_PRIMORDIAL_SOUL'] && !keys['CABIN_ACQUIRED_PRIMORDIAL_SOUL']
       },
       chat: [
         {
           showCustomScene: 'rodrick'
+        }
+      ]
+    },
+    {
+      auto: true,
+      requirements: () => {
+        return keys['CABIN_ACQUIRED_PRIMORDIAL_SOUL'] && !keys['CABIN_CONCLUDED'];
+      },
+      chat: [
+        {
+          text: '...',
+        },
+        {
+          text: 'A energia que estava em sua volta começa a entrar dentro de você.',
+        },
+        {
+          text: 'A sintonia que você estava sentindo começa a ficar cada vez mais forte.',
+        },
+        {
+          text: 'Você percebe que conseguiu adquirir a primeira Alma Primordial. Além disso, você sente entender melhor os sentimentos de Rodrick.',
+        },
+        {
+          text: 'Toda a dor que ele passou ao longo desses últimos anos...',
+        },
+        {
+          text: 'Você abre os olhos, mas percebe que Rodrick não está presente.',
+          hideSceneCover: true,
+        },
+        {
+          text: 'Ao olhar em volta da cabana, você sente uma estranha nostalgia... O que é estranho, já que hoje é a primeira vez que pisou naquele lugar.',
+        },
+        {
+          text: 'Dói saber que ele se foi. Porém, ele confiou em você para salvar esse mundo, então você busca forças para voltar a sua missão.',
+          action: () => {
+            keys['CABIN_CONCLUDED'] = true;
+          }
+        },
+      ]
+    },
+    {
+      auto: true,
+      requirements: () => {
+        return keys['CABIN_CONCLUDED'];
+      },
+      chat: [
+        {
+          audio: '',
+          cleanText: true,
+          options: [
+            {
+              text: 'Sair da cabana',
+              chat: [
+                {
+                  text: 'Você sai da cabana, com uma estranha sensação de que nunca irá voltar mais ali.',
+                  moveToScene: 'montanha'
+                },
+              ]
+            }
+          ]
         }
       ]
     }
@@ -3754,6 +4070,9 @@ var story = {
     },
     {
       auto: true,
+      requirements: () => {
+        return !keys['TREE_IS_GETTING_PRIMORDIAL_SOUL'] && !keys['TREE_ACQUIRED_PRIMORDIAL_SOUL'];
+      },
       chat: [
         {
           requirements: () => {
@@ -3763,6 +4082,159 @@ var story = {
         },
         {
           options: [
+            {
+              requirements: () => {
+                return keys['CABIN_CONCLUDED']
+              },
+              text: 'Devolver caixa de música',
+              chat: [
+                {
+                  text: 'Você mostra a caixa de música concertada para Sharia.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Aaaaah! Você concertou mesmo! Poxa, muito obrigada!'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Esse é o meu brinquedo favorito. Meu pai que fez para mim para me dar de aniversário!'
+                },
+                {
+                  text: 'Sharia pula de alegria, correndo e girando pela casa com a caixa da música em seus braços.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Ok, vou colocar para tocar uma música! Você deve estar morrendo de curiosidade para escutar, né??'
+                },
+                {
+                  text: 'A elfa posiciona a caixa em cima de uma mesa no meio da sala e aperta um botão em sua lateral.'
+                },
+                {
+                  text: '...',
+                  audio: 'moonsong.mp3'
+                },
+                {
+                  text: 'A música começa a tocar.'
+                },
+                {
+                  text: 'A elfa fecha os olhos e se concentra na música que está tocando.'
+                },
+                {
+                  text: 'Você se pergunta se o que está fazendo vale a pena. Esse mundo não tem muito tempo sobrando. Você deveria estar escutando música agora?'
+                },
+                {
+                  text: 'Porém, no meio de tanto caos, ver a elfa aproveitando o momento parece te acalmar também.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Prazer em te conhecer, Isabelle.'
+                },
+                {
+                  text: 'Você acha estranho o que acabou de ouvir.'
+                },
+                {
+                  text: 'Sharia levanta e te encara. Porém, dessa vez, não existe nenhum traço infantil em seu rosto. Ou em seu jeito.'
+                },
+                {
+                  text: 'Parece que finalmente suas ações combinam com a idade que Sharia parece ter.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'O tempo é curto. Entaõ serei breve.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Nossa comunidade élfica previu que você chegaria aqui para salvar esse mundo. E sabíamos também que você viria a procura de uma Alma Primoridal.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Infelizmente, todos os elfos foram sendo tomados pela maldição, um por um. E eu... sabia que não iria aguentar por muito mais tempo...'
+                },
+                {
+                  text: 'O corpo de Sharia começa a ficar volátil.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Consegue ver? Já não tenho muito tempo.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Mas eu precisava passar a minha Alma Primordial para você. Alguém precisava.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Enquanto pesquisava a maldição que assola esse mundo... criei a teoria que perder as nossas memórias poderia atrasar a corrupção causada pela maldição em nossos corpos.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Talvez pelo motivo de tornarmos em outras pessoas assim que perdemos as nossas memórias...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Não sei dizer ao certo como isso é possível... mas no desespero de falhar em minha missão, assim o fiz...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Tive fé que você conseguiria... me ajudar a recobrar as minhas memórias...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'E que alegria em saber... que deu certo...'
+                },
+                {
+                  text: 'Sharia olha para a caixa de música e esboça um curto sorriso. Depois, volta a atenção para você.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Minha criança, como queria conversar mais com você... como queria te acompanhar em sua aventura...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Mas temo que esse momento terá que ser o suficiente...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Nossa sintonia não é forte... é bem fraca, para falar a verdade... mas irei utilizar magia para possibilitar a passagem da minha Alma Primordial para você...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Não é o ideal, mas é o que posso fazer agora...'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Por conta disso, talvez algumas informações se percam no meio do caminho... mas sei que você irá superar cada obstáculo.'
+                },
+                {
+                  text: 'A partir desse ponto, o corpo de Sharia está quase se dissolvendo.'
+                },
+                {
+                  speaker: 'Sharia',
+                  text: 'Feche os olhos, minha criança... E deixe a energia da natureza entrar em seu corpo...'
+                },
+                {
+                  text: 'Você gostaria de conversar mais com ela. Você gostaria de conhecê-la. Ela está se sacrificando por uma causa maior, e você não sabe quase nada sobre ela.'
+                },
+                {
+                  text: 'Você então fecha os olhos.',
+                  showSceneCover: true,
+                },
+                {
+                  text: 'Você respira fundo.'
+                },
+                {
+                  text: 'É possível sentir uma energia ao seu redor. Dessa vez uma bem mais calma.'
+                },
+                {
+                  text: 'Você tenta entrar em sintonia com ela.'
+                },
+                {
+                  text: '...',
+                  action: () => {
+                    keys['TREE_IS_GETTING_PRIMORDIAL_SOUL'] = true;
+                  }
+                }
+              ]
+            },
             {
               alreadySeen: () => {
                 return keys['TREE_INSISTED_ON_MATTER'];
@@ -3786,8 +4258,8 @@ var story = {
             },
             {
               requirements: () => {
-                // Cenário sem o pingente
-                return keys['CABIN_RODRICK_ACCEPTED_TO_HELP'] && keys['MOUNTAIN_GOT_PENDANT'] && !keys['TREE_GOT_FEMALE_DWARF_NAME'];
+                // Cenário com o pingente
+                return !keys['CABIN_CONCLUDED'] && keys['CABIN_RODRICK_ACCEPTED_TO_HELP'] && keys['MOUNTAIN_GOT_PENDANT'] && !keys['TREE_GOT_FEMALE_DWARF_NAME'];
               },
               text: 'Mostrar pingente e perguntar nome da anã',
               chat: [
@@ -3904,7 +4376,7 @@ var story = {
             {
               requirements: () => {
                 // Cenário sem o pingente
-                return keys['CABIN_RODRICK_ACCEPTED_TO_HELP'] && !keys['MOUNTAIN_GOT_PENDANT'] && !keys['TREE_GOT_FEMALE_DWARF_NAME'];
+                return !keys['CABIN_CONCLUDED'] && keys['CABIN_RODRICK_ACCEPTED_TO_HELP'] && !keys['MOUNTAIN_GOT_PENDANT'] && !keys['TREE_GOT_FEMALE_DWARF_NAME'];
               },
               text: 'Perguntar nome da esposa de Rodrick',
               chat: [
@@ -4009,6 +4481,82 @@ var story = {
           ]
         }
       ]
+    },
+    {
+      auto: true,
+      requirements: () => {
+        return keys['TREE_IS_GETTING_PRIMORDIAL_SOUL'] && !keys['TREE_ACQUIRED_PRIMORDIAL_SOUL']
+      },
+      chat: [
+        {
+          showCustomScene: 'sharia'
+        }
+      ]
+    },
+    {
+      auto: true,
+      requirements: () => {
+        return keys['TREE_ACQUIRED_PRIMORDIAL_SOUL'] && !keys['TREE_CONCLUDED'];
+      },
+      chat: [
+        {
+          text: '...',
+        },
+        {
+          text: 'A energia que estava em sua volta começa a entrar dentro de você.',
+        },
+        {
+          text: 'A sintonia que você estava sentindo começa a ficar cada vez mais forte.',
+        },
+        {
+          text: 'Você percebe que conseguiu adquirir a segunda Alma Primordial. Além disso, você sente entender melhor os sentimentos de Sharia.',
+        },
+        {
+          text: 'Ver todos os habitantes da comunidade sumindo... O desespero de não conseguir ajudar com a profecia que eles tiveram...',
+        },
+        {
+          text: 'Você abre os olhos e, como esperava, Sharia não estava mais ali.',
+          hideSceneCover: true,
+        },
+        {
+          text: 'Você vai mais uma vez na varanda. Para cada árvore que você olha em volta, um sentimento diferente desperta dentro de você. Como se você tivesse morado naquele lugar por mais de mil anos.',
+        },
+        {
+          text: 'É triste ver todas elas desaparecendo. O que te lembra de continuar a sua missão.',
+        },
+        {
+          text: 'Falta pouco.',
+        },
+        {
+          text: 'Só mais uma alma.',
+          action: () => {
+            keys['TREE_CONCLUDED'] = true;
+          }
+        },
+      ]
+    },
+    {
+      auto: true,
+      requirements: () => {
+        return keys['TREE_CONCLUDED'];
+      },
+      chat: [
+        {
+          audio: '',
+          cleanText: true,
+          options: [
+            {
+              text: 'Voltar para o campo',
+              chat: [
+                {
+                  text: 'Você dá adeus para a floresta e volta para o campo.',
+                  moveToScene: 'prado'
+                },
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }
@@ -4094,6 +4642,9 @@ function getOptions() {
 function showMainOptionOnChat(chat) {
   currentChat = chat;
   currentChatIndex = 0;
+
+  handleChatEvents(chat);
+
   showOptionOnChat(chat.chat[0]);
 }
 
@@ -4199,9 +4750,7 @@ function moveToNextText() {
 function handleChatEvents(chat) {
   if (chat.audio && chat.audio !== currentAudioFile) {
     if (chat.audioAsync) {
-      var asyncAudio = new Audio(chat.audio);
-      asyncAudio.volume = 1;
-      asyncAudio.play();
+      playAsyncAudio(chat.audio);
     } else {
       if (audio) {
         fadeOutAudio(audio);
@@ -4259,17 +4808,49 @@ function handleChatEvents(chat) {
       }, 1000);
     }, 1000);
   }
+
+  if (chat.hideSceneCover) {
+    setSceneCoverOpacity(0);
+  }
+
+  if (chat.showSceneCover) {
+    setSceneCoverOpacity(1);
+  }
+
+  if (chat.increaseRain) {
+    let count = 0;
+
+    if (keys['CABIN_CONCLUDED']) {
+      count++;
+    }
+
+    if (keys['TREE_CONCLUDED']) {
+      count += 2;
+    }
+
+    makeItRain(count);
+    playAsyncAudio('thunder.mp3');
+  }
+
+  if (chat.soulCover) {
+    addSoulObtainedCover();
+  }
 }
 
-function fadeOutAudio(audio) {
-  let volume = 1;
+function fadeOutAudio(audio, targetVolume = 0) {
+  let volume = audio.volume || 1;
+  let currentTargetValue = targetVolume || 0;
+
   let volumeInterval = setInterval(() => {
     volume -= 0.01;
 
-    if (volume <= 0) {
-      audio.volume = 0;
+    if (volume <= currentTargetValue) {
+      audio.volume = currentTargetValue;
       clearInterval(volumeInterval);
-      audio.pause();
+
+      if (currentTargetValue === 0) {
+        audio.pause();
+      }
     } else {
       audio.volume = volume;
     }
@@ -4290,6 +4871,12 @@ function fadeInAudio(audio) {
       audio.volume = volume;
     }
   }, 10);
+}
+
+function playAsyncAudio(audio) {
+  var asyncAudio = new Audio(audio);
+  asyncAudio.volume = 1;
+  asyncAudio.play();
 }
 
 function showOptionsToChoose(chat) {
@@ -4349,16 +4936,12 @@ function handleAfterChat(chat) {
 }
 
 async function moveToScene(scene) {
-  const sceneCover = document.getElementById('scene-cover');
-
-  sceneCover.style.opacity = 1;
-
+  setSceneCoverOpacity(1);
   await delay(500);
   currentScene = scene;
   updateImage();
   await delay(500);
-
-  sceneCover.style.opacity = 0;
+  setSceneCoverOpacity(0);
 }
 
 function validateForest() {
@@ -4434,24 +5017,25 @@ function showCustomScene(chat) {
 
   if (chat.showCustomScene === 'rodrick') {
     triggerRodrick();
+  } else if (chat.showCustomScene === 'sharia') {
+    triggerSharia();
   }
 }
 
 async function triggerRodrick() {
-  const nextButton = document.getElementById('next-button');
   hideNextButton();
-
-  const sceneCover = document.getElementById('scene-cover');
-  sceneCover.style.opacity = 0.5;
+  setSceneCoverOpacity(1);
 
   await delay(500);
+
+  fadeOutAudio(audio, 0.1);
   
   const button = document.getElementById('soul-button');
   button.style.opacity = 1;
   button.style.display = 'block';
   button.href = 'Rodrick.pdf';
 
-  writeTextOnChat({ text: 'Resolva o enigma e digite abaixo a resposta:' });
+  writeTextOnChat({ text: 'Resolva o enigma e digite abaixo a resposta:' }, true);
 
   await delay(1000);
 
@@ -4478,11 +5062,87 @@ async function handleRodrickNext() {
     inputContainer.classList.remove('chat-input--wrong');
     return;
   }
-  
+
+  currentCustomScene = '';
+  setSceneCoverOpacity(1);
+
+  const button = document.getElementById('soul-button');
+  button.style.opacity = 0;
+  button.style.display = 'none';
+
   addSoulObtainedCover();
+
+  fadeOutAudio(audio, 0);
+  playAsyncAudio('soul-obtained.mp3');
 
   keys['CABIN_ACQUIRED_PRIMORDIAL_SOUL'] = true;
   keys['CABIN_IS_GETTING_PRIMORDIAL_SOUL'] = false;
+
+  getOptions();
+
+  inputContainer.style.display = 'none';
+}
+
+async function triggerSharia() {
+  hideNextButton();
+  setSceneCoverOpacity(1);
+
+  await delay(500);
+
+  fadeOutAudio(audio, 0.1);
+  
+  const button = document.getElementById('soul-button');
+  button.style.opacity = 1;
+  button.style.display = 'block';
+  button.href = 'Sharia.pdf';
+
+  writeTextOnChat({ text: 'Resolva o enigma e digite abaixo a resposta:' }, true);
+
+  await delay(1000);
+
+  const input = document.getElementById('chat-input');
+  input.style.display = 'block';
+  input.addEventListener('keydown', async e => {
+    if (e.key === 'Enter') {
+      await handleShariaNext();
+    }
+  })
+}
+
+async function handleShariaNext() {
+  const inputContainer = document.getElementById('chat-input');
+  const input = inputContainer.children[0];
+  let text = input.value.trim().toLowerCase() + '';
+
+  text = text.replaceAll('ç', 'c').replaceAll('ã', 'a').replaceAll('  ', ' ').replace(/[^a-zA-Z ]/g, "");
+
+  if (text !== 'harmonia na terra luz na escuridao') {
+    inputContainer.classList.add('chat-input--wrong');
+    input.value = '';
+    await delay(400);
+    inputContainer.classList.remove('chat-input--wrong');
+    return;
+  }
+
+  currentCustomScene = '';
+  
+  setSceneCoverOpacity(1);
+
+  const button = document.getElementById('soul-button');
+  button.style.opacity = 0;
+  button.style.display = 'none';
+
+  addSoulObtainedCover();
+
+  fadeOutAudio(audio, 0);
+  playAsyncAudio('soul-obtained.mp3');
+
+  keys['TREE_ACQUIRED_PRIMORDIAL_SOUL'] = true;
+  keys['TREE_IS_GETTING_PRIMORDIAL_SOUL'] = false;
+
+  getOptions();
+
+  inputContainer.style.display = 'none';
 }
 
 async function delay(time) {
@@ -4490,7 +5150,15 @@ async function delay(time) {
 }
 
 function addSoulObtainedCover() {
-  const soulCover = document.createElement('div');
-  soulCover.classList.add('soul-obtained-cover');
-  document.body.appendChild(soulCover);
+  const soulCover = document.getElementById('soul-obtained-cover');
+  soulCover.style.display = 'block';
+
+  setTimeout(() => {
+    soulCover.style.display = 'none';
+  }, 5000);
+}
+
+function setSceneCoverOpacity(opacity) {
+  const sceneCover = document.getElementById('scene-cover');
+  sceneCover.style.opacity = opacity;
 }

@@ -143,6 +143,7 @@ body, html {
   border: 1px solid #8d3636;
   margin: auto;
   display: block;
+  overflow: auto;
 }
 
 .scene-cover {
@@ -222,33 +223,32 @@ body, html {
 }
 
 .soul-obtained-cover {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  bottom: 0;
   z-index: 3;
   background: white !important;
-  border-radius: 50%;
-  width: 0px;
-  height: 0px;
-  display: block;
-
   animation-name: soulObtainedAnimation;
-  animation-duration: 500ms;
+  animation-duration: 3000ms;
   animation-fill-mode: forwards;
   animation-timing-function: ease-out;
 }
 
 @keyframes soulObtainedAnimation {
-  from {
-    width: 0px;
-    height: 0px;
-    background-color: white;
-  }
-  to {
-    width: calc(100vw + 2000px);
-    height: calc(100vw + 2000px);
-    background-color: black;
-  }
+  0% { opacity: 1; }
+  5% { opacity: 0 }
+
+  6% { opacity: 1; }
+  10% { opacity: 0 }
+
+  11% { opacity: 1; }
+  15% { opacity: 0 }
+
+  16% { opacity: 1; }
+  20% { opacity: 0 }
+
+  21% { opacity: 1; }
+  26% { opacity: 0 }
+
+  27% { opacitiy: 1 }
+
+  50% { opacity: 1 }
+  100% { opacity: 0 }
 }
