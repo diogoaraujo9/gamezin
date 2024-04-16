@@ -252,3 +252,21 @@ body, html {
   50% { opacity: 1 }
   100% { opacity: 0 }
 }
+
+.ending-cover {
+  z-index: 3;
+  background-color: white !important;
+  opacity: 0;
+
+  animation-name: endingAnimation;
+  animation-duration: 12000ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+@keyframes endingAnimation {
+  0% {opacity: 0;}
+  50% {opacity: 1;}
+  90% {opacity: 1;}
+  to {opacity: 0;}
+}

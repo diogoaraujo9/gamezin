@@ -1,8 +1,9 @@
-var currentScene = 'arvore'; // 'prado', 'montanha', 'cabana', 'lago', 'arvore'
+var currentScene = 'prado'; // 'prado', 'montanha', 'cabana', 'lago', 'arvore', 'door', 'altar'
 var currentCustomScene = ''; // 'rodrick'
 var edgeOpacity = 0;
 var redOpacity = 3;
 var colorOpacity = 6;
+var fluctuationInterval;
 
 var currentChat;
 var currentChatIndex = 0;
@@ -16,6 +17,10 @@ var currentAudioFile = '';
 var forestSequence = [];
 var colorsSequence = [];
 var currentForestSequence = [];
+
+var lakeStartedCustomSong = false;
+
+var finished = false;
 
 // Inicio
 var keys = {
@@ -70,6 +75,9 @@ var keys = {
   'LAKE_NERIDA_ASKED_THE_HEROIN_NAME': false,
   'LAKE_NERIDA_ASKED_ABOUT_DWARVES': false,
   'LAKE_NERIDA_ASKED_ABOUT_FEMALE_DWARF': false,
+  'LAKE_IS_GETTING_PRIMORDIAL_SOUL': false,
+  'LAKE_ACQUIRED_PRIMORDIAL_SOUL': false,
+  'LAKE_CONCLUDED': false,
 
   'TREE_FIRST_TALK_CONCLUDED': false,
   'TREE_IS_LOOKING_FOR_SHARIA': false,
@@ -83,6 +91,13 @@ var keys = {
   'TREE_IS_GETTING_PRIMORDIAL_SOUL': false,
   'TREE_ACQUIRED_PRIMORDIAL_SOUL': false,
   'TREE_CONCLUDED': false,
+
+  'DOOR_IS_GETTING_PRIMORDIAL_SOUL': false,
+  'DOOR_ACQUIRED_PRIMORDIAL_SOUL': false,
+
+  'ALTAR_IS_CHOOSING': false,
+
+  'GAME_COMPLETED': false,
 }
 
 // Fim da primeira conversa
@@ -188,6 +203,7 @@ var keys = {
   'LAKE_NERIDA_ASKED_THE_HEROIN_NAME': true,
   'LAKE_NERIDA_ASKED_ABOUT_DWARVES': true,
   'LAKE_NERIDA_ASKED_ABOUT_FEMALE_DWARF': true,
+  'LAKE_CONCLUDED': true,
 
   'TREE_FIRST_TALK_CONCLUDED': true,
   'TREE_IS_LOOKING_FOR_SHARIA': true,
@@ -198,10 +214,226 @@ var keys = {
   'TREE_LEFT_ONCE': true,
   'TREE_INSISTED_ON_MATTER': true,
   'TREE_GOT_FEMALE_DWARF_NAME': true,
+  'TREE_CONCLUDED': true,
 }
 
 var story = {
   'prado': [
+    {
+      requirements: () => {
+        return keys['GAME_COMPLETED']
+      },
+      auto: true,
+      chat: [
+        {
+          text: '...'
+        },
+        {
+          text: 'Você abre os olhos e vê um campo no meio de uma floresta.'
+        },
+        {
+          text: 'Está de noite. Silencioso. Mas você não sente medo.'
+        },
+        {
+          text: 'Você reconhece aquele lugar. É o mesmo campo que você apareceu momentos atrás.'
+        },
+        {
+          text: 'Mas, diferentemente de antes, parece que não há mais maldição. Tudo está em seu devido lugar.'
+        },
+        {
+          speaker: 'Desconhecida',
+          text: 'Garotaaaa!!!'
+        },
+        {
+          text: 'Você olha para trás, assustada, e se depara com Helena correndo até você.'
+        },
+        {
+          text: 'Ela te da um abraço forte e te levanta no ar.'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Você conseguiu! Hahahahaha! Você conseguiu, conseguiu mesmo!'
+        },
+        {
+          text: 'É a primeira vez que você a vê tão feliz. Até parece outra pessoa.'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Eu sabia que você iria conseguir! Eu senti.'
+        },
+        {
+          text: 'Você percebe outros habitantes chegando no campo.'
+        },
+        {
+          text: 'Rodrick parece estar ao lado de Magdalene. Existem outros anões em volta.'
+        },
+        {
+          text: 'Sharia está em volta do que parecem ser os membros da sua comunidade.'
+        },
+        {
+          text: 'Por fim, vindo do leste, você escuta a mais bela música que você já ouviu.'
+        },
+        {
+          text: '"Verdade... seu nome, eu descobri!", você diz para a Heroína.'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Helena! Meu nome é Helena. Como pude me esquecer.'
+        },
+        {
+          text: 'Ela te coloca no chão novamente.'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Nem sei como te agradecer... Espera... eu acho que não sei o seu nome...'
+        },
+        {
+          text: 'Você conta o seu nome para ela.'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Isa... Isabelle?'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Ahh! Então você é a Isabelle?'
+        },
+        {
+          text: 'Você não entende a surpresa.'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Eu tenho uma carta para você! Ela apareceu para mim um dia, mas não conhecia nenhuma Isabelle. E juro que não abri!'
+        },
+        {
+          text: 'Helena começa a procurar em seus bolsos até que ela parece achar a carta.'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Aqui está!',
+          audio: 'wow.mp3',
+          audioAsync: true,
+        },
+        {
+          text: 'Você pega a carta. Realmente está endereçada para você. Então, você a abre.'
+        },
+        {
+          text: '"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"'
+        },
+        {
+          text: '"Feliz aniversáriooo!! O parabéns mais atrasado desse mundooo!"'
+        },
+        {
+          text: '"Você gostou do jogo? Espero do fundo do coração que sim. Fiquei com medo de ficar muito chato, já que nunca fiz isso antes, mas espero que tenha dado certo!"'
+        },
+        {
+          text: '"Então para não pegar mais tempo do que já peguei, só queria falar que estou morrendo de saudades!"'
+        },
+        {
+          text: '"Não vejo a hora da gente conseguir dar uns rolês e descobrir lugares novos em SP."'
+        },
+        {
+          text: '"Tenho muito muito muito orgulho da pessoa que você se tornou, e espero poder compartilhar mais memórias com você ao longo dessa vida sofrida."'
+        },
+        {
+          text: '"Ver você lutando para ir atrás dos seus sonhos me inspira muitooo, e eu sou muito grato por isso."'
+        },
+        {
+          text: '"Sou grato por ter te conhecido e por você conseguir me suportar por todos esses anos."'
+        },
+        {
+          text: '"Sou grato pelas risadas, empreitadas e aprendizados que temos juntos."'
+        },
+        {
+          text: '"Obrigado por tudo. De verdade."'
+        },
+        {
+          text: '"Pode contar comigo sempre."'
+        },
+        {
+          text: '"E por favor, me fala o que achou do jogo kkkkkk"',
+
+        },
+        {
+          text: '"A parte que eu mais gostei foi quando eu taquei um monte de trovão, em uma fala atrás da outra."'
+        },
+        {
+          text: '"Quer ver, vou tacar outra"'
+        },
+        {
+          text: '"BUMMM"',
+          increaseRain: true,
+          soulCover: true,
+        },
+        {
+          text: '"DNVVV"',
+          increaseRain: true,
+          soulCover: true,
+        },
+        {
+          text: '"QUEIMA QUENGARAL"',
+          increaseRain: true,
+          soulCover: true,
+        },
+        {
+          speaker: 'Helena',
+          text: 'O que é isso que está acontecendo?! O céu nem está para chuva.'
+        },
+        {
+          text: '"Opss..."'
+        },
+        {
+          text: '"Bem, vou ficando por aqui."'
+        },
+        {
+          text: '"Quando você voltar, o almoço no Manioca é por minha conta!"',
+          audio: 'wow.mp3',
+          audioAsync: true,
+        },
+        {
+          text: '"Um feliz aniversário para você. Te amo demais! E um abraço!"'
+        },
+        {
+          text: 'Você termina de ler a carta.'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Terminou?'
+        },
+        {
+          text: 'Você diz que sim.'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Ah, que bom, pois tem algo que preciso te dizer...'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Agora que as minhas memórias voltaram, eu lembrei que eu descobri um jeito de voltar para o nosso mundo!'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Foi difícil, mas todos me ajudaram a conseguir.'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Assim que a gente se despedir de todos, posso teletransportar nós duas de volta para a Terra. O que você acha?'
+        },
+        {
+          text: 'Ouvir aquilo te alegra.'
+        },
+        {
+          text: 'Parece que no fim...'
+        },
+        {
+          text: 'Tudo deu certo...',
+          showSceneCover: true,
+          action: () => {
+            finished = true;
+          }
+        }
+      ]
+    },
     {
       requirements: () => {
         return keys['INIT']
@@ -942,7 +1174,7 @@ var story = {
           soulCover: true,
         },
         {
-          text: 'A chuva parece ter ficado mais forte. Tudo está desaparecendo. Árvores já não estão no mesmo lugar que antes'
+          text: 'A chuva parece ter ficado mais forte. Tudo está desaparecendo. Árvores já não estão no mesmo lugar que antes.'
         },
         {
           text: 'É triste presenciar o fim de tudo isso.'
@@ -957,7 +1189,7 @@ var story = {
     },
     {
       requirements: () => {
-        return keys['STARTED_QUEST']
+        return keys['STARTED_QUEST'] && !keys['LAKE_CONCLUDED']
       },
       auto: true,
       audio: 'on-little-cat-feet.mp3',
@@ -1017,7 +1249,6 @@ var story = {
             },
             {
               text: 'Ir para o norte',
-
               chat: [
                 {
                   speaker: 'Heroína',
@@ -1094,7 +1325,101 @@ var story = {
           ]
         }
       ]
-    }
+    },
+    {
+      auto: true,
+      requirements: () => {
+        return keys['LAKE_CONCLUDED'];
+      },
+      chat: [
+        {
+          text: 'Assim que você volta para o campo, você vê a estrada que leva até o lago se desfazer.'
+        },
+        {
+          text: '...',
+          increaseRain: true,
+          soulCover: true,
+        },
+        {
+          text: 'A chuva parece ter ficado mais forte. Tudo está ruindo.'
+        },
+        {
+          text: 'Você começa a ir em direção a Heroína.'
+        },
+        {
+          text: 'Porém, você não a acha.',
+          increaseRain: true,
+          soulCover: true,
+        },
+        {
+          text: 'Você pensa que ela pode ter se arrastado para algum lugar, então você começa a procurá-la.'
+        },
+        {
+          text: '...'
+        },
+        {
+          text: '"Helenaaa! Onde você está?", você grita.'
+        },
+        {
+          text: '...'
+        },
+        {
+          text: '"Helenaa!"',
+          increaseRain: true,
+          soulCover: true,
+        },
+        {
+          text: '...',
+        },
+        {
+          text: 'As vezes temos que encarar o que está na nossa frente.'
+        },
+        {
+          text: 'Você percebe que chegou tarde demais. Helena se foi. Sem se lembrar do próprio nome.',
+          increaseRain: true,
+          soulCover: true,
+        },
+        {
+          text: 'Você se ajoelha na pedra em que ela estava apoiada momentos atrás. A pedra também está sumindo.'
+        },
+        {
+          text: 'Tudo ao seu redor. Onde quer que você olhe, algo desaparece.',
+        },
+        {
+          text: 'Você testemunha o fim de um mundo.',
+          increaseRain: true,
+          soulCover: true,
+        },
+        {
+          text: 'As três Almas Primordiais dentro de você parecem se agitar dentro de você.'
+        },
+        {
+          text: 'Elas estão certas. Não há tempo a perder. Então, você volta a se levantar.'
+        },
+        {
+          text: 'Só resta um lugar para ir.',
+          increaseRain: true,
+          soulCover: true,
+        },
+        {
+          text: 'É o destino final dessa aventura.'
+        },
+        {
+          options: [
+            {
+              text: 'Ir para o norte',
+              chat: [
+                {
+                  text: 'Você se dirige para o norte, em direção ao altar.',
+                  goBack: true,
+                  moveToScene: 'door'
+                },
+              ]
+            }
+          ]
+        }
+      ]
+    },
   ],
   'montanha': [
     {
@@ -3250,6 +3575,9 @@ var story = {
     },
     {
       auto: true,
+      requirements: () => {
+        return !keys['TREE_CONCLUDED'];
+      },
       audio: 'countdown.mp3',
       chat: [
         {
@@ -3595,6 +3923,309 @@ var story = {
                 {
                   text: 'Você se dirige para o campo.',
                   goBack: true,
+                  moveToScene: 'prado'
+                },
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      auto: true,
+      audio: 'countdown.mp3',
+      requirements: () => {
+        return keys['TREE_CONCLUDED'] && !keys['LAKE_IS_GETTING_PRIMORDIAL_SOUL'] && !keys['LAKE_ACQUIRED_PRIMORDIAL_SOUL'];;
+      },
+      chat: [
+        {
+          text: 'Você corre para o lago. É uma corrida contra o tempo.'
+        },
+        {
+          text: 'Duas almas já foram. Agora só resta mais uma.'
+        },
+        {
+          text: 'Talvez essa missão impossível tenha uma solução afinal.'
+        },
+        {
+          text: 'Você tem esperanças que irá conseguir voltar para casa. Que bom seria!'
+        },
+        {
+          text: 'Você consegue ver o lago. Ele está a poucos metros de distância.'
+        },
+        {
+          text: 'Mas outra coisa chama a sua atenção.'
+        },
+        {
+          text: 'Você nota alguém se arrastando para a sua direção.'
+        },
+        {
+          text: 'É Nerida!'
+        },
+        {
+          text: 'Você corre para perto dela. Ela está fraca. Seu corpo quase desaparecendo.'
+        },
+        {
+          text: 'Ela é ao mesmo tempo um ser maravilhoso e também sua única chance de salvar esse mundo.'
+        },
+        {
+          speaker: 'Nerida',
+          text: 'Isa.. belle...'
+        },
+        {
+          text: 'Você gira o corpo dela para que ela fique de barriga para cima.'
+        },
+        {
+          options: [
+            {
+              text: 'Nerida, o que aconteceu?',
+              chat: [
+                {
+                  speaker: 'Nerida',
+                  text: 'A maldição... não vou aguentar muito tempo...'
+                },
+                {
+                  text: 'A alegria dela de antes já não está mais presente.'
+                },
+                {
+                  text: 'Só há dor e lágrimas em seu rosto.'
+                },
+                {
+                  speaker: 'Nerida',
+                  text: 'Diga-me, criança... você conseguiu... as outras Almas?'
+                },
+                {
+                  options: [
+                    {
+                      text: 'Confirmar',
+                      chat: [
+                        {
+                          text: '"Sim, consegui as Almas Primordiais dos anões e dos elfos. Agora só resta a Alma das sereias.", você responde.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Boa garota... eu sabia que você... iria conseguir...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Mas não vou conseguir te acompanhar... até o altar...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'E meu tempo... está curto...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Seja forte, Isa... não deixe que essa maldição... derrote você...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Não se desespere... você não está mais sozinha... Rodrick e Sharia estão ao seu lado...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Consigo sentir suas almas dentro... de você...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'E agora... devo me juntar a você também.'
+                        },
+                        {
+                          text: 'Essa conversa é dolorosa.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Escute-me bem... nossa sintonia está boa... mas pode melhorar...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Entre no lago... até o fundo... isso irá ajudar...'
+                        },
+                        {
+                          text: 'Nerida começa a tremer.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Respiração... não... preocupe...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Vá...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Rápido...'
+                        },
+                        {
+                          text: 'Não há tempo para mais palavras, por mais que você queira...'
+                        },
+                        {
+                          text: 'Você corre para o lago.',
+                          audio: 'mermaid-start.mp3'
+                        },
+                        {
+                          text: 'Essa é a última alma que você precisa herdar. O final está perto.'
+                        },
+                        {
+                          text: 'Você alcança o lago e entra nele sem hesitação. A água está gelada, mas isso não importa.'
+                        },
+                        {
+                          text: 'Suas pernas ficam totalmente imersas. Logo depois, seu tronco. Por fim, sua cabeça.'
+                        },
+                        {
+                          text: 'É como Nerida disse, você não sente problemas para respirar embaixo do lago. Como isso é possível, você não sabe.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Agora... feche os olhos, minha criança...'
+                        },
+                        {
+                          text: 'Você consegue escutar Nerida falando atrás de você, mas assim que você se vira, percebe que ela não está lá.'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Estarei aqui com você... então não se preocupe...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Deixe que as águas te guiem para o seu destino...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Procure pela minha voz...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'Não essa que você está acostumada... mas a minha voz verdadeira...'
+                        },
+                        {
+                          speaker: 'Nerida',
+                          text: 'É chegada a hora...'
+                        },
+                        {
+                          text: 'Você fecha os olhos.',
+                          showSceneCover: true,
+                        },
+                        {
+                          text: 'Você respira fundo.'
+                        },
+                        {
+                          text: 'É possível sentir uma energia ao seu redor. Dessa vez uma bem mais gentil.'
+                        },
+                        {
+                          text: 'Você tenta entrar em sintonia com ela.'
+                        },
+                        {
+                          text: '...',
+                          action: () => {
+                            keys['LAKE_IS_GETTING_PRIMORDIAL_SOUL'] = true;
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      auto: true,
+      requirements: () => {
+        return keys['LAKE_IS_GETTING_PRIMORDIAL_SOUL'] && !keys['LAKE_ACQUIRED_PRIMORDIAL_SOUL']
+      },
+      chat: [
+        {
+          showCustomScene: 'nerida'
+        }
+      ]
+    },
+    {
+      auto: true,
+      requirements: () => {
+        return keys['LAKE_ACQUIRED_PRIMORDIAL_SOUL'] && !keys['LAKE_CONCLUDED'];
+      },
+      chat: [
+        {
+          text: 'A energia que estava em sua volta começa a entrar dentro de você.',
+        },
+        {
+          text: 'A sintonia que você estava sentindo começa a ficar cada vez mais forte.',
+        },
+        {
+          text: 'Você percebe que conseguiu adquirir a terceira e última Alma Primordial. Além disso, você sente entender melhor os sentimentos de Nerida.',
+        },
+        {
+          speaker: 'Nerida',
+          text: 'Isabelle, consegue me escutar?'
+        },
+        {
+          text: 'Você se assusta por um momento, mas você claramente consegue escutar a voz de Nerida.'
+        },
+        {
+          speaker: 'Nerida',
+          text: 'O nome da Heroína... acho que me lembrei...'
+        },
+        {
+          speaker: 'Nerida',
+          text: 'Me lembrei também de como ela bravamente fez de tudo para salvar esse mundo, mesmo que não fosse o dela.'
+        },
+        {
+          speaker: 'Nerida',
+          text: 'Queria poder agradecê-la pessoalmente, mas isso não será possível.'
+        },
+        {
+          speaker: 'Nerida',
+          text: 'Por favor, diga a ela.'
+        },
+        {
+          speaker: 'Nerida',
+          text: 'Diga a ela, que mesmo que esse mundo pereça, o nome de Helena, a heroína, será gravado na história do universo para sempre.'
+        },
+        {
+          text: 'Helena...',
+        },
+        {
+          text: 'Então esse era seu nome...',
+        },
+        {
+          text: 'Você precisa contar para ela o mais rápido possível.',
+        },
+        {
+          text: 'Você abre os olhos e sai do lago. Como esperava, Nerida não está mais ali.',
+          hideSceneCover: true,
+        },
+        {
+          text: 'Você olha mais uma vez para o lago. Você imagina escutar várias sereias cantando em conjunto, mas isso vem apenas da Alma de Nerida, que agora reside dentro de você.',
+        },
+        {
+          text: 'É possível sentir como Nerida se sentia em relação a esse lugar. É triste ver tudo isso se acabar.',
+        },
+        {
+          text: 'Talvez, algum dia, esse lago volte a ser como era antes.',
+          action: () => {
+            keys['LAKE_CONCLUDED'] = true;
+          }
+        },
+      ]
+    },
+    {
+      auto: true,
+      requirements: () => {
+        return keys['LAKE_CONCLUDED'];
+      },
+      chat: [
+        {
+          audio: '',
+          cleanText: true,
+          options: [
+            {
+              text: 'Voltar para o campo',
+              chat: [
+                {
+                  text: 'Você dá adeus para o lago e volta para o campo.',
                   moveToScene: 'prado'
                 },
               ]
@@ -4558,6 +5189,212 @@ var story = {
         }
       ]
     }
+  ],
+  'door': [
+    {
+      auto: true,
+      audio: 'my-burden-is-light.mp3',
+      requirements: () => {
+        return !keys['DOOR_ACQUIRED_PRIMORDIAL_SOUL']
+      },
+      chat: [
+        {
+          text: 'Você corre o mais rápido possível e chega no altar.',
+          audio: 'my-burden-is-light.mp3',
+        },
+        {
+          text: 'Ao olhar para trás, você percebe que todo o caminho que você percorreu já desapareceu.',
+        },
+        {
+          text: 'Não tem mais como voltar. Ou sair daqui.',
+        },
+        {
+          text: 'Igual a Heroína disse, existe uma porta trancada impedindo a entrada para o altar.'
+        },
+        {
+          text: 'É uma porta toda decorada com símbolos que você não conhece.'
+        },
+        {
+          text: 'Apesar de estar sendo afetada pela maldição, sua composição ainda parece muito maciça.'
+        },
+        {
+          text: 'Você olha para o seu corpo. Mais e mais partes começaram a ficar voláteis.'
+        },
+        {
+          text: 'Se esse plano não der certo, não voltar para a casa será o menor dos problemas.'
+        },
+        {
+          text: 'Você se aproxima da porta.'
+        },
+        {
+          text: 'Assim que você chega perto, as três Almas Primordiais parecem se agitar novamente. O seu peito começa a esquentar, mas não de uma forma que te machuque.'
+        },
+        {
+          text: 'Elas te incentivam a sincronizar com a porta. Parece ser a coisa certa a fazer.'
+        },
+        {
+          text: 'Você coloca a mão na porta e fecha os olhos.',
+          showSceneCover: true,
+        },
+        {
+          text: 'Você respira fundo.'
+        },
+        {
+          text: 'É possível sentir uma energia nessa porta. Dessa vez uma caótica.'
+        },
+        {
+          text: 'Você tenta entrar em sintonia com ela através das três Almas Primordiais. É necessário que se encontre um equilíbrio perfeito entre elas...'
+        },
+        {
+          text: '...',
+        },
+        {
+          showCustomScene: 'door'
+        }
+      ]
+    },
+    {
+      auto: true,
+      requirements: () => {
+        return keys['DOOR_ACQUIRED_PRIMORDIAL_SOUL'];
+      },
+      chat: [
+        {
+          text: 'A energia caótica da porta começa a entrar em harmonia ao entrar em contato com você e com as suas Almas Primordiais.',
+        },
+        {
+          text: 'Talvez por ter se conectado com a energia guardada na porta, você começa a ver alguns fragmentos de memórias.',
+        },
+        {
+          text: 'Você vê um elfo sendo expulso de sua comunidade.',
+        },
+        {
+          text: 'O mesmo elfo se encontrando com uma figura encapuzada.',
+        },
+        {
+          text: 'E, por fim, desenhando marcas na porta desse mesmo altar.',
+        },
+        {
+          text: 'As chances desse elfo ter criado a maldição são grandes. Mas os fragmentos estão muito desconexos. Não é possível ter certeza.',
+        },
+        {
+          text: 'A porta se abre.',
+        },
+        {
+          text: 'Uma energia diferente começa a sair de dentro do altar.',
+        },
+        {
+          text: 'É uma energia convidativa. É como se ela convidasse você para entrar.',
+        },
+        {
+          text: 'Esse é o objetivo principal da sua vinda a esse mundo.',
+        },
+        {
+          text: 'Não existem motivos para hesitar.',
+        },
+        {
+          text: 'Você entra no altar.',
+          moveToScene: 'altar'
+        },
+      ]
+    },
+  ],
+  'altar': [
+    {
+      auto: true,
+      requirements: () => {
+        return !keys['ALTAR_IS_CHOOSING'];
+      },
+      chat: [
+        {
+          text: 'O altar não está nas melhores condições.'
+        },
+        {
+          text: 'Até mesmo esse lugar não está livre da maldição.'
+        },
+        {
+          text: 'Você consegue facilmente imaginar os habitantes desse mundo visitando esse lugar para exercerem sua fé. Seja lá qual for.'
+        },
+        {
+          text: 'No meio do altar, no meio dos destroços, existe uma luz pairando no ar. É a origem da energia que você sentiu assim que a porta se abriu.'
+        },
+        {
+          text: 'As Almas Primordiais parecem reagir quando você se aproxima da luz.'
+        },
+        {
+          text: 'Ao chegar perto, a luz começa a se aproximar de você, até que ela fica bem na sua frente.'
+        },
+        {
+          text: 'Você não entende como, mas você sabe o que isso significa.'
+        },
+        {
+          text: 'É aqui o fim da sua missão. Não existem mais enigmas. Não existem mais buscas.'
+        },
+        {
+          text: 'A única coisa que resta é declarar o seu desejo.',
+          action: () => {
+            keys['ALTAR_IS_CHOOSING'] = true;
+          },
+          goBackImmediately: true,
+        },
+      ]
+    },
+    {
+      auto: true,
+      requirements: () => {
+        return keys['ALTAR_IS_CHOOSING'];
+      },
+      chat: [
+        {
+          options: [
+            {
+              text: 'Quero salvar esse mundo',
+              chat: [
+                {
+                  text: 'Apesar de querer muito voltar para casa, o pouco que você viveu nesse mundo é suficiente para você desejar sua restauração.'
+                },
+                {
+                  text: 'Rodrick viveu com medo, por isso partiu com arrenpedimentos.'
+                },
+                {
+                  text: 'Sharia viveu seus últimos momentos focada em uma previsão de seu povo, ao invés de aproveitar a vida.'
+                },
+                {
+                  text: 'Nerida, apesar de tentar esconder, não conseguiu se recuperar após perder sua voz e suas amigas.'
+                },
+                {
+                  text: 'E Helena, que partiu acreditando ter fracassado em sua missão...'
+                },
+                {
+                  text: 'Nenhum deles mereceu o fim que teve. Todos confiaram em você.'
+                },
+                {
+                  text: 'Você se apega a esses sentimentos e abraça a luz que flutua a sua frente.'
+                },
+                {
+                  text: 'Você foca no seu desejo...'
+                },
+                {
+                  text: 'A luz começa a crescer e a tomar conta de todo o altar...'
+                },
+                {
+                  showCustomScene: 'ending'
+                }
+              ]
+            },
+            {
+              text: 'Quero voltar para casa',
+              chat: [
+                {
+                  text: 'Resposta errada. (Final não construído kkkk)',
+                  goBackImmediately: true,
+                }
+              ]
+            },
+          ]
+        }
+      ]
+    }
   ]
 }
 
@@ -4598,7 +5435,7 @@ function updateImage() {
 }
 
 function startImageFluctuation() {
-  setInterval(() => {
+  fluctuationInterval = setInterval(() => {
     edgeOpacity++;
     redOpacity++;
     colorOpacity++;
@@ -4758,8 +5595,37 @@ function handleChatEvents(chat) {
       
       currentAudioFile = chat.audio;
       audio = new Audio(chat.audio);
-      audio.loop = true;
-      fadeInAudio(audio);
+      
+      if (chat.audio === 'mermaid-start.mp3') {
+        audio.onended = () => {
+          handleChatEvents({ audio: 'mermaid-middle.mp3'});
+        };
+      } else if (chat.audio !== 'mermaid-soul.mp3') {
+        audio.loop = true;
+      }
+
+      let midRate = chat.audio === 'mermaid-middle.mp3' && lakeStartedCustomSong;
+      let longRate = chat.audio === 'mermaid-soul.mp3';
+      let interval = longRate ? 100 : midRate ? 50 : 10;
+
+      if (chat.audio === 'mermaid-middle.mp3') {
+        let fadedOut = false;
+        let fadedIn = true;
+        audio.ontimeupdate = () => {
+          if (audio.currentTime > 22 && !fadedOut) {
+            console.log('opa');
+            fadeOutAudio(audio, midRate ? 0.1 : 0.8, 50);
+            fadedOut = true;
+            fadedIn = false;
+          } else if (audio.currentTime < 10 && !fadedIn) {
+            fadedIn = true;
+            fadedOut = false;
+            fadeInAudio(audio, midRate ? 0.2 : 1, 50)
+          }
+        };
+      }
+
+      fadeInAudio(audio, midRate ? 0.2 : 1, interval);
     }
   }
 
@@ -4818,18 +5684,25 @@ function handleChatEvents(chat) {
   }
 
   if (chat.increaseRain) {
-    let count = 0;
-
-    if (keys['CABIN_CONCLUDED']) {
-      count++;
-    }
-
-    if (keys['TREE_CONCLUDED']) {
-      count += 2;
-    }
-
-    makeItRain(count);
     playAsyncAudio('thunder.mp3');
+
+    if (!keys['GAME_COMPLETED']) {
+      let count = 0;
+
+      if (keys['CABIN_CONCLUDED']) {
+        count++;
+      }
+  
+      if (keys['TREE_CONCLUDED']) {
+        count += 2;
+      }
+  
+      if (keys['LAKE_CONCLUDED']) {
+        count += 1;
+      }
+
+      makeItRain(count);
+    }
   }
 
   if (chat.soulCover) {
@@ -4837,7 +5710,7 @@ function handleChatEvents(chat) {
   }
 }
 
-function fadeOutAudio(audio, targetVolume = 0) {
+function fadeOutAudio(audio, targetVolume = 0, interval = 10) {
   let volume = audio.volume || 1;
   let currentTargetValue = targetVolume || 0;
 
@@ -4854,23 +5727,25 @@ function fadeOutAudio(audio, targetVolume = 0) {
     } else {
       audio.volume = volume;
     }
-  }, 10);
+  }, interval);
 }
 
-function fadeInAudio(audio) {
+function fadeInAudio(audio, targetVolume = 1, interval = 10) {
   let volume = 0;
   audio.volume = 0;
   audio.play();
+
+  let currentTargetValue = targetVolume || 1;
   let volumeInterval = setInterval(() => {
     volume += 0.01;
 
-    if (volume >= 1) {
-      audio.volume = 1;
+    if (volume >= currentTargetValue) {
+      audio.volume = currentTargetValue;
       clearInterval(volumeInterval);
     } else {
       audio.volume = volume;
     }
-  }, 10);
+  }, interval);
 }
 
 function playAsyncAudio(audio) {
@@ -4936,6 +5811,10 @@ function handleAfterChat(chat) {
 }
 
 async function moveToScene(scene) {
+  if (scene === 'altar') {
+    stopRain();
+  }
+
   setSceneCoverOpacity(1);
   await delay(500);
   currentScene = scene;
@@ -5019,6 +5898,12 @@ function showCustomScene(chat) {
     triggerRodrick();
   } else if (chat.showCustomScene === 'sharia') {
     triggerSharia();
+  } else if (chat.showCustomScene === 'nerida') {
+    triggerNerida();
+  } else if (chat.showCustomScene === 'door') {
+    triggerDoor();
+  } else if (chat.showCustomScene === 'ending') {
+    triggerEnding();
   }
 }
 
@@ -5145,6 +6030,157 @@ async function handleShariaNext() {
   inputContainer.style.display = 'none';
 }
 
+async function triggerNerida() {
+  hideNextButton();
+  setSceneCoverOpacity(1);
+
+  await delay(500);
+
+  fadeOutAudio(audio, 0.2);
+  lakeStartedCustomSong = true;
+
+  const button = document.getElementById('soul-button');
+  button.style.opacity = 1;
+  button.style.display = 'block';
+  button.href = 'Nerida.pdf';
+
+  writeTextOnChat({ text: 'Resolva o enigma e digite abaixo a resposta:' }, true);
+
+  await delay(1000);
+
+  const input = document.getElementById('chat-input');
+  input.style.display = 'block';
+  input.addEventListener('keydown', async e => {
+    if (e.key === 'Enter') {
+      await handleNeridaNext();
+    }
+  })
+}
+
+async function handleNeridaNext() {
+  const inputContainer = document.getElementById('chat-input');
+  const input = inputContainer.children[0];
+  let text = input.value.trim().toLowerCase() + '';
+
+  text = text.replaceAll('ç', 'c').replaceAll('ã', 'a').replaceAll('é', 'e').replaceAll('  ', ' ').replace(/[^a-zA-Z ]/g, "");
+
+  if (text !== 'vozes da mare encontros predestinados') {
+    inputContainer.classList.add('chat-input--wrong');
+    input.value = '';
+    await delay(400);
+    inputContainer.classList.remove('chat-input--wrong');
+    return;
+  }
+
+  currentCustomScene = '';
+  
+  setSceneCoverOpacity(1);
+
+  const button = document.getElementById('soul-button');
+  button.style.opacity = 0;
+  button.style.display = 'none';
+
+  addSoulObtainedCover();
+
+  handleChatEvents({ audio: 'mermaid-soul.mp3'});
+
+  keys['LAKE_ACQUIRED_PRIMORDIAL_SOUL'] = true;
+  keys['LAKE_IS_GETTING_PRIMORDIAL_SOUL'] = false;
+
+  getOptions();
+
+  inputContainer.style.display = 'none';
+}
+
+async function triggerDoor() {
+  hideNextButton();
+  setSceneCoverOpacity(1);
+
+  await delay(500);
+
+  fadeOutAudio(audio, 0.1);
+  
+  const button = document.getElementById('soul-button');
+  button.style.opacity = 1;
+  button.style.display = 'block';
+  button.href = 'Door.pdf';
+
+  writeTextOnChat({ text: 'Resolva o enigma e digite abaixo a resposta:' }, true);
+
+  await delay(1000);
+
+  const input = document.getElementById('chat-input');
+  input.style.display = 'block';
+  input.addEventListener('keydown', async e => {
+    if (e.key === 'Enter') {
+      await handleDoorNext();
+    }
+  })
+}
+
+async function handleDoorNext() {
+  const inputContainer = document.getElementById('chat-input');
+  const input = inputContainer.children[0];
+  let text = input.value.trim().toLowerCase() + '';
+
+  text = text.replaceAll('ç', 'c').replaceAll('ã', 'a').replaceAll('  ', ' ').replace(/[^a-zA-Z ]/g, "").replaceAll('  ', ' ');
+
+  if (text !== 'faca se luz' && text !== 'facase luz') {
+    inputContainer.classList.add('chat-input--wrong');
+    input.value = '';
+    await delay(400);
+    inputContainer.classList.remove('chat-input--wrong');
+    return;
+  }
+
+  currentCustomScene = '';
+  
+  setSceneCoverOpacity(1);
+
+  const button = document.getElementById('soul-button');
+  button.style.opacity = 0;
+  button.style.display = 'none';
+
+  addSoulObtainedCover();
+
+  fadeOutAudio(audio, 0.1);
+  playAsyncAudio('soul-obtained.mp3');
+
+  keys['DOOR_ACQUIRED_PRIMORDIAL_SOUL'] = true;
+  keys['DOOR_IS_GETTING_PRIMORDIAL_SOUL'] = false;
+
+  getOptions();
+
+  inputContainer.style.display = 'none';
+
+  setTimeout(() => {
+    fadeInAudio(audio, 1, 100);
+    setSceneCoverOpacity(0);
+  }, 3000)
+}
+
+async function triggerEnding() {
+  hideNextButton();
+  setSceneCoverOpacity(1);
+
+  handleChatEvents({ audio: 'sun' })
+  fadeOutAudio(audio, 0);
+  playAsyncAudio('sun.mp3');
+  addEndingCover();
+  await delay(11000);
+
+  setSceneCoverOpacity(0);
+
+  currentScene = 'prado';
+  updateEndingImage();
+
+  handleChatEvents({ audio: 'self-contained-universe-ending.mp3' });
+
+  keys['GAME_COMPLETED'] = true;
+
+  getOptions();
+}
+
 async function delay(time) {
   await new Promise((resolve) => setTimeout(() => resolve(), time));
 }
@@ -5158,7 +6194,29 @@ function addSoulObtainedCover() {
   }, 5000);
 }
 
+function addEndingCover() {
+  const endingCover = document.getElementById('ending-cover');
+  endingCover.style.display = 'block';
+
+  setTimeout(() => {
+    endingCover.style.display = 'none';
+  }, 15000);
+}
+
 function setSceneCoverOpacity(opacity) {
   const sceneCover = document.getElementById('scene-cover');
   sceneCover.style.opacity = opacity;
+}
+
+function updateEndingImage() {
+  const edgeImage = document.getElementById('scene-image-edge');
+  const redImage = document.getElementById('scene-image-red');
+  const colorImage = document.getElementById('scene-image-color');
+
+  edgeImage.style.backgroundImage = `url(prado.png)`;
+  edgeImage.style.opacity = 1;
+  redImage.style.opacity = 0;
+  colorImage.style.opacity = 0;
+
+  clearInterval(fluctuationInterval);
 }

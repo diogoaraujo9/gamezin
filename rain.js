@@ -26,4 +26,8 @@ var makeItRain = function(level = 0) {
   $('.rain.back-row').append(backDrops);
 }
 
+var stopRain = function() {
+  $('.rain').empty();
+}
+
 makeItRain();
