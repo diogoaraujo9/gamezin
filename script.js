@@ -5654,8 +5654,8 @@ function calculateSceneWidth() {
   let chat = document.getElementById('chat');
 
   if (scene) {
-    Array.from(sceneImg).forEach((el) => el.style.width = `${scene.clientHeight}px`);
-    chat.style.width = `${scene.clientHeight}px`;
+    Array.from(sceneImg).forEach((el) => el.style.width = `${scene.clientWidth < scene.clientHeight ? scene.clientWidth : scene.clientHeight}px`);
+    chat.style.width = `${scene.clientWidth < scene.clientHeight ? scene.clientWidth : scene.clientHeight}px`;
   }
 }
 
