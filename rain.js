@@ -30,4 +30,4 @@ var stopRain = function() {
   $('.rain').empty();
 }
 
-makeItRain();
+// makeItRain();

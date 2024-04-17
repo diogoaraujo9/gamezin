@@ -22,6 +22,8 @@ var lakeStartedCustomSong = false;
 
 var finished = false;
 
+var localStorageKey = 'GAME_PROGRESS';
+
 // Inicio
 var keys = {
   'INIT': true,
@@ -33,6 +35,7 @@ var keys = {
   'HEROIN_ASKED_WHAT_WAS_HAPPENING_TO_THIS_WORLD': false,
   'HEROIN_ASKED_ABOUT_THE_DOOR_LOCK': false,
   'HEROIN_ASKED_HOW_TO_SAVE_THE_WORLD': false,
+  'HEROIN_ASKED_ABOUT_ANIMALS': false,
   'HEROIN_FIRST_TALK_CONCLUDED': false,
   'HEROIN_HESITATED_TO_SEARCH_THE_SOULS': false,
   'HEROIN_AFTER_CONCLUSION_OF_CABIN': false,
@@ -100,6 +103,8 @@ var keys = {
   'GAME_COMPLETED': false,
 }
 
+const clonedKeys = JSON.parse(JSON.stringify(keys));
+
 // Fim da primeira conversa
 // var keys = {
 //   'INIT': false,
@@ -153,69 +158,141 @@ var keys = {
 // }
 
 // Inicio
-var keys = {
-  'INIT': false,
+// var keys = {
+//   'INIT': false,
 
-  'HEROIN_IS_FIRST_TIME_TALKING_TO': false,
-  'HEROIN_CHOSE_TO_GET_CLOSE_TO': true,
-  'HEROIN_MAIN_QUESTIONS': true,
-  'HEROIN_ASKED_REASON_TO_COME_TO_THIS_WORLD': true,
-  'HEROIN_ASKED_WHAT_WAS_HAPPENING_TO_THIS_WORLD': true,
-  'HEROIN_ASKED_ABOUT_THE_DOOR_LOCK': true,
-  'HEROIN_ASKED_HOW_TO_SAVE_THE_WORLD': true,
-  'HEROIN_FIRST_TALK_CONCLUDED': true,
-  'HEROIN_HESITATED_TO_SEARCH_THE_SOULS': false,
-  'HEROIN_AFTER_CONCLUSION_OF_CABIN': true,
+//   'HEROIN_IS_FIRST_TIME_TALKING_TO': false,
+//   'HEROIN_CHOSE_TO_GET_CLOSE_TO': true,
+//   'HEROIN_MAIN_QUESTIONS': true,
+//   'HEROIN_ASKED_REASON_TO_COME_TO_THIS_WORLD': true,
+//   'HEROIN_ASKED_WHAT_WAS_HAPPENING_TO_THIS_WORLD': true,
+//   'HEROIN_ASKED_ABOUT_THE_DOOR_LOCK': true,
+//   'HEROIN_ASKED_HOW_TO_SAVE_THE_WORLD': true,
+//   'HEROIN_FIRST_TALK_CONCLUDED': true,
+//   'HEROIN_HESITATED_TO_SEARCH_THE_SOULS': false,
+//   'HEROIN_AFTER_CONCLUSION_OF_CABIN': true,
 
-  'STARTED_QUEST': true,
+//   'STARTED_QUEST': true,
 
-  'MOUNTAIN_DWARF_DEMONSTRATED_CONCERN': true,
-  'MOUNTAIN_TALKED_TO_DWARF': true,
-  'MOUNTAIN_SAW_DWARF_DISAPPEAR': true,
-  'MOUNTAIN_GOT_PENDANT': true,
+//   'MOUNTAIN_DWARF_DEMONSTRATED_CONCERN': true,
+//   'MOUNTAIN_TALKED_TO_DWARF': true,
+//   'MOUNTAIN_SAW_DWARF_DISAPPEAR': true,
+//   'MOUNTAIN_GOT_PENDANT': true,
 
-  'CABIN_ALREADY_ENTERED': true,
-  'CABIN_ENTERED_WITHOUT_BEING_INVITED': false,
-  'CABIN_IS_FIRST_TIME_TALKING_TO': true,
-  'CABIN_AGREED_WITH_RODRICK': true,
-  'CABIN_STOOD_UP_FOR_THE_HEROIN': true,
-  'CABIN_TOLD_RODRICK_ABOUT_THE_PLAN': true,
-  'CABIN_RODRICK_IS_ANXIOUS': true,
-  'CABIN_GAVE_WATER_TO_RODRICK': true,
-  'CABIN_HOLD_RODRICK_HANDS': true,
-  'CABIN_SAID_WORDS_OF_CONFORT_TO_RODRICK': true,
-  'CABIN_RODRICK_ACCEPTED_TO_HELP': true,
-  'CABIN_TRIED_TO_GIVE_PENDANT_TO_RODRICK': true,
-  'CABIN_ASKED_THE_HEROIN_NAME': true,
-  'CABIN_IS_GOING_TO_TELL_DWARF_NAME': true,
-  'CABIN_IS_GETTING_PRIMORDIAL_SOUL': false,
-  'CABIN_ACQUIRED_PRIMORDIAL_SOUL': false,
-  'CABIN_CONCLUDED': true,
+//   'CABIN_ALREADY_ENTERED': true,
+//   'CABIN_ENTERED_WITHOUT_BEING_INVITED': false,
+//   'CABIN_IS_FIRST_TIME_TALKING_TO': true,
+//   'CABIN_AGREED_WITH_RODRICK': true,
+//   'CABIN_STOOD_UP_FOR_THE_HEROIN': true,
+//   'CABIN_TOLD_RODRICK_ABOUT_THE_PLAN': true,
+//   'CABIN_RODRICK_IS_ANXIOUS': true,
+//   'CABIN_GAVE_WATER_TO_RODRICK': true,
+//   'CABIN_HOLD_RODRICK_HANDS': true,
+//   'CABIN_SAID_WORDS_OF_CONFORT_TO_RODRICK': true,
+//   'CABIN_RODRICK_ACCEPTED_TO_HELP': true,
+//   'CABIN_TRIED_TO_GIVE_PENDANT_TO_RODRICK': true,
+//   'CABIN_ASKED_THE_HEROIN_NAME': true,
+//   'CABIN_IS_GOING_TO_TELL_DWARF_NAME': true,
+//   'CABIN_IS_GETTING_PRIMORDIAL_SOUL': false,
+//   'CABIN_ACQUIRED_PRIMORDIAL_SOUL': false,
+//   'CABIN_CONCLUDED': true,
 
-  'FOREST_INTRO_CONCLUDED': true,
-  'FOREST_LEFT_ONCE': true,
-  'FOREST_SOLVED_MAZE': true,
-  'FOREST_DID_NOT_SOLVE_MAZE': false,
+//   'FOREST_INTRO_CONCLUDED': true,
+//   'FOREST_LEFT_ONCE': true,
+//   'FOREST_SOLVED_MAZE': true,
+//   'FOREST_DID_NOT_SOLVE_MAZE': false,
 
-  'LAKE_RECEIVED_SMALL_TIP_ABOUT_FOREST': true,
-  'LAKE_RECEIVED_TIP_ABOUT_FOREST': true,
-  'LAKE_NERIDA_ACCEPTED_TO_HELP': true,
-  'LAKE_NERIDA_ASKED_THE_HEROIN_NAME': true,
-  'LAKE_NERIDA_ASKED_ABOUT_DWARVES': true,
-  'LAKE_NERIDA_ASKED_ABOUT_FEMALE_DWARF': true,
-  'LAKE_CONCLUDED': true,
+//   'LAKE_RECEIVED_SMALL_TIP_ABOUT_FOREST': true,
+//   'LAKE_RECEIVED_TIP_ABOUT_FOREST': true,
+//   'LAKE_NERIDA_ACCEPTED_TO_HELP': true,
+//   'LAKE_NERIDA_ASKED_THE_HEROIN_NAME': true,
+//   'LAKE_NERIDA_ASKED_ABOUT_DWARVES': true,
+//   'LAKE_NERIDA_ASKED_ABOUT_FEMALE_DWARF': true,
+//   'LAKE_CONCLUDED': true,
 
-  'TREE_FIRST_TALK_CONCLUDED': true,
-  'TREE_IS_LOOKING_FOR_SHARIA': true,
-  'TREE_SEARCH_PLANT': true,
-  'TREE_SEARCH_BALCONY': true,
-  'TREE_SEARCH_TOYS': true,
-  'TREE_INTRO_CONCLUDED': true,
-  'TREE_LEFT_ONCE': true,
-  'TREE_INSISTED_ON_MATTER': true,
-  'TREE_GOT_FEMALE_DWARF_NAME': true,
-  'TREE_CONCLUDED': true,
-}
+//   'TREE_FIRST_TALK_CONCLUDED': true,
+//   'TREE_IS_LOOKING_FOR_SHARIA': true,
+//   'TREE_SEARCH_PLANT': true,
+//   'TREE_SEARCH_BALCONY': true,
+//   'TREE_SEARCH_TOYS': true,
+//   'TREE_INTRO_CONCLUDED': true,
+//   'TREE_LEFT_ONCE': true,
+//   'TREE_INSISTED_ON_MATTER': true,
+//   'TREE_GOT_FEMALE_DWARF_NAME': true,
+//   'TREE_CONCLUDED': true,
+// }
+
+
+// var keys = {
+//   "INIT": false,
+//   "HEROIN_IS_FIRST_TIME_TALKING_TO": false,
+//   "HEROIN_CHOSE_TO_GET_CLOSE_TO": true,
+//   "HEROIN_MAIN_QUESTIONS": false,
+//   "HEROIN_ASKED_REASON_TO_COME_TO_THIS_WORLD": true,
+//   "HEROIN_ASKED_WHAT_WAS_HAPPENING_TO_THIS_WORLD": true,
+//   "HEROIN_ASKED_ABOUT_THE_DOOR_LOCK": true,
+//   "HEROIN_ASKED_HOW_TO_SAVE_THE_WORLD": true,
+//   "HEROIN_FIRST_TALK_CONCLUDED": true,
+//   "HEROIN_HESITATED_TO_SEARCH_THE_SOULS": false,
+//   "HEROIN_AFTER_CONCLUSION_OF_CABIN": true,
+//   "HEROIN_TALKED_ABOUT_RODRICK_SOUL": true,
+//   "HEROIN_AFTER_CONCLUSION_OF_TREE": false,
+//   "HEROIN_TALKED_ABOUT_SHARIA_SOUL": false,
+//   "STARTED_QUEST": true,
+//   "MOUNTAIN_DWARF_DEMONSTRATED_CONCERN": true,
+//   "MOUNTAIN_TALKED_TO_DWARF": true,
+//   "MOUNTAIN_SAW_DWARF_DISAPPEAR": true,
+//   "MOUNTAIN_GOT_PENDANT": true,
+//   "CABIN_ALREADY_ENTERED": true,
+//   "CABIN_ENTERED_WITHOUT_BEING_INVITED": false,
+//   "CABIN_IS_FIRST_TIME_TALKING_TO": true,
+//   "CABIN_AGREED_WITH_RODRICK": false,
+//   "CABIN_STOOD_UP_FOR_THE_HEROIN": true,
+//   "CABIN_TOLD_RODRICK_ABOUT_THE_PLAN": true,
+//   "CABIN_RODRICK_IS_ANXIOUS": true,
+//   "CABIN_GAVE_WATER_TO_RODRICK": true,
+//   "CABIN_HOLD_RODRICK_HANDS": true,
+//   "CABIN_SAID_WORDS_OF_CONFORT_TO_RODRICK": true,
+//   "CABIN_RODRICK_ACCEPTED_TO_HELP": true,
+//   "CABIN_TRIED_TO_GIVE_PENDANT_TO_RODRICK": true,
+//   "CABIN_ASKED_THE_HEROIN_NAME": true,
+//   "CABIN_IS_GOING_TO_TELL_DWARF_NAME": true,
+//   "CABIN_IS_GETTING_PRIMORDIAL_SOUL": false,
+//   "CABIN_CONCLUDED": true,
+//   "FOREST_INTRO_CONCLUDED": true,
+//   "FOREST_LEFT_ONCE": true,
+//   "FOREST_SOLVED_MAZE": true,
+//   "FOREST_DID_NOT_SOLVE_MAZE": false,
+//   "LAKE_RECEIVED_SMALL_TIP_ABOUT_FOREST": false,
+//   "LAKE_RECEIVED_TIP_ABOUT_FOREST": true,
+//   "LAKE_NERIDA_ACCEPTED_TO_HELP": true,
+//   "LAKE_NERIDA_ASKED_THE_HEROIN_NAME": true,
+//   "LAKE_NERIDA_ASKED_ABOUT_DWARVES": true,
+//   "LAKE_NERIDA_ASKED_ABOUT_FEMALE_DWARF": false,
+//   "LAKE_IS_GETTING_PRIMORDIAL_SOUL": false,
+//   "LAKE_ACQUIRED_PRIMORDIAL_SOUL": false,
+//   "LAKE_CONCLUDED": false,
+//   "TREE_FIRST_TALK_CONCLUDED": true,
+//   "TREE_IS_LOOKING_FOR_SHARIA": true,
+//   "TREE_SEARCH_PLANT": true,
+//   "TREE_SEARCH_BALCONY": true,
+//   "TREE_SEARCH_TOYS": true,
+//   "TREE_INTRO_CONCLUDED": true,
+//   "TREE_LEFT_ONCE": false,
+//   "TREE_INSISTED_ON_MATTER": true,
+//   "TREE_GOT_FEMALE_DWARF_NAME": true,
+//   "TREE_IS_GETTING_PRIMORDIAL_SOUL": true,
+//   "TREE_ACQUIRED_PRIMORDIAL_SOUL": false,
+//   "TREE_CONCLUDED": false,
+//   "DOOR_IS_GETTING_PRIMORDIAL_SOUL": false,
+//   "DOOR_ACQUIRED_PRIMORDIAL_SOUL": false,
+//   "ALTAR_IS_CHOOSING": false,
+//   "GAME_COMPLETED": false,
+//   "HEROIN_IS_ASKING_MAIN_QUESTIONS": false,
+//   "CABIN_ACQUIRED_PRIMORDIAL_SOUL": true
+// }
+
+// currentScene = 'arvore';
 
 var story = {
   'prado': [
@@ -223,10 +300,12 @@ var story = {
       requirements: () => {
         return keys['GAME_COMPLETED']
       },
+      audio: 'self-contained-universe-ending.mp3',
       auto: true,
       chat: [
         {
-          text: '...'
+          text: '...',
+          audio: 'self-contained-universe-ending.mp3',
         },
         {
           text: 'Você abre os olhos e vê um campo no meio de uma floresta.'
@@ -285,10 +364,21 @@ var story = {
         },
         {
           speaker: 'Helena',
-          text: 'Nem sei como te agradecer... Espera... eu acho que não sei o seu nome...'
+          text: 'Nem sei como te agradecer...'
         },
         {
-          text: 'Você conta o seu nome para ela.'
+          speaker: 'Helena',
+          text: 'Hmmm...'
+        },
+        {
+          speaker: 'Helena',
+          text: 'Nossa, que descuido! Eu ainda não sei o seu nome.'
+        },
+        {
+          text: 'É verdade. No meio de todo esse caos, você não teve a oportunidade de contar o seu nome para Helena.'
+        },
+        {
+          text: '"Isabelle. Meu nome é Isabelle."'
         },
         {
           speaker: 'Helena',
@@ -315,7 +405,7 @@ var story = {
           audioAsync: true,
         },
         {
-          text: 'Você pega a carta. Realmente está endereçada para você. Então, você a abre.'
+          text: 'Você pega a carta. Realmente está endereçada para você. Então, você a abre e começa a ler.'
         },
         {
           text: '"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"'
@@ -380,7 +470,7 @@ var story = {
           text: 'O que é isso que está acontecendo?! O céu nem está para chuva.'
         },
         {
-          text: '"Opss..."'
+          text: '"kkkkkkkkkk"'
         },
         {
           text: '"Bem, vou ficando por aqui."'
@@ -430,8 +520,9 @@ var story = {
           showSceneCover: true,
           action: () => {
             finished = true;
+            reset();
           }
-        }
+        },
       ]
     },
     {
@@ -439,6 +530,7 @@ var story = {
         return keys['INIT']
       },
       auto: true,
+      audio: 'someplace-i-know.mp3',
       chat: [
         {
           text: 'Você abre os olhos e vê um campo no meio de uma floresta.'
@@ -671,7 +763,8 @@ var story = {
               },
               chat: [
                 {
-                  text: 'A Heroína abre os olhos com grande dificuldade.'
+                  text: 'A Heroína abre os olhos com grande dificuldade.',
+                  audio: 'on-little-cat-feet.mp3',
                 },
                 {
                   speaker: 'Heroína',
@@ -722,7 +815,8 @@ var story = {
               chat: [
                 {
                   speaker: 'Heroína',
-                  text: 'Que boa... notícia...'
+                  text: 'Que boa... notícia...',
+                  audio: 'on-little-cat-feet.mp3',
                 },
                 {
                   text: 'A Heroína consegue esboçar um sorriso.'
@@ -743,7 +837,7 @@ var story = {
                   text: 'Ela fala com dificuldade.'
                 },
                 {
-                  text: '"Conheci Rodrick. Ele foi um pouco rude quando o conheci, mas ele logo se propos a me ajudar", você diz.'
+                  text: '"Conheci Rodrick. Ele foi um pouco rude quando o conheci, mas ele logo se propôs a me ajudar", você diz.'
                 },
                 {
                   speaker: 'Heroína',
@@ -771,6 +865,58 @@ var story = {
                   },
                   goBackImmediately: true,
                 }
+              ]
+            },
+            {
+              text: 'Perguntar sobre os animais da floresta',
+              requirements: () => {
+                return keys['LAKE_RECEIVED_TIP_ABOUT_FOREST'] && !keys['FOREST_SOLVED_MAZE']
+              },
+              alreadySeen: () => {
+                return keys['HEROIN_ASKED_ABOUT_ANIMALS'];
+              },
+              chat: [
+                {
+                  text: '"Você por acaso sabe o que são Djar, Tulin e Gutenthap?"'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Sim... acho que sim... eles são os nomes que os elfos deram para os animais...'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Eu tenho certeza que decorei os nomes... mas minha memória não tem estado muito boa...'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Deixe-me pensar...'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Os Djar são aves...'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Corujas! Isso... os Djars são parecidos com as nossas corujas.'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Agora os outros dois...'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Me desculpe, criança. Não consigo lembrar mais que isso.'
+                },
+                {
+                  text: '"Está tudo bem. Essa informação já irá me ajudar! Obrigada.", você agradece.'
+                },
+                {
+                  speaker: 'Heroína',
+                  text: 'Espero que você consiga descobrir o resto...',
+                  action: () => {
+                    keys['HEROIN_ASKED_ABOUT_ANIMALS'] = true;
+                  }
+                },
               ]
             },
             {
@@ -1427,6 +1573,7 @@ var story = {
         return !keys['MOUNTAIN_SAW_DWARF_DISAPPEAR'] && !keys['MOUNTAIN_TALKED_TO_DWARF'];
       },
       auto: true,
+      audio: 'silverpoint.mp3',
       chat: [
         {
           text: 'Depois de uma breve caminhada você chega em uma trilha que leva para uma montanha.',
@@ -1457,7 +1604,7 @@ var story = {
           text: '10 minutos já se passaram? Talvez 15.',
         },
         {
-          text: 'Você acredita ter notado uma cabana a frente. Talvez mais alguns minutos e você chegará lá.',
+          text: 'Você acredita ter notado uma cabana à frente. Talvez mais alguns minutos e você chegará lá.',
         },
         {
           text: 'Mas seu coração para de bater ao escutar um voz desconhecida.',
@@ -1467,7 +1614,7 @@ var story = {
           text: 'Ro.. dri.. ck...',
         },
         {
-          text: 'Você olha em direção a voz. Existe uma anã caída no chão logo a frente.',
+          text: 'Você olha em direção a voz. Existe uma anã caída no chão não muito longe de você.',
         },
         {
           text: 'Você se aproxima da anã com pressa. Talvez ela seja a única que possa te ajudar.',
@@ -1524,6 +1671,7 @@ var story = {
         return !keys['MOUNTAIN_SAW_DWARF_DISAPPEAR'] && keys['MOUNTAIN_TALKED_TO_DWARF'];
       },
       auto: true,
+      audio: 'silverpoint.mp3',
       chat: [
         {
           text: 'Mas suas palavras foram em vão.',
@@ -1600,6 +1748,7 @@ var story = {
         return keys['MOUNTAIN_SAW_DWARF_DISAPPEAR'];
       },
       auto: true,
+      audio: 'silverpoint.mp3',
       chat: [
         {
           audio: 'silverpoint.mp3',
@@ -1683,8 +1832,8 @@ var story = {
       auto: true,
       chat: [
         {
-          text: 'Você se aproxima da cabana. O local parece velho e rústico. A porta está aberta',
-          // TODO: Mover o audio geothermal para cá
+          text: 'Você se aproxima da cabana. O local parece velho e rústico. A porta está aberta.',
+          audio: 'geothermal.mp3',
         },
         {
           audio: 'geothermal.mp3',
@@ -1878,7 +2027,8 @@ var story = {
       auto: true,
       chat: [
         {
-          text: 'Você caminha para dentro da cabana.'
+          text: 'Você caminha para dentro da cabana.',
+          audio: 'geothermal.mp3',
         },
         {
           text: 'Ao entrar, você percebe que tudo está prestes a se dissipar, igual do lado de fora.'
@@ -1969,6 +2119,7 @@ var story = {
           requirements: () => {
             return !keys['CABIN_AGREED_WITH_RODRICK'] && !keys['CABIN_STOOD_UP_FOR_THE_HEROIN'];
           },
+          audio: 'geothermal.mp3',
           options: [
             {
               text: 'Meu nome é Isabelle. Sou uma humana e me falaram que fui invocada nesse mundo para conseguir salvá-lo.',
@@ -2177,6 +2328,7 @@ var story = {
       auto: true,
       chat: [
         {
+          audio: 'geothermal.mp3',
           options: [
             { 
               text: 'Perguntar o motivo do anão de querer permanecer nesse mundo',
@@ -2244,6 +2396,7 @@ var story = {
         return keys['CABIN_RODRICK_IS_ANXIOUS'] && (!keys['CABIN_GAVE_WATER_TO_RODRICK'] || !keys['CABIN_HOLD_RODRICK_HANDS'] || !keys['CABIN_SAID_WORDS_OF_CONFORT_TO_RODRICK']);
       },
       auto: true,
+      audio: 'geothermal.mp3',
       chat: [
         {
           options: [
@@ -2386,7 +2539,8 @@ var story = {
       auto: true,
       chat: [
         {
-          text: 'Ele parece ter recuperado a calma. Pelo menos o necessário para conversar.'
+          text: 'Ele parece ter recuperado a calma. Pelo menos o necessário para conversar.',
+          audio: 'geothermal.mp3',
         },
         {
           text: 'Você senta em uma cadeira próxima a ele.'
@@ -2552,7 +2706,7 @@ var story = {
         },
         {
           speaker: 'Rodrick',
-          text: 'Para que você consiga herdar minha Alma Primordial, nós dois precisamos entrar em contanto com o que é mais intímo meu...'
+          text: 'Para que você consiga herdar minha Alma Primordial, nós dois precisamos entrar em contato com o que é mais intímo meu...'
         },
         {
           speaker: 'Rodrick',
@@ -2563,7 +2717,7 @@ var story = {
           text: '...'
         },
         {
-          text: 'Rodrick fica em silência por um tempo.'
+          text: 'Rodrick fica em silêncio por um tempo.'
         },
         {
           speaker: 'Rodrick',
@@ -2633,7 +2787,7 @@ var story = {
       },
       chat: [
         {
-          audio: '',
+          audio: 'geothermal.mp3',
           cleanText: true,
           options: [
             {
@@ -2851,6 +3005,7 @@ var story = {
       },
       chat: [
         {
+          audio: 'geothermal.mp3',
           options: [
             {
               text: 'Falar o nome e esconder o fato de ter presenciado a morte de Magdalene',
@@ -2907,7 +3062,7 @@ var story = {
               text: 'Falar o nome e revelar ter presenciado a morte de Magdalene',
               chat: [
                 {
-                  text: '"Antes disso, tenho que te contar algo...", você começa a explicar',
+                  text: '"Antes disso, tenho que te contar algo...", você começa a explicar.',
                 },
                 {
                   text: 'Você prossegue contando sobre como encontrou uma anã no caminho até a cabana e em como ela deixou de existir.'
@@ -2997,6 +3152,7 @@ var story = {
       requirements: () => {
         return keys['CABIN_IS_GETTING_PRIMORDIAL_SOUL'] && !keys['CABIN_ACQUIRED_PRIMORDIAL_SOUL']
       },
+      audio: 'geothermal.mp3',
       chat: [
         {
           showCustomScene: 'rodrick'
@@ -3306,7 +3462,10 @@ var story = {
                 {
                   text: 'Você se dirige para o campo.',
                   goBack: true,
-                  moveToScene: 'prado'
+                  moveToScene: 'prado',
+                  action: () => {
+                    keys['FOREST_LEFT_ONCE'] = true;
+                  }
                 },
               ]
             }
@@ -4020,11 +4179,7 @@ var story = {
                         },
                         {
                           speaker: 'Nerida',
-                          text: 'Não se desespere... você não está mais sozinha... Rodrick e Sharia estão ao seu lado...'
-                        },
-                        {
-                          speaker: 'Nerida',
-                          text: 'Consigo sentir suas almas dentro... de você...'
+                          text: 'Não se desespere... você não está mais sozinha... estamos todos com você...'
                         },
                         {
                           speaker: 'Nerida',
@@ -4241,7 +4396,7 @@ var story = {
         return !keys['TREE_FIRST_TALK_CONCLUDED'];
       },
       auto: true,
-      audio: '',
+      audio: 'to-dream.mp3',
       chat: [
         {
           text: 'Você chega em um acampamento élfico.'
@@ -4364,7 +4519,7 @@ var story = {
           text: 'Espero que tenha anotado, talvez seja importante no futuro!'
         },
         {
-          speaker: 'Elfa',
+          speaker: 'Sharia',
           text: 'Ou não! Hahahaha!'
         },
         {
@@ -4373,7 +4528,7 @@ var story = {
               text: 'Pedir ajuda sobre o altar e as Almas Primordiais',
               chat: [
                 {
-                  text: 'Você da a entender que irá falar algo, mas Sharia te interrompe.',
+                  text: 'Você dá a entender que irá falar algo, mas Sharia te interrompe.',
                   action: () => {
                     keys['TREE_FIRST_TALK_CONCLUDED'] = true;
                   }
@@ -4400,7 +4555,7 @@ var story = {
         return keys['TREE_FIRST_TALK_CONCLUDED'] && !keys['TREE_IS_LOOKING_FOR_SHARIA'];
       },
       auto: true,
-      audio: '',
+      audio: 'to-dream.mp3',
       chat: [
         {
           speaker: 'Sharia',
@@ -4453,7 +4608,7 @@ var story = {
         },
         {
           speaker: 'Sharia',
-          text: 'Ebaaaaaaaa! Ok, fechado! Fecha os olhos então e conta até 30!'
+          text: 'Ebaaaaaaaa! Ok, fechado! Feche os olhos então e conte até 30!'
         },
         {
           text: 'Você respira fundo, fecha os olhos e começa a contar.'
@@ -4500,7 +4655,7 @@ var story = {
         return keys['TREE_IS_LOOKING_FOR_SHARIA'] && (!keys['TREE_SEARCH_PLANT'] || !keys['TREE_SEARCH_BALCONY'] || !keys['TREE_SEARCH_TOYS']);
       },
       auto: true,
-      audio: '',
+      audio: 'to-dream.mp3',
       chat: [
         {
           text: 'Você olha ao redor.'
@@ -4532,7 +4687,7 @@ var story = {
                   text: 'Foram necessárias três facadas na plata para que ela pudesse te soltar.'
                 },
                 {
-                  text: 'Você se distancia da planta. Sharia não parece estar ali.',
+                  text: 'Você se distancia da planta. Esse lugar é mais perigoso do que você pensava. Sharia não parece estar ali.',
                   action: () => {
                     keys['TREE_SEARCH_PLANT'] = true;
                   },
@@ -4586,7 +4741,7 @@ var story = {
                   text: 'Alguns deles te lembram dos brinquedos que você tinha na infância. Já outros são totalmente diferentes, parecem até mágicos.'
                 },
                 {
-                  text: 'Quantas crianças moravam nessa comunidade para que fosse possível acomular tantos brinquedos... Todas consumidas pela maldição...'
+                  text: 'Quantas crianças moravam nessa comunidade para que fosse possível acumular tantos brinquedos... Todas consumidas pela maldição...'
                 },
                 {
                   text: '...'
@@ -4609,6 +4764,7 @@ var story = {
         return !keys['TREE_INTRO_CONCLUDED'];
       },
       auto: true,
+      audio: 'to-dream.mp3',
       chat: [
         {
           text: 'Você não consegue achar a Sharia, e o tempo não está a seu favor.'
@@ -4652,7 +4808,7 @@ var story = {
         },
         {
           speaker: 'Sharia',
-          text: 'Tá bom... tá bom... O que você precisa'
+          text: 'Tá bom... tá bom... O que você precisa?'
         },
         {
           options: [
@@ -4704,6 +4860,7 @@ var story = {
       requirements: () => {
         return !keys['TREE_IS_GETTING_PRIMORDIAL_SOUL'] && !keys['TREE_ACQUIRED_PRIMORDIAL_SOUL'];
       },
+      audio: 'to-dream.mp3',
       chat: [
         {
           requirements: () => {
@@ -4728,7 +4885,7 @@ var story = {
                 },
                 {
                   speaker: 'Sharia',
-                  text: 'Esse é o meu brinquedo favorito. Meu pai que fez para mim para me dar de aniversário!'
+                  text: 'Esse é o meu brinquedo favorito. Minha mãe que fez para mim para me dar de aniversário!'
                 },
                 {
                   text: 'Sharia pula de alegria, correndo e girando pela casa com a caixa da música em seus braços.'
@@ -4771,7 +4928,7 @@ var story = {
                 },
                 {
                   speaker: 'Sharia',
-                  text: 'O tempo é curto. Entaõ serei breve.'
+                  text: 'O tempo é curto. Então serei breve.'
                 },
                 {
                   speaker: 'Sharia',
@@ -4833,7 +4990,7 @@ var story = {
                 },
                 {
                   speaker: 'Sharia',
-                  text: 'Por conta disso, talvez algumas informações se percam no meio do caminho... mas sei que você irá superar cada obstáculo.'
+                  text: 'Por conta disso, talvez algumas informações irão se perder no meio do caminho... mas sei que você irá superar cada obstáculo.'
                 },
                 {
                   text: 'A partir desse ponto, o corpo de Sharia está quase se dissolvendo.'
@@ -5105,7 +5262,10 @@ var story = {
                 {
                   text: 'Você se dirige para o campo.',
                   goBack: true,
-                  moveToScene: 'prado'
+                  moveToScene: 'prado',
+                  action: () => {
+                    keys['TREE_LEFT_ONCE'] = true;
+                  }
                 },
               ]
             }
@@ -5118,6 +5278,7 @@ var story = {
       requirements: () => {
         return keys['TREE_IS_GETTING_PRIMORDIAL_SOUL'] && !keys['TREE_ACQUIRED_PRIMORDIAL_SOUL']
       },
+      audio: 'moonsong.mp3',
       chat: [
         {
           showCustomScene: 'sharia'
@@ -5258,6 +5419,7 @@ var story = {
       requirements: () => {
         return keys['DOOR_ACQUIRED_PRIMORDIAL_SOUL'];
       },
+      audio: 'my-burden-is-light.mp3',
       chat: [
         {
           text: 'A energia caótica da porta começa a entrar em harmonia ao entrar em contato com você e com as suas Almas Primordiais.',
@@ -5305,6 +5467,7 @@ var story = {
       requirements: () => {
         return !keys['ALTAR_IS_CHOOSING'];
       },
+      audio: 'my-burden-is-light.mp3',
       chat: [
         {
           text: 'O altar não está nas melhores condições.'
@@ -5344,6 +5507,7 @@ var story = {
       requirements: () => {
         return keys['ALTAR_IS_CHOOSING'];
       },
+      audio: 'my-burden-is-light.mp3',
       chat: [
         {
           options: [
@@ -5403,14 +5567,85 @@ setTimeout(() => {
 }, 0);
 
 calculateSceneWidth();
-updateImage();
-startImageFluctuation();
-getOptions();
-initListeners();
+
+if (!finished) {
+  initListeners();
+}
 
 function initListeners() {
   const button = document.getElementById('next-button');
   button.addEventListener(('click'), () => handleNextButton());
+
+  const input = document.getElementById('chat-input');
+  input.addEventListener('keydown', async e => {
+    if (e.key === 'Enter') {
+      await handleCustomSceneAnswer();
+    }
+  });
+
+  const startButton = document.getElementById('start-game');
+  startButton.addEventListener('click', () => {
+    restoreData();
+    updateRain();
+    
+    startImageFluctuation();
+    updateImage();
+
+    if (audio) {
+      audio.pause();
+      currentAudioFile = '';
+    }
+
+    if (keys['GAME_COMPLETED']) {
+      updateEndingImage();
+    }
+
+    const menu = document.getElementById('menu');
+    menu.style.display = 'none';
+    getOptions();
+  });
+
+  const resetButton = document.getElementById('reset-game');
+  resetButton.addEventListener('click', () => {
+    cleanData();
+  });
+}
+
+function storeData() {
+  localStorage.setItem(localStorageKey, JSON.stringify({
+    keys,
+    currentScene,
+  }));
+}
+
+function restoreData() {
+  const stored = localStorage.getItem(localStorageKey);
+
+  if (stored) {
+    const storedObj = JSON.parse(stored);
+    keys = storedObj.keys;
+    currentScene = storedObj.currentScene;
+  }
+}
+
+function cleanData() {
+  const stored = localStorage.getItem(localStorageKey);
+
+  if (stored) {
+    localStorage.removeItem(localStorageKey);
+  }
+
+  keys = JSON.parse(JSON.stringify(clonedKeys));
+}
+
+function reset() {
+  const menu = document.getElementById('menu');
+  menu.style.display = '';
+  hideNextButton();
+  setSceneCoverOpacity(0);
+  if (audio) {
+    fadeOutAudio(audio);
+  }
 }
 
 function calculateSceneWidth() {
@@ -5435,6 +5670,10 @@ function updateImage() {
 }
 
 function startImageFluctuation() {
+  if (fluctuationInterval || keys['GAME_COMPLETED']) {
+    return;
+  }
+
   fluctuationInterval = setInterval(() => {
     edgeOpacity++;
     redOpacity++;
@@ -5511,8 +5750,7 @@ function showOptionOnChat(chat) {
 
 function writeTextOnChat(chat, skipNext = false) {
   isWritting = true;
-  // TODO: Área comentada para agilizar desenvolvimento 
-  // hideNextButton();
+  hideNextButton();
 
   const chatMessage = document.getElementById('chat-message');
   chatMessage.textContent = chat.speaker ? `${chat.speaker.toUpperCase()}: ` : '';
@@ -5560,10 +5798,16 @@ async function handleNextButton() {
   if (currentChat) {
     if (currentChat.chat[currentChatIndex].action) {
       currentChat.chat[currentChatIndex].action();
+      storeData();
+
+      if (keys['GAME_COMPLETED']) {
+        return;
+      }
     }
 
     if (currentChat.chat[currentChatIndex].moveToScene) {
       await moveToScene(currentChat.chat[currentChatIndex].moveToScene);
+      storeData();
     }
 
     if (currentChat.chat[currentChatIndex].goBack || currentChat.chat[currentChatIndex].goBackImmediately) {
@@ -5613,7 +5857,6 @@ function handleChatEvents(chat) {
         let fadedIn = true;
         audio.ontimeupdate = () => {
           if (audio.currentTime > 22 && !fadedOut) {
-            console.log('opa');
             fadeOutAudio(audio, midRate ? 0.1 : 0.8, 50);
             fadedOut = true;
             fadedIn = false;
@@ -5625,7 +5868,9 @@ function handleChatEvents(chat) {
         };
       }
 
-      fadeInAudio(audio, midRate ? 0.2 : 1, interval);
+      if (!chat.skipFadeIn) {
+        fadeInAudio(audio, midRate ? 0.2 : 1, interval);
+      }
     }
   }
 
@@ -5686,27 +5931,31 @@ function handleChatEvents(chat) {
   if (chat.increaseRain) {
     playAsyncAudio('thunder.mp3');
 
-    if (!keys['GAME_COMPLETED']) {
-      let count = 0;
-
-      if (keys['CABIN_CONCLUDED']) {
-        count++;
-      }
-  
-      if (keys['TREE_CONCLUDED']) {
-        count += 2;
-      }
-  
-      if (keys['LAKE_CONCLUDED']) {
-        count += 1;
-      }
-
-      makeItRain(count);
-    }
+    updateRain();
   }
 
   if (chat.soulCover) {
     addSoulObtainedCover();
+  }
+}
+
+function updateRain() {
+  if (!keys['GAME_COMPLETED']) {
+    let count = 0;
+
+    if (keys['CABIN_CONCLUDED']) {
+      count++;
+    }
+
+    if (keys['TREE_CONCLUDED']) {
+      count += 2;
+    }
+
+    if (keys['LAKE_CONCLUDED']) {
+      count += 1;
+    }
+
+    makeItRain(count);
   }
 }
 
@@ -5815,12 +6064,15 @@ async function moveToScene(scene) {
     stopRain();
   }
 
+  hideNextButton();
   setSceneCoverOpacity(1);
   await delay(500);
   currentScene = scene;
   updateImage();
   await delay(500);
   setSceneCoverOpacity(0);
+
+  storeData();
 }
 
 function validateForest() {
@@ -5883,12 +6135,20 @@ function validateForest() {
   });
 
   if (valid) {
-    alert('valido');
+    addSoulObtainedCover();
+    fadeOutAudio(audio, 0.1);
+    playAsyncAudio('soul-obtained.mp3');
+
     keys['FOREST_SOLVED_MAZE'] = true;
+
+    setTimeout(() => {
+      fadeInAudio(audio, 1, 100);
+    }, 3000);
   } else {
-    alert('invalido');
     keys['FOREST_DID_NOT_SOLVE_MAZE'] = true;
   }
+
+  storeData();
 }
 
 function showCustomScene(chat) {
@@ -5904,6 +6164,18 @@ function showCustomScene(chat) {
     triggerDoor();
   } else if (chat.showCustomScene === 'ending') {
     triggerEnding();
+  }
+}
+
+async function handleCustomSceneAnswer() {
+  if (currentCustomScene === 'rodrick') {
+    await handleRodrickNext();
+  } else if (currentCustomScene === 'sharia') {
+    await handleShariaNext();
+  } else if (currentCustomScene === 'nerida') {
+    await handleNeridaNext();
+  } else if (currentCustomScene === 'door') {
+    await handleDoorNext();
   }
 }
 
@@ -5925,12 +6197,8 @@ async function triggerRodrick() {
   await delay(1000);
 
   const input = document.getElementById('chat-input');
+  input.children[0].value = ''
   input.style.display = 'block';
-  input.addEventListener('keydown', async e => {
-    if (e.key === 'Enter') {
-      await handleRodrickNext();
-    }
-  })
 }
 
 async function handleRodrickNext() {
@@ -5963,6 +6231,7 @@ async function handleRodrickNext() {
   keys['CABIN_ACQUIRED_PRIMORDIAL_SOUL'] = true;
   keys['CABIN_IS_GETTING_PRIMORDIAL_SOUL'] = false;
 
+  storeData();
   getOptions();
 
   inputContainer.style.display = 'none';
@@ -5986,12 +6255,8 @@ async function triggerSharia() {
   await delay(1000);
 
   const input = document.getElementById('chat-input');
+  input.children[0].value = ''
   input.style.display = 'block';
-  input.addEventListener('keydown', async e => {
-    if (e.key === 'Enter') {
-      await handleShariaNext();
-    }
-  })
 }
 
 async function handleShariaNext() {
@@ -6025,6 +6290,7 @@ async function handleShariaNext() {
   keys['TREE_ACQUIRED_PRIMORDIAL_SOUL'] = true;
   keys['TREE_IS_GETTING_PRIMORDIAL_SOUL'] = false;
 
+  storeData();
   getOptions();
 
   inputContainer.style.display = 'none';
@@ -6035,6 +6301,12 @@ async function triggerNerida() {
   setSceneCoverOpacity(1);
 
   await delay(500);
+
+  if (!audio) {
+    handleChatEvents({ audio: 'mermaid-start.mp3', skipFadeIn: true });
+    audio.play();
+    audio.volume = 1;
+  }
 
   fadeOutAudio(audio, 0.2);
   lakeStartedCustomSong = true;
@@ -6049,12 +6321,8 @@ async function triggerNerida() {
   await delay(1000);
 
   const input = document.getElementById('chat-input');
+  input.children[0].value = ''
   input.style.display = 'block';
-  input.addEventListener('keydown', async e => {
-    if (e.key === 'Enter') {
-      await handleNeridaNext();
-    }
-  })
 }
 
 async function handleNeridaNext() {
@@ -6087,6 +6355,7 @@ async function handleNeridaNext() {
   keys['LAKE_ACQUIRED_PRIMORDIAL_SOUL'] = true;
   keys['LAKE_IS_GETTING_PRIMORDIAL_SOUL'] = false;
 
+  storeData();
   getOptions();
 
   inputContainer.style.display = 'none';
@@ -6110,12 +6379,8 @@ async function triggerDoor() {
   await delay(1000);
 
   const input = document.getElementById('chat-input');
+  input.children[0].value = ''
   input.style.display = 'block';
-  input.addEventListener('keydown', async e => {
-    if (e.key === 'Enter') {
-      await handleDoorNext();
-    }
-  })
 }
 
 async function handleDoorNext() {
@@ -6149,6 +6414,7 @@ async function handleDoorNext() {
   keys['DOOR_ACQUIRED_PRIMORDIAL_SOUL'] = true;
   keys['DOOR_IS_GETTING_PRIMORDIAL_SOUL'] = false;
 
+  storeData();
   getOptions();
 
   inputContainer.style.display = 'none';
@@ -6177,7 +6443,7 @@ async function triggerEnding() {
   handleChatEvents({ audio: 'self-contained-universe-ending.mp3' });
 
   keys['GAME_COMPLETED'] = true;
-
+  storeData();
   getOptions();
 }
 
@@ -6219,4 +6485,5 @@ function updateEndingImage() {
   colorImage.style.opacity = 0;
 
   clearInterval(fluctuationInterval);
+  fluctuationInterval = null;
 }
