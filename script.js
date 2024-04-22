@@ -461,7 +461,7 @@ var story = {
           soulCover: true,
         },
         {
-          text: '"QUEIMA QUENGARAL"',
+          text: '"AAAAAAAAAAAA"',
           increaseRain: true,
           soulCover: true,
         },
