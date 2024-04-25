@@ -3999,7 +3999,7 @@ var story = {
                 },
                 {
                   speaker: 'Nerida',
-                  text: '🎵 Verde, amarelo e vermelho, pintam regradamente em um transferidor 🎵'
+                  text: '🎵 Vermelho, verde e amarelo, pintam regradamente em um transferidor 🎵'
                 },
                 {
                   text: 'Nerida parece orgulhosa.',
